@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/arm64-v8a'
+[1/1] cd /Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/arm64-v8a && /Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake -E make_directory /Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/cpp/../../../build/ovpnassets

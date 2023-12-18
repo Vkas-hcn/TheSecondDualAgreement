@@ -1,0 +1,278 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3  ~ Copyright (c) 2012-2019 Arne Schwabe
+4  ~ Distributed under the GNU GPL v2 with additional terms. For full terms see the file doc/LICENSE.txt
+5-->
+6<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+7    xmlns:tools="http://schemas.android.com/tools"
+8    package="de.blinkt.openvpn" >
+9
+10    <uses-sdk android:minSdkVersion="21" />
+11
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:5:5-67
+12-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:5:22-64
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:6:5-79
+13-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:6:22-76
+14    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+14-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:7:5-81
+14-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:7:22-78
+15    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+15-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:8:5-80
+15-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:8:22-77
+16    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+16-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:9:5-77
+16-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:9:22-74
+17    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+17-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:10:5-77
+17-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:10:22-74
+18    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+18-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:11:5-89
+18-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:11:22-86
+19
+20    <application
+20-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:28:5-144:19
+21        android:name="de.blinkt.openvpn.core.ICSOpenVPNApplication"
+21-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:29:9-51
+22        android:allowBackup="true"
+22-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:30:9-35
+23        android:appCategory="productivity"
+23-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:31:9-43
+24        android:icon="@mipmap/ic_launcher"
+24-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:32:9-43
+25        android:label="@string/app"
+25-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:34:9-36
+26        android:roundIcon="@mipmap/ic_launcher_round"
+26-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:33:9-54
+27        android:supportsRtl="true"
+27-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:35:9-35
+28        android:theme="@style/blinkt"
+28-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:36:9-38
+29        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute" >
+29-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:37:9-39
+30        <activity
+30-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:10:9-13:47
+31            android:name="de.blinkt.openvpn.activities.NotImplemented"
+31-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:12:13-54
+32            android:exported="true"
+32-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:11:17-40
+33            tools:ignore="ExportedActivity" />
+33-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:13:13-44
+34
+35        <activity-alias
+35-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:21:9-25:19
+36            android:name="de.blinkt.openvpn.activities.Req"
+36-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:23:17-47
+37            android:exported="true"
+37-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:22:17-40
+38            android:targetActivity="de.blinkt.openvpn.activities.NotImplemented" />
+38-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:24:17-68
+39        <activity-alias
+39-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:15:9-19:15
+40            android:name="de.blinkt.openvpn.activities.LogWindow"
+40-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:17:17-53
+41            android:exported="true"
+41-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:16:17-40
+42            android:targetActivity="de.blinkt.openvpn.activities.NotImplemented" />
+42-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/skeleton/AndroidManifest.xml:18:17-68
+43
+44        <meta-data
+44-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:38:9-40:56
+45            android:name="android.content.APP_RESTRICTIONS"
+45-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:39:13-60
+46            android:resource="@xml/app_restrictions" />
+46-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:40:13-53
+47
+48        <service
+48-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:44:9-54:19
+49            android:name="de.blinkt.openvpn.core.OpenVPNService"
+49-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:45:13-48
+50            android:exported="true"
+50-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:46:13-36
+51            android:permission="android.permission.BIND_VPN_SERVICE"
+51-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:47:13-69
+52            android:process=":openvpn" >
+52-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:48:13-39
+53            <intent-filter>
+53-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:49:13-51:29
+54                <action android:name="android.net.VpnService" />
+54-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:50:17-65
+54-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:50:25-62
+55            </intent-filter>
+56
+57            <property
+57-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:52:13-104
+58                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+58-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:52:23-82
+59                android:value="vpn" />
+59-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:52:83-102
+60        </service>
+61        <service
+61-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:55:9-63:19
+62            android:name="de.blinkt.openvpn.api.ExternalOpenVPNService"
+62-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:56:13-55
+63            android:exported="true"
+63-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:58:13-36
+64            android:process=":openvpn"
+64-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:57:13-39
+65            tools:ignore="ExportedService" >
+65-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:59:17-47
+66            <intent-filter>
+66-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:60:13-62:29
+67                <action android:name="de.blinkt.openvpn.api.IOpenVPNAPIService" />
+67-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:61:17-83
+67-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:61:25-80
+68            </intent-filter>
+69        </service>
+70        <service
+70-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:64:9-67:42
+71            android:name="de.blinkt.openvpn.core.OpenVPNStatusService"
+71-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:65:13-54
+72            android:exported="false"
+72-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:66:13-37
+73            android:process=":openvpn" />
+73-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:67:13-39
+74
+75        <activity
+75-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:69:9-74:20
+76            android:name="de.blinkt.openvpn.api.GrantPermissionsActivity"
+76-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:69:19-63
+77            android:exported="true" >
+77-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:70:17-40
+78            <intent-filter>
+78-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:71:13-73:29
+79                <action android:name="android.intent.action.MAIN" />
+79-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:72:17-69
+79-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:72:25-66
+80            </intent-filter>
+81        </activity>
+82        <activity
+82-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:75:9-80:20
+83            android:name="de.blinkt.openvpn.api.ConfirmDialog"
+83-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:75:19-52
+84            android:exported="true" >
+84-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:76:17-40
+85            <intent-filter>
+85-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:71:13-73:29
+86                <action android:name="android.intent.action.MAIN" />
+86-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:72:17-69
+86-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:72:25-66
+87            </intent-filter>
+88        </activity>
+89
+90        <receiver
+90-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:82:9-88:20
+91            android:name="de.blinkt.openvpn.OnBootReceiver"
+91-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:82:19-49
+92            android:exported="true" >
+92-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:83:17-40
+93            <intent-filter android:priority="999" >
+93-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:84:13-87:29
+93-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:84:28-50
+94                <action android:name="android.intent.action.BOOT_COMPLETED" />
+94-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:85:17-79
+94-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:85:25-76
+95                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+95-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:86:17-84
+95-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:86:25-81
+96            </intent-filter>
+97        </receiver>
+98
+99        <service
+99-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:90:9-93:75
+100            android:name="de.blinkt.openvpn.core.keepVPNAlive"
+100-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:90:18-51
+101            android:exported="true"
+101-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:92:17-40
+102            android:permission="android.permission.BIND_JOB_SERVICE"
+102-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:93:17-73
+103            android:process=":openvpn" />
+103-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:91:17-43
+104
+105        <activity
+105-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:96:9-110:20
+106            android:name="de.blinkt.openvpn.LaunchVPN"
+106-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:97:13-38
+107            android:autoRemoveFromRecents="true"
+107-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:98:13-49
+108            android:excludeFromRecents="true"
+108-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:99:13-46
+109            android:exported="true"
+109-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:103:13-36
+110            android:label="@string/vpn_launch_title"
+110-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:100:13-53
+111            android:taskAffinity=".LaunchVPN"
+111-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:101:13-46
+112            android:theme="@style/blinkt.dialog" >
+112-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:102:13-49
+113            <intent-filter>
+113-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:105:13-109:29
+114                <action android:name="android.intent.action.MAIN" />
+114-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:72:17-69
+114-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:72:25-66
+115
+116                <category android:name="android.intent.category.DEFAULT" />
+116-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:108:17-76
+116-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:108:27-73
+117            </intent-filter>
+118        </activity>
+119        <!--
+120        <receiver android:name="core.GetRestrictionReceiver">
+121            <intent-filter>
+122                <action android:name="android.intent.action.GET_RESTRICTION_ENTRIES" />
+123            </intent-filter>
+124        </receiver>
+125        -->
+126        <activity
+126-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:118:9-125:19
+127            android:name="de.blinkt.openvpn.api.RemoteAction"
+127-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:118:19-51
+128            android:autoRemoveFromRecents="true"
+128-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:120:17-53
+129            android:excludeFromRecents="true"
+129-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:121:17-50
+130            android:launchMode="singleInstance"
+130-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:119:17-52
+131            android:noHistory="true"
+131-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:124:17-41
+132            android:taskAffinity=".LaunchVPN"
+132-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:122:17-50
+133            android:theme="@style/blinkt.dialog" />
+133-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:123:17-53
+134
+135        <activity-alias
+135-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:139:9-142:62
+136            android:name="de.blinkt.openvpn.api.ResumeVPN"
+136-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:140:17-46
+137            android:exported="true"
+137-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:141:17-40
+138            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
+138-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:142:17-59
+139        <activity-alias
+139-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:135:9-138:62
+140            android:name="de.blinkt.openvpn.api.PauseVPN"
+140-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:136:17-45
+141            android:exported="true"
+141-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:137:17-40
+142            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
+142-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:138:17-59
+143        <activity-alias
+143-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:131:9-134:58
+144            android:name="de.blinkt.openvpn.api.DisconnectVPN"
+144-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:132:13-46
+145            android:exported="true"
+145-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:133:13-36
+146            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
+146-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:134:13-55
+147        <activity-alias
+147-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:127:9-130:58
+148            android:name="de.blinkt.openvpn.api.ConnectVPN"
+148-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:128:13-43
+149            android:exported="true"
+149-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:129:13-36
+150            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
+150-->/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/AndroidManifest.xml:130:13-55
+151    </application>
+152
+153</manifest>

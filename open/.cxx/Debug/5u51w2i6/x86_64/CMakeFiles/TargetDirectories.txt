@@ -1,0 +1,14 @@
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/rebuild_cache.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/makeassetdir.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/pie_openvpn.x86_64.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/libovpnexec.so.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/openvpn.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/ssl.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/osslutil.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/ovpnutil.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/edit_cache.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/crypto.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/ovpn3.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/lz4.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/osslspeedtest.dir
+/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/CMakeFiles/lzo.dir

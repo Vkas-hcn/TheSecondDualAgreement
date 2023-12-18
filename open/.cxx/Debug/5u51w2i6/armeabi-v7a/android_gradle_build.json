@@ -1,0 +1,184 @@
+{
+  "stringTable": {},
+  "buildFiles": [
+    "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+      "-C",
+      "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+    "-C",
+    "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "makeassetdir-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "makeassetdir"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "makeassetdir"
+    },
+    "openvpn-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "openvpn"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "openvpn",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libopenvpn.so",
+      "runtimeFiles": []
+    },
+    "crypto-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "crypto"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "crypto",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a/libcrypto.a"
+    },
+    "ssl-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "ssl"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "ssl",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a/libssl.a"
+    },
+    "ovpnutil-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "ovpnutil"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "ovpnutil",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libovpnutil.so",
+      "runtimeFiles": []
+    },
+    "osslspeedtest-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "osslspeedtest"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "osslspeedtest",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libosslspeedtest.so",
+      "runtimeFiles": []
+    },
+    "pie_openvpn.armeabi-v7a-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "pie_openvpn.armeabi-v7a"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "pie_openvpn.armeabi-v7a",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/pie_openvpn.armeabi-v7a",
+      "runtimeFiles": [
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libopenvpn.so"
+      ]
+    },
+    "libovpnexec.so-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "libovpnexec.so"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "libovpnexec.so",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libovpnexec.so",
+      "runtimeFiles": [
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libopenvpn.so"
+      ]
+    },
+    "osslutil-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "osslutil"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "osslutil",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libosslutil.so",
+      "runtimeFiles": []
+    },
+    "ovpn3-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "ovpn3"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "ovpn3",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libovpn3.so",
+      "runtimeFiles": []
+    },
+    "lz4-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "lz4"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "lz4",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a/liblz4.a"
+    },
+    "lzo-Debug-armeabi-v7a": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a",
+        "lzo"
+      ],
+      "buildType": "debug",
+      "abi": "armeabi-v7a",
+      "artifactName": "lzo",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/armeabi-v7a/liblzo.a"
+    }
+  },
+  "toolchains": {},
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp",
+    "cxx"
+  ]
+}

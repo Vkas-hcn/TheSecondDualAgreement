@@ -1,0 +1,184 @@
+{
+  "stringTable": {},
+  "buildFiles": [
+    "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+      "-C",
+      "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+    "-C",
+    "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "pie_openvpn.x86_64-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "pie_openvpn.x86_64"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "pie_openvpn.x86_64",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/pie_openvpn.x86_64",
+      "runtimeFiles": [
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libopenvpn.so"
+      ]
+    },
+    "openvpn-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "openvpn"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "openvpn",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libopenvpn.so",
+      "runtimeFiles": []
+    },
+    "ovpn3-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "ovpn3"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "ovpn3",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libovpn3.so",
+      "runtimeFiles": []
+    },
+    "libovpnexec.so-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "libovpnexec.so"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "libovpnexec.so",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libovpnexec.so",
+      "runtimeFiles": [
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libopenvpn.so"
+      ]
+    },
+    "crypto-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "crypto"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "crypto",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/libcrypto.a"
+    },
+    "ssl-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "ssl"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "ssl",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/libssl.a"
+    },
+    "makeassetdir-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "makeassetdir"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "makeassetdir"
+    },
+    "ovpnutil-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "ovpnutil"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "ovpnutil",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libovpnutil.so",
+      "runtimeFiles": []
+    },
+    "lz4-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "lz4"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "lz4",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/liblz4.a"
+    },
+    "lzo-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "lzo"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "lzo",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64/liblzo.a"
+    },
+    "osslutil-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "osslutil"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "osslutil",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libosslutil.so",
+      "runtimeFiles": []
+    },
+    "osslspeedtest-Debug-x86_64": {
+      "buildCommandComponents": [
+        "/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64",
+        "osslspeedtest"
+      ],
+      "buildType": "debug",
+      "abi": "x86_64",
+      "artifactName": "osslspeedtest",
+      "output": "/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libosslspeedtest.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {},
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp",
+    "cxx"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "PROCESSED_RES",
+    "kind": "Directory"
+  },
+  "applicationId": "de.blinkt.openvpn.test",
+  "variantName": "skeletonOvpn23DebugAndroidTest",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 0,
+      "versionName": "",
+      "outputFile": "resources-skeletonOvpn23DebugAndroidTest.ap_"
+    }
+  ],
+  "elementType": "File"
+}

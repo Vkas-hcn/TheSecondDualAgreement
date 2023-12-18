@@ -1,0 +1,13 @@
+#Mon Dec 18 16:20:32 CST 2023
+base.0=/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/dex/skeletonOvpn23DebugAndroidTest/mergeExtDexSkeletonOvpn23DebugAndroidTest/classes.dex
+base.1=/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/dex/skeletonOvpn23DebugAndroidTest/mergeLibDexSkeletonOvpn23DebugAndroidTest/0/classes.dex
+base.2=/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/dex/skeletonOvpn23DebugAndroidTest/mergeProjectDexSkeletonOvpn23DebugAndroidTest/0/classes.dex
+base.3=/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/dex/skeletonOvpn23DebugAndroidTest/mergeProjectDexSkeletonOvpn23DebugAndroidTest/10/classes.dex
+path.0=classes.dex
+path.1=0/classes.dex
+path.2=0/classes.dex
+path.3=10/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex
+renamed.2=classes3.dex
+renamed.3=classes4.dex
