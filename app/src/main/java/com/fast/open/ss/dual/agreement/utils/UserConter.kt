@@ -24,7 +24,7 @@ object UserConter {
     }
 
     private fun getReferrerData(context: Context) {
-        var installReferrer =""
+        var installReferrer = ""
         val referrer = SmileKey.local_ref
         if (referrer.isNotBlank()) {
             return
@@ -38,9 +38,9 @@ object UserConter {
                 override fun onInstallReferrerSetupFinished(p0: Int) {
                     when (p0) {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
-//                            val installReferrer =
-//                                referrerClient.installReferrer.installReferrer ?: ""
-//                            SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
+                            val installReferrer =
+                                referrerClient.installReferrer.installReferrer ?: ""
+//                            SmileKey.local_ref = installReferrer
                         }
                     }
                     referrerClient.endConnection()
@@ -77,55 +77,60 @@ object UserConter {
     }
 
     //屏蔽广告用户
-    fun showAdCenter():Boolean{
-        return when(SmileKey.getFlowJson().shield){
-            "1"->{
+    fun showAdCenter(): Boolean {
+        return when (SmileKey.getFlowJson().shield) {
+            "1" -> {
                 true
             }
 
-            "2"->{
+            "2" -> {
                 isItABuyingUser()
             }
 
-            "3"->{
+            "3" -> {
                 false
             }
 
-            else->{
+            else -> {
                 true
             }
         }
     }
+
     //黑名单
-    fun showAdBlacklist():Boolean{
+    fun showAdBlacklist(): Boolean {
         val blackData = SmileKey.local_clock != "chintz"
-        return when(SmileKey.getFlowJson().cloak){
-            "1"->{
+        return when (SmileKey.getFlowJson().cloak) {
+            "1" -> {
                 !blackData
             }
 
-            "2"->{
+            "2" -> {
                 true
             }
 
-            else->{
+            else -> {
                 true
             }
         }
     }
+
     //是否扰流
-    fun spoilerOrNot():Boolean{
-        when(SmileKey.getFlowJson().flowAround){
-            "1"->{
+    fun spoilerOrNot(): Boolean {
+        when (SmileKey.getFlowJson().flowAround) {
+            "1" -> {
                 return true
             }
-            "2"->{
+
+            "2" -> {
                 return false
             }
-            "3"->{
+
+            "3" -> {
                 return !isItABuyingUser()
             }
-            else->{
+
+            else -> {
                 return false
             }
         }

@@ -267,7 +267,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
 
     private fun initVpnSetting() {
-
+        if (UserConter.showAdCenter()) {
+            binding.flAd.visibility = View.VISIBLE
+        } else {
+            binding.flAd.visibility = View.GONE
+        }
         val data = UserConter.spoilerOrNot()
         SmileKey.smile_arrow = data
         bindService(
@@ -338,6 +342,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                         this@MainActivity,
                         App.vpnLink
                     )
+//                    binding.serviceState = "2"
                     handleYepTimerLock()
                 }
 
@@ -374,6 +379,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     override fun onResume() {
         super.onResume()
         handleWarmBoot()
+//        setOpenVpnState()
     }
 
     private fun handleWarmBoot() {
@@ -408,6 +414,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         DataStore.publicStore.unregisterChangeListener(this)
         viewModel.connection.disconnect(this)
         Log.e(TAG, "onDestroy: Main", )
+        App.isBoot =false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -458,6 +465,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     private fun setSsVpnState(canStop: Boolean) {
         if (SmileKey.connection_mode != "1") {
             App.vpnLink = canStop
+            handleYepTimerLock()
+        }
+    }
+    private fun setOpenVpnState() {
+        if (SmileKey.connection_mode == "1") {
             handleYepTimerLock()
         }
     }

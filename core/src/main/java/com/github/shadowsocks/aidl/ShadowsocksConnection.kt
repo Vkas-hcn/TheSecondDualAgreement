@@ -77,7 +77,6 @@ class ShadowsocksConnection(private var listenForDeath: Boolean = false) : Servi
         override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
             val callback = callback ?: return
             GlobalScope.launch(Dispatchers.Main.immediate) {
-                Log.e("smile", "trafficUpdated: 2", )
                 callback.trafficUpdated(profileId, stats) }
         }
         override fun trafficPersisted(profileId: Long) {

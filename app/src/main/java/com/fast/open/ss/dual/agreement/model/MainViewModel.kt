@@ -102,11 +102,7 @@ class MainViewModel : ViewModel() {
                 Gson().fromJson(serviceData, object : TypeToken<VpnServiceBean?>() {}.type)
             setFastInformation(currentServerData, binding)
         }
-        if (UserConter.showAdCenter()) {
-            binding.flAd.visibility = android.view.View.VISIBLE
-        } else {
-            binding.flAd.visibility = android.view.View.GONE
-        }
+
     }
 
 
@@ -180,22 +176,26 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    /**
-     * 加载Yep广告
-     */
+
     private suspend fun loadYepAdvertisements(activity: AppCompatActivity) {
         try {
+            Log.e(TAG, "loadYepAdvertisements: 0", )
+
             withTimeout(10000L) {
                 delay(2000L)
                 while (isActive) {
-                    SmileAdLoad.resultOf(SmileKey.POS_CONNECT)?.let { res ->
-                        showConnectLive.value = res
+                    if(SmileAdLoad.resultOf(SmileKey.POS_CONNECT)!=null){
+                        Log.e(TAG, "loadYepAdvertisements: 1", )
+                        showConnectLive.value = SmileAdLoad.resultOf(SmileKey.POS_CONNECT)
+                        cancel()
+                        jobStartYep?.cancel()
+                        jobStartYep = null
                     }
-
                     delay(500L)
                 }
             }
         } catch (e: TimeoutCancellationException) {
+            Log.e(TAG, "loadYepAdvertisements: 2", )
             connectOrDisconnectYep(activity as MainActivity)
         }
     }
@@ -216,6 +216,10 @@ class MainViewModel : ViewModel() {
 
     fun connectOrDisconnectYep(activity: MainActivity, isOpenJump: Boolean = false) {
         if (nowClickState == 2) {
+//            if(App.vpnLink){
+//                Toast.makeText(activity, "VPN is connecting. Please try again later.", Toast.LENGTH_SHORT).show()
+//                return
+//            }
             mService?.disconnect()
             disconnectVpn()
             changeOfVpnStatus(activity, "0")
@@ -224,6 +228,10 @@ class MainViewModel : ViewModel() {
             }
         }
         if (nowClickState == 0) {
+//            if(!App.vpnLink){
+//                Toast.makeText(activity, "The connection failed", Toast.LENGTH_SHORT).show()
+//                return
+//            }
             if (!isOpenJump) {
                 if (activity.binding.agreement == "1") {
                     return
@@ -505,10 +513,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun isCanUser(activity: MainActivity): Int {
-//        if (isIllegalIp()) {
-//            displayCannotUsePopUpBoxes(activity)
-//            return 0
-//        }
+        if (isIllegalIp()) {
+            displayCannotUsePopUpBoxes(activity)
+            return 0
+        }
         return 1
     }
 

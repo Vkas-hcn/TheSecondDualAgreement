@@ -82,12 +82,12 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
             if (lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
-            Log.e(TAG, "showEndAd: 1", )
-
+            binding.nativeAdView.visibility = android.view.View.GONE
+            binding.imgAdType.visibility = android.view.View.VISIBLE
             while (isActive) {
                 val res = SmileAdLoad.resultOf(SmileKey.POS_RESULT)
                 if (res != null) {
-                    Log.e(TAG, "showEndAd: 2", )
+                    binding.nativeAdView.visibility = android.view.View.VISIBLE
                     showResultNativeAd(res)
                     cancel()
                     break
@@ -121,11 +121,11 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
         )
     }
 
-    fun getSpeedData(){
+    fun getSpeedData() {
         lifecycleScope.launch {
-            while (isActive){
-                val speed_dow = App.mmkvSmile.decodeString("speed_dow","0 B")
-                val speed_up = App.mmkvSmile.decodeString("speed_up","0 B")
+            while (isActive) {
+                val speed_dow = App.mmkvSmile.decodeString("speed_dow", "0 B")
+                val speed_up = App.mmkvSmile.decodeString("speed_up", "0 B")
                 binding.tvSpeedDownload.text = speed_dow
                 binding.tvSpeedUpload.text = speed_up
                 delay(500)

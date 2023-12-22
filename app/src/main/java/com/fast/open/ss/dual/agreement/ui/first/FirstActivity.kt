@@ -47,9 +47,9 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
             SmileNetHelp.getLoadOthIp()
             SmileNetHelp.getBlackData(this@FirstActivity)
         }
-        SmileAdLoad.init(this)
         viewModel.getFileBaseData(this) {
             SmileAdLoad.isLoadOpenFist = false
+            SmileAdLoad.init(this)
             SmileAdLoad.loadOf(SmileKey.POS_OPEN)
             loadOpenAd()
         }

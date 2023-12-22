@@ -91,9 +91,9 @@ object SmileAdLoad {
     private fun preloadAds() {
         runCatching {
             Load.of(SmileKey.POS_OPEN)?.load()
+            Load.of(SmileKey.POS_CONNECT)?.load()
             Load.of(SmileKey.POS_HOME)?.load()
             Load.of(SmileKey.POS_RESULT)?.load()
-            Load.of(SmileKey.POS_CONNECT)?.load()
         }
     }
 
@@ -233,6 +233,7 @@ object SmileAdLoad {
                 return
             }
             isShowingFullScreen = true
+            Log.e(TAG, "showFullScreen: ", )
             GoogleAds(where)
                 .showFullScreen(
                     context = context,
@@ -395,6 +396,8 @@ object SmileAdLoad {
             res: Any,
             callback: () -> Unit
         ) {
+            Log.e(TAG, "showFullScreen: 0", )
+
             when (res) {
                 is AppOpenAd -> {
                     res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
@@ -402,6 +405,8 @@ object SmileAdLoad {
                 }
 
                 is InterstitialAd -> {
+                    Log.e(TAG, "showFullScreen: 1", )
+
                     if (!UserConter.showAdCenter()) {
                         Log.e(TAG, "根据买量屏蔽插屏广告。。。")
                         callback.invoke()
@@ -412,6 +417,7 @@ object SmileAdLoad {
                         callback.invoke()
                         return
                     }
+                    Log.e(TAG, "showFullScreen: 2", )
 
                     res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
                     res.show(context)

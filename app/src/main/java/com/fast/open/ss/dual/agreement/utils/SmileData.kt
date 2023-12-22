@@ -10,6 +10,14 @@ object SmileData {
     "blocuss": "Japan",
     "blogono": "Tokyo",
     "bloally": "45.76.214.94"
+  },
+  {
+    "blowrite": "nTCRDifxP4gebw2pFQN7=",
+    "bloira": "aes-256-gcm",
+    "blodis":3311,
+    "blocuss": "Japan",
+    "blogono": "Tokyo2",
+    "bloally": "45.76.214.95"
   }
  ]
     """
@@ -22,7 +30,7 @@ object SmileData {
         {
     "blghypn": 1,
     "blgady": 2,
-    "blgpud": 1,
+    "blgpud": 2,
     "blgence": 2,
     "blgdow": 2,
     "blgplan": 2,
@@ -33,9 +41,9 @@ object SmileData {
     //本地广告逻辑
     const val local_smile_logic = """
 {
-    "blydmit": "2",
+    "blydmit": "1",
     "blymajor": "1",
-    "blyyarium": "1"
+    "blyyarium": "2"
 }    """
     val local_smile_ad_data = """
 {
