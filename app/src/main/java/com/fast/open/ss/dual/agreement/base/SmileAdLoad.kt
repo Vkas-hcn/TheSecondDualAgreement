@@ -153,12 +153,10 @@ object SmileAdLoad {
             }
 
             if ((where == SmileKey.POS_BACK || where == SmileKey.POS_CONNECT || where == SmileKey.POS_HOME) && !UserConter.showAdCenter()) {
-                Log.e(TAG, "买量屏蔽用户不加载${where}广告")
                 res = ""
                 return
             }
             if ((where == SmileKey.POS_BACK || where == SmileKey.POS_CONNECT) && !UserConter.showAdBlacklist()) {
-                Log.e(TAG, "黑名单用户不加载${where}广告")
                 res = ""
                 return
             }
@@ -275,7 +273,6 @@ object SmileAdLoad {
             }
 
             private fun onAdComplete() {
-                Log.d(TAG, "${where} ---在广告完成时")
                 callback()
             }
 
@@ -356,9 +353,6 @@ object SmileAdLoad {
                             }
                         }
                         .withAdListener(object : AdListener() {
-                            override fun onAdOpened() {
-                                super.onAdOpened()
-                            }
 
                             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                                 Log.d(TAG, "${where} ---request fail: ${loadAdError.message}")
@@ -367,7 +361,7 @@ object SmileAdLoad {
 
                             override fun onAdLoaded() {
                                 super.onAdLoaded()
-                                Log.d(TAG, "${where} ---原生广告加载成功")
+                                Log.d(TAG, "${where} ---Native ads load successfully")
                             }
                         })
                         .withNativeAdOptions(
@@ -405,19 +399,15 @@ object SmileAdLoad {
                 }
 
                 is InterstitialAd -> {
-                    Log.e(TAG, "showFullScreen: 1", )
 
                     if (!UserConter.showAdCenter()) {
-                        Log.e(TAG, "根据买量屏蔽插屏广告。。。")
                         callback.invoke()
                         return
                     }
                     if (!UserConter.showAdBlacklist()) {
-                        Log.e(TAG, "根据黑名单屏蔽插屏广告。。。")
                         callback.invoke()
                         return
                     }
-                    Log.e(TAG, "showFullScreen: 2", )
 
                     res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
                     res.show(context)
@@ -436,7 +426,6 @@ object SmileAdLoad {
             val nativeAd = res as? NativeAd ?: return
             if (where == SmileKey.POS_HOME) {
                 if (!UserConter.showAdCenter()) {
-                    Log.e(TAG, "根据买量屏蔽home广告。。。")
                     return
                 }
             }

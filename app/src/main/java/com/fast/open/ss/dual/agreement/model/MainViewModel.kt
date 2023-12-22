@@ -179,13 +179,10 @@ class MainViewModel : ViewModel() {
 
     private suspend fun loadYepAdvertisements(activity: AppCompatActivity) {
         try {
-            Log.e(TAG, "loadYepAdvertisements: 0", )
-
             withTimeout(10000L) {
                 delay(2000L)
                 while (isActive) {
                     if(SmileAdLoad.resultOf(SmileKey.POS_CONNECT)!=null){
-                        Log.e(TAG, "loadYepAdvertisements: 1", )
                         showConnectLive.value = SmileAdLoad.resultOf(SmileKey.POS_CONNECT)
                         cancel()
                         jobStartYep?.cancel()
@@ -195,7 +192,6 @@ class MainViewModel : ViewModel() {
                 }
             }
         } catch (e: TimeoutCancellationException) {
-            Log.e(TAG, "loadYepAdvertisements: 2", )
             connectOrDisconnectYep(activity as MainActivity)
         }
     }
@@ -290,8 +286,7 @@ class MainViewModel : ViewModel() {
      * 断开服务器
      */
     fun disconnectServerSuccessful(binding: ActivityMainBinding) {
-//        Log.e(TAG, "断开服务器")
-//        binding.serviceState = 0
+
 
     }
 
@@ -341,15 +336,16 @@ class MainViewModel : ViewModel() {
 
         activity.lifecycleScope.launch {
             delay(300)
-            Log.e(TAG, "showHomeAd:1 -App.isBoot=${App.isBoot}")
             if (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) || App.isBoot) {
                 return@launch
             }
+            activity.binding.nativeAdView.visibility = android.view.View.GONE
+            activity.binding.imgAdType.visibility = android.view.View.VISIBLE
             App.isBoot = true
-            Log.e(TAG, "showHomeAd:2 ", )
             val adHomeData = SmileAdLoad.resultOf(SmileKey.POS_HOME)
             while (isActive) {
                 if (adHomeData != null) {
+                    activity.binding.nativeAdView.visibility = android.view.View.VISIBLE
                     SmileAdLoad.showNativeOf(
                         where = SmileKey.POS_HOME,
                         nativeRoot = activity.binding.nativeAdView,
@@ -381,11 +377,6 @@ class MainViewModel : ViewModel() {
     var currentServerData: VpnServiceBean = VpnServiceBean()
 
     var afterDisconnectionServerData: VpnServiceBean = VpnServiceBean()
-
-//    //跳转结果页
-//    val liveJumpResultsPageFun: MutableLiveData<Bundle> by lazy {
-//        MutableLiveData<Bundle>()
-//    }
 
     fun initializeServerData() {
         val bestData = SmileKey.getFastVpn()
@@ -513,10 +504,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun isCanUser(activity: MainActivity): Int {
-        if (isIllegalIp()) {
-            displayCannotUsePopUpBoxes(activity)
-            return 0
-        }
+//        if (isIllegalIp()) {
+//            displayCannotUsePopUpBoxes(activity)
+//            return 0
+//        }
         return 1
     }
 

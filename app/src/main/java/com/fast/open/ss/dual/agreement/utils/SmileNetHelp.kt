@@ -49,7 +49,6 @@ object SmileNetHelp {
                     params,
                     object : SmileNetManager.Callback {
                         override fun onSuccess(response: String) {
-                            Log.e(TAG, "Cloak接入--成功--->${response}")
                             SmileKey.local_clock = response
                         }
                         override fun onFailure(error: String) {
@@ -64,7 +63,6 @@ object SmileNetHelp {
 
     private fun nextBlackFun(context: Context){
         GlobalScope.launch(Dispatchers.IO) {
-            Log.e(TAG, "Cloak重新加载")
 
             delay(10000)
             getBlackData(context)

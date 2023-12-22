@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Process
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -137,7 +138,6 @@ class App : Application(), LifecycleObserver {
     private fun appOnStart() {
         job_smart?.cancel()
         job_smart = null
-        //从后台切过来，跳转启动页
         if (whetherBackgroundSmild && !isBackDataSmile) {
             isBoot = false
             whetherBackgroundSmild = false
@@ -153,7 +153,9 @@ class App : Application(), LifecycleObserver {
             delay(3000L)
             whetherBackgroundSmild = true
             ad_activity_smart?.finish()
-            top_activity_smart?.finish()
+            if(top_activity_smart is FirstActivity){
+                top_activity_smart?.finish()
+            }
         }
     }
     fun isMainProcess(context: Context): Boolean {
