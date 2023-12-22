@@ -63,7 +63,7 @@ class MainViewModel : ViewModel() {
     lateinit var timeUtils: TimeUtils
     val connection = ShadowsocksConnection(true)
     var whetherRefreshServer = false
-    var jobStartYep: Job? = null
+    var jobStartSmile: Job? = null
 
     var nowClickState: Int = 1
 
@@ -141,7 +141,7 @@ class MainViewModel : ViewModel() {
      * 启动VPN
      */
     private fun startVpn(activity: AppCompatActivity) {
-        jobStartYep = activity.lifecycleScope.launch {
+        jobStartSmile = activity.lifecycleScope.launch {
             nowClickState = if (App.vpnLink) {
                 2
             } else {
@@ -149,7 +149,7 @@ class MainViewModel : ViewModel() {
             }
             changeOfVpnStatus(activity as MainActivity, "1")
             connectVpn(activity)
-            loadYepAdvertisements(activity)
+            loadSmileAdvertisements(activity)
         }
     }
 
@@ -157,7 +157,7 @@ class MainViewModel : ViewModel() {
         if (!App.vpnLink) {
             if (activity.binding.agreement == "1") {
                 mService?.let {
-                    step2(activity, it)
+                    setOpenData(activity, it)
                 }
                 Core.stopService()
             } else {
@@ -177,7 +177,7 @@ class MainViewModel : ViewModel() {
     }
 
 
-    private suspend fun loadYepAdvertisements(activity: AppCompatActivity) {
+    private suspend fun loadSmileAdvertisements(activity: AppCompatActivity) {
         try {
             withTimeout(10000L) {
                 delay(2000L)
@@ -185,14 +185,14 @@ class MainViewModel : ViewModel() {
                     if(SmileAdLoad.resultOf(SmileKey.POS_CONNECT)!=null){
                         showConnectLive.value = SmileAdLoad.resultOf(SmileKey.POS_CONNECT)
                         cancel()
-                        jobStartYep?.cancel()
-                        jobStartYep = null
+                        jobStartSmile?.cancel()
+                        jobStartSmile = null
                     }
                     delay(500L)
                 }
             }
         } catch (e: TimeoutCancellationException) {
-            connectOrDisconnectYep(activity as MainActivity)
+            connectOrDisconnectSmile(activity as MainActivity)
         }
     }
 
@@ -203,14 +203,14 @@ class MainViewModel : ViewModel() {
             res = it,
             preload = true,
             onShowCompleted = {
-                jobStartYep?.cancel()
-                jobStartYep = null
-                connectOrDisconnectYep(activity, true)
+                jobStartSmile?.cancel()
+                jobStartSmile = null
+                connectOrDisconnectSmile(activity, true)
             }
         )
     }
 
-    fun connectOrDisconnectYep(activity: MainActivity, isOpenJump: Boolean = false) {
+    fun connectOrDisconnectSmile(activity: MainActivity, isOpenJump: Boolean = false) {
         if (nowClickState == 2) {
 //            if(App.vpnLink){
 //                Toast.makeText(activity, "VPN is connecting. Please try again later.", Toast.LENGTH_SHORT).show()
@@ -242,13 +242,11 @@ class MainViewModel : ViewModel() {
     }
 
     private fun jumpToFinishPage(activity: MainActivity) {
-
         activity.lifecycleScope.launch {
             delay(300L)
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
-            Log.e(TAG, "jumpToFinishPage: ")
             val bundle = Bundle()
             bundle.putString(SmileKey.cuSmileConnected, SmileKey.check_service)
             val intent = Intent(activity, FinishActivity::class.java)
@@ -421,37 +419,32 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun step2(activity: MainActivity, server: IOpenVPNAPIService): Job? {
-            val job = MainScope().launch(Dispatchers.IO) {
-                val data = SmileKey.getAllVpnListData()[0]
-                runCatching {
-                    val conf = activity.assets.open("fast_trice.ovpn")
-                    val br = BufferedReader(InputStreamReader(conf))
-                    val config = StringBuilder()
-                    var line: String?
-                    while (true) {
-                        line = br.readLine()
-                        if (line == null) break
-                        if (line.contains("remote 43", true)) {
-//                            line = "remote ${data.bloally} 443"
-                        } else if (line.contains("wrongpassword", true)) {
-//                            line = data.blowrite
-                        } else if (line.contains("cipher AES-256-GCM", true)) {
+    fun setOpenData(activity: MainActivity, server: IOpenVPNAPIService): Job {
+        return MainScope().launch(Dispatchers.IO) {
+            val data = SmileKey.getAllVpnListData().firstOrNull() ?: return@launch
+            runCatching {
+                val config = StringBuilder()
+                activity.assets.open("fast_trice.ovpn").use { inputStream ->
+                    inputStream.bufferedReader().use { reader ->
+                        reader.forEachLine { line ->
+                            config.append(
+                                when {
+                                    line.contains("remote 43", true) -> "remote ${data.bloally} 443"
+                                    line.contains("wrongpassword", true) -> data.blowrite
+                                    else -> line
+                                }
+                            ).append("\n")
                         }
-                        config.append(line).append("\n")
                     }
-                    br.close()
-                    conf.close()
-                    Log.e(TAG, "step2: =${config}")
-                    server.startVPN(config.toString())
-
-                }.onFailure {
                 }
+                Log.e(TAG, "step2: =$config")
+                server.startVPN(config.toString())
+            }.onFailure { exception ->
+                Log.e(TAG, "Error in step2: ${exception.message}")
             }
-            return job
-
-        return null
+        }
     }
+
     fun startOpenVpn(activity: MainActivity){
         val state =  checkVPNPermission(activity)
         if(state){
@@ -494,8 +487,8 @@ class MainViewModel : ViewModel() {
 
     fun stopOperate(activity: MainActivity) {
         connection.bandwidthTimeout = 0
-        jobStartYep?.cancel() // 取消执行方法的协程
-        jobStartYep = null
+        jobStartSmile?.cancel() // 取消执行方法的协程
+        jobStartSmile = null
         if (App.vpnLink) {
             changeOfVpnStatus(activity, "2")
         } else {

@@ -12,6 +12,7 @@ import com.fast.open.ss.dual.agreement.app.App
 import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
 import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
+import com.fast.open.ss.dual.agreement.databinding.ActivityListBinding
 import com.fast.open.ss.dual.agreement.ui.list.ListActivity
 import com.fast.open.ss.dual.agreement.ui.list.ListServiceAdapter
 import com.fast.open.ss.dual.agreement.utils.SmileKey
@@ -23,57 +24,88 @@ import kotlinx.coroutines.launch
 class ListViewModel:ViewModel() {
     lateinit var skVpnServiceBean: VpnServiceBean
     lateinit var allVpnListData: MutableList<VpnServiceBean>
-    lateinit var recentlyVpnListData: MutableList<VpnServiceBean>
     lateinit var listServiceAdapter: ListServiceAdapter
     var ecVpnServiceBeanList: MutableList<VpnServiceBean> = ArrayList()
     lateinit var checkSkVpnServiceBean: VpnServiceBean
     lateinit var checkSkVpnServiceBeanClick: VpnServiceBean
 
-    /**
-     * 选中服务器
-     */
     fun selectServer(activity: AppCompatActivity, position: Int) {
-        if (ecVpnServiceBeanList[position].bloally == checkSkVpnServiceBeanClick.bloally && ecVpnServiceBeanList[position].best_smart == checkSkVpnServiceBeanClick.best_smart) {
-            if (!App.vpnLink) {
-                App.serviceState = "disconnect"
-                activity.finish()
-                SmileKey.check_service = Gson().toJson(checkSkVpnServiceBean)
-            }
+        if (isSameServerSelected(position)) {
+            handleSameServerSelected(activity)
             return
         }
+
+        updateServerSelection(position)
+        listServiceAdapter.notifyDataSetChanged()
+        showDisconnectDialog(activity)
+    }
+
+    private fun isSameServerSelected(position: Int): Boolean {
+        return ecVpnServiceBeanList[position].bloally == checkSkVpnServiceBeanClick.bloally &&
+                ecVpnServiceBeanList[position].best_smart == checkSkVpnServiceBeanClick.best_smart
+    }
+
+    private fun handleSameServerSelected(activity: AppCompatActivity) {
+        if (!App.vpnLink) {
+            App.serviceState = "disconnect"
+            activity.finish()
+            SmileKey.check_service = Gson().toJson(checkSkVpnServiceBean)
+        }
+    }
+
+    private fun updateServerSelection(position: Int) {
         ecVpnServiceBeanList.forEachIndexed { index, _ ->
             ecVpnServiceBeanList[index].check_smart = position == index
             if (ecVpnServiceBeanList[index].check_smart) {
                 checkSkVpnServiceBean = ecVpnServiceBeanList[index]
             }
         }
-        listServiceAdapter.notifyDataSetChanged()
-        showDisconnectDialog(activity)
     }
 
+    fun initAllAdapter(activity: ListActivity,onClick:(activity:ListActivity,position:Int)->Unit) {
+        getAllServer()
+       activity.binding.rvList.adapter = listServiceAdapter
+       activity.binding.rvList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
+        listServiceAdapter.setOnItemClickListener(object : ListServiceAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                onClick(activity, position)
+            }
+        })
+    }
 
-    /**
-     * 回显服务器
-     */
-    fun getAllServer() {
-        allVpnListData = ArrayList()
-        skVpnServiceBean = VpnServiceBean()
+    private fun getAllServer() {
+        initializeData()
+        updateSelection()
+        initializeAdapter()
+    }
+
+    private fun initializeData() {
         allVpnListData = SmileKey.getAllVpnListData()
         ecVpnServiceBeanList = allVpnListData
-        ecVpnServiceBeanList.forEachIndexed { index, _ ->
-            if (checkSkVpnServiceBeanClick.best_smart) {
+    }
+
+    private fun updateSelection() {
+        ecVpnServiceBeanList.forEachIndexed { index, vpnServiceBean ->
+            vpnServiceBean.check_smart = if (checkSkVpnServiceBeanClick.best_smart) {
                 ecVpnServiceBeanList[0].check_smart = true
+
+                index == 0
             } else {
-                ecVpnServiceBeanList[index].check_smart =
-                    ecVpnServiceBeanList[index].bloally == checkSkVpnServiceBeanClick.bloally
                 ecVpnServiceBeanList[0].check_smart = false
+
+                vpnServiceBean.bloally == checkSkVpnServiceBeanClick.bloally
             }
         }
-        Log.e(TAG, "ecVpnServiceBeanList=${Gson().toJson(ecVpnServiceBeanList)}")
+    }
+
+    private fun initializeAdapter() {
         listServiceAdapter = ListServiceAdapter(ecVpnServiceBeanList)
     }
 
-     fun returnToHomePage(activity: ListActivity) {
+
+
+
+    fun returnToHomePage(activity: ListActivity) {
         val res = SmileAdLoad.resultOf(SmileKey.POS_BACK)
         if (res == null) {
             activity.finish()
@@ -93,40 +125,74 @@ class ListViewModel:ViewModel() {
             }
         )
     }
-    /**
-     * 是否断开连接
-     */
+
+
     private fun showDisconnectDialog(activity: AppCompatActivity) {
+        if (handleVpnDisconnectedState(activity)) {
+            return
+        }
+
+        createDisconnectDialog(activity).apply {
+            configureDialogSize(this)
+            setCancelable(false)
+            show()
+            configureButtonColors(this)
+        }
+    }
+
+    private fun handleVpnDisconnectedState(activity: AppCompatActivity): Boolean {
         if (!App.vpnLink) {
             activity.finish()
             App.serviceState = "disconnect"
             SmileKey.check_service = Gson().toJson(checkSkVpnServiceBean)
-            return
+            return true
         }
-        val dialog: AlertDialog? = AlertDialog.Builder(activity)
+        return false
+    }
+
+    private fun createDisconnectDialog(activity: AppCompatActivity): AlertDialog {
+        return AlertDialog.Builder(activity)
             .setTitle("Are you sure to disconnect current server")
-            //设置对话框的按钮
             .setNegativeButton("CANCEL") { dialog, _ ->
-                dialog.dismiss()
-                ecVpnServiceBeanList.forEachIndexed { index, _ ->
-                    ecVpnServiceBeanList[index].check_smart =
-                        (ecVpnServiceBeanList[index].bloally == checkSkVpnServiceBeanClick.bloally && ecVpnServiceBeanList[index].best_smart == checkSkVpnServiceBeanClick.best_smart)
-                }
-                listServiceAdapter.notifyDataSetChanged()
+                handleCancelClick(dialog)
             }
             .setPositiveButton("DISCONNECT") { dialog, _ ->
-                dialog.dismiss()
-                activity.finish()
-                App.serviceState = "connect"
-                SmileKey.check_service = Gson().toJson(checkSkVpnServiceBean)
+                handleDisconnectClick(dialog, activity)
             }.create()
-        val params = dialog!!.window!!.attributes
-        params.width = 200
-        params.height = 200
-        dialog.window!!.attributes = params
-        dialog.setCancelable(false)
-        dialog.show()
+    }
+
+    private fun handleCancelClick(dialog: DialogInterface) {
+        dialog.dismiss()
+        updateEcVpnServiceBeanListSelection()
+        listServiceAdapter.notifyDataSetChanged()
+    }
+
+    private fun handleDisconnectClick(dialog: DialogInterface, activity: AppCompatActivity) {
+        dialog.dismiss()
+        activity.finish()
+        App.serviceState = "connect"
+        SmileKey.check_service = Gson().toJson(checkSkVpnServiceBean)
+    }
+
+    private fun updateEcVpnServiceBeanListSelection() {
+        ecVpnServiceBeanList.forEachIndexed { index, _ ->
+            ecVpnServiceBeanList[index].check_smart =
+                (ecVpnServiceBeanList[index].bloally == checkSkVpnServiceBeanClick.bloally && ecVpnServiceBeanList[index].best_smart == checkSkVpnServiceBeanClick.best_smart)
+        }
+    }
+
+    private fun configureDialogSize(dialog: AlertDialog) {
+        dialog.window?.let { window ->
+            val params = window.attributes
+            params.width = 200
+            params.height = 200
+            window.attributes = params
+        }
+    }
+
+    private fun configureButtonColors(dialog: AlertDialog) {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLACK)
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(Color.BLACK)
     }
+
 }

@@ -29,19 +29,12 @@ class ListActivity: BaseActivity<ActivityListBinding, ListViewModel>(
             object : TypeToken<VpnServiceBean?>() {}.type
         )
         viewModel.checkSkVpnServiceBeanClick = viewModel.checkSkVpnServiceBean
-        initAllAdapter()
+        viewModel.initAllAdapter(this) { activity, position ->
+            viewModel.selectServer(activity, position)
+        }
     }
 
-    private fun initAllAdapter() {
-        viewModel.getAllServer()
-        binding.rvList.adapter = viewModel.listServiceAdapter
-        binding.rvList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-        viewModel.listServiceAdapter.setOnItemClickListener(object : ListServiceAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                viewModel.selectServer(this@ListActivity, position)
-            }
-        })
-    }
+
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

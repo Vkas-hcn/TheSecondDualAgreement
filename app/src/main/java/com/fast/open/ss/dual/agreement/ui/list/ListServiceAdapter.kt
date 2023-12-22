@@ -26,46 +26,28 @@ class ListServiceAdapter(private val dataList: MutableList<VpnServiceBean>) :
             itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    // 处理 item 点击事件
                     onItemClick(position)
                 }
             }
         }
     }
-
-    // 定义点击事件的回调接口
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        onItemClickListener = listener
+    }
+    private fun onItemClick(position: Int) {
+        onItemClickListener?.onItemClick(position)
+    }
     interface OnItemClickListener {
         fun onItemClick(position: Int)
     }
 
     private var onItemClickListener: OnItemClickListener? = null
 
-    fun setOnItemClickListener(listener: OnItemClickListener) {
-        onItemClickListener = listener
-    }
-
-    // 在 item 点击事件中触发回调
-    private fun onItemClick(position: Int) {
-        onItemClickListener?.onItemClick(position)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val context: Context = parent.context
-        val inflater = LayoutInflater.from(context)
-
-        // 加载自定义的布局文件
-        val itemView: View = inflater.inflate(R.layout.item_service, parent, false)
-
-        // 创建ViewHolder对象
-        return ViewHolder(itemView)
-    }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // 获取数据
         val item = dataList[position]
 
-        // 将数据绑定到视图上
         if (item.best_smart) {
             holder.tvName.text = "Faster Server"
             holder.aivFlag.setImageResource(R.drawable.fast)
@@ -87,15 +69,13 @@ class ListServiceAdapter(private val dataList: MutableList<VpnServiceBean>) :
     override fun getItemCount(): Int {
         return dataList.size
     }
-
-    fun addData(newData: MutableList<VpnServiceBean>) {
-        dataList.addAll(newData)
-        notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val context: Context = parent.context
+        val inflater = LayoutInflater.from(context)
+        val itemView: View = inflater.inflate(R.layout.item_service, parent, false)
+        return ViewHolder(itemView)
     }
 
-    fun setData(newData: MutableList<VpnServiceBean>) {
-        dataList.clear()
-        dataList.addAll(newData)
-        notifyDataSetChanged()
-    }
+
+
 }

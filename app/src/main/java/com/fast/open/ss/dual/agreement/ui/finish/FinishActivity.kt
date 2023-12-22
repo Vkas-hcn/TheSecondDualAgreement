@@ -38,9 +38,9 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
             object : TypeToken<VpnServiceBean?>() {}.type
         )
         binding.imgBack.setOnClickListener {
-            returnToHomePage()
+            viewModel.returnToHomePage(this)
         }
-        showEndAd()
+        viewModel.showEndAd(this)
     }
 
     @SuppressLint("SetTextI18n")
@@ -48,7 +48,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
         if (App.vpnLink) {
             binding.imgVpnEnd.setImageResource(R.drawable.ic_end_connect)
             binding.tvTitle.text = "Connected succeed"
-            getSpeedData()
+            viewModel.getSpeedData(this)
         } else {
             binding.imgVpnEnd.setImageResource(R.drawable.ic_end_dis)
             binding.tvTitle.text = "VPN disconnect"
@@ -62,74 +62,10 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            returnToHomePage()
+            viewModel.returnToHomePage(this)
         }
         return true
     }
 
-    private fun returnToHomePage() {
-        val res = SmileAdLoad.resultOf(SmileKey.POS_BACK)
-        if (res == null) {
-            finish()
-        } else {
-            showBackFun(res)
-        }
-    }
 
-    private fun showEndAd() {
-        lifecycleScope.launch {
-            delay(300)
-            if (lifecycle.currentState != Lifecycle.State.RESUMED) {
-                return@launch
-            }
-            binding.nativeAdView.visibility = android.view.View.GONE
-            binding.imgAdType.visibility = android.view.View.VISIBLE
-            while (isActive) {
-                val res = SmileAdLoad.resultOf(SmileKey.POS_RESULT)
-                if (res != null) {
-                    binding.nativeAdView.visibility = android.view.View.VISIBLE
-                    showResultNativeAd(res)
-                    cancel()
-                    break
-                }
-                delay(500)
-            }
-        }
-    }
-
-    private fun showResultNativeAd(res: Any) {
-        SmileAdLoad.showNativeOf(
-            where = SmileKey.POS_RESULT,
-            nativeRoot = binding.nativeAdView,
-            res = res,
-            preload = true,
-            onShowCompleted = {
-            }
-        )
-    }
-
-    private fun showBackFun(it: Any) {
-        SmileAdLoad.showFullScreenOf(
-            where = SmileKey.POS_BACK,
-            context = this,
-            res = it,
-            onShowCompleted = {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    finish()
-                }
-            }
-        )
-    }
-
-    fun getSpeedData() {
-        lifecycleScope.launch {
-            while (isActive) {
-                val speed_dow = App.mmkvSmile.decodeString("speed_dow", "0 B")
-                val speed_up = App.mmkvSmile.decodeString("speed_up", "0 B")
-                binding.tvSpeedDownload.text = speed_dow
-                binding.tvSpeedUpload.text = speed_up
-                delay(500)
-            }
-        }
-    }
 }

@@ -336,14 +336,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             when (state) {
                 "CONNECTED" -> {
                     App.vpnLink = true
-                    viewModel.connectOrDisconnectYep(this@MainActivity, true)
+                    viewModel.connectOrDisconnectSmile(this@MainActivity, true)
                     viewModel.changeState(
                         state = BaseService.State.Idle,
                         this@MainActivity,
                         App.vpnLink
                     )
 //                    binding.serviceState = "2"
-                    handleYepTimerLock()
+                    handleSmileTimerLock()
                 }
 
                 "RECONNECTING", "EXITING", "CONNECTRETRY" -> {
@@ -353,13 +353,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                 "NOPROCESS" -> {
                     viewModel.mService?.disconnect()
                     App.vpnLink = false
-                    viewModel.connectOrDisconnectYep(this@MainActivity, true)
+                    viewModel.connectOrDisconnectSmile(this@MainActivity, true)
                     viewModel.changeState(
                         state = BaseService.State.Idle,
                         this@MainActivity,
                         App.vpnLink
                     )
-                    handleYepTimerLock()
+                    handleSmileTimerLock()
                 }
 
 
@@ -386,7 +386,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         viewModel.showHomeAd(this)
     }
 
-    private fun handleYepTimerLock() {
+    private fun handleSmileTimerLock() {
         if (App.vpnLink) {
             binding.showGuide = false
             viewModel.changeOfVpnStatus(this, "2")
@@ -465,12 +465,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     private fun setSsVpnState(canStop: Boolean) {
         if (SmileKey.connection_mode != "1") {
             App.vpnLink = canStop
-            handleYepTimerLock()
+            handleSmileTimerLock()
         }
     }
     private fun setOpenVpnState() {
         if (SmileKey.connection_mode == "1") {
-            handleYepTimerLock()
+            handleSmileTimerLock()
         }
     }
 

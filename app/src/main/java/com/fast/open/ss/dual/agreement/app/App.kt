@@ -56,20 +56,7 @@ class App : Application(), LifecycleObserver {
         super.onCreate()
         MMKV.initialize(this)
         Core.init(this, MainActivity::class)
-        if(isMainProcess(this)){
-            instance = this
-            MobileAds.initialize(this) {}
-            Firebase.initialize(this)
-            FirebaseApp.initializeApp(this)
-            ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-            setActivityLifecycleSmart(this)
-            val data = SmileKey.uuid_smile
-            if (data.isEmpty()) {
-                SmileKey.uuid_smile = UUID.randomUUID().toString()
-            }
-            TimeData.sendTimerInformation()
-            UserConter.getReferInformation(this)
-        }
+        iniApp()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -158,7 +145,7 @@ class App : Application(), LifecycleObserver {
             }
         }
     }
-    fun isMainProcess(context: Context): Boolean {
+    private fun isMainProcess(context: Context): Boolean {
         val pid = Process.myPid()
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val runningApps = activityManager.runningAppProcesses ?: return false
@@ -172,6 +159,23 @@ class App : Application(), LifecycleObserver {
         return false
     }
 
+
+    fun iniApp(){
+        if(isMainProcess(this)){
+            instance = this
+            MobileAds.initialize(this) {}
+            Firebase.initialize(this)
+            FirebaseApp.initializeApp(this)
+            ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+            setActivityLifecycleSmart(this)
+            val data = SmileKey.uuid_smile
+            if (data.isEmpty()) {
+                SmileKey.uuid_smile = UUID.randomUUID().toString()
+            }
+            TimeData.sendTimerInformation()
+            UserConter.getReferInformation(this)
+        }
+    }
 
 
 }
