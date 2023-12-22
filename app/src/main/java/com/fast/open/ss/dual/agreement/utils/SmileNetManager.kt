@@ -16,29 +16,6 @@ class SmileNetManager {
         fun onSuccess(response: String)
         fun onFailure(error: String)
     }
-    fun getRequest(url: String, callback: Callback) {
-        val request = Request.Builder()
-            .get()
-            .url(url)
-            .build()
-
-        client.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onResponse(call: Call, response: Response) {
-                val responseBody = response.body?.string()
-                if (response.isSuccessful && responseBody != null) {
-                    callback.onSuccess(responseBody)
-                } else {
-                    callback.onFailure(responseBody.toString())
-                }
-            }
-
-            override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure(e.toString())
-            }
-        })
-    }
-
-
 
     fun getMapRequest(url: String, map: Map<String, Any>, callback: Callback) {
         val urlBuilder = url.toHttpUrl().newBuilder()

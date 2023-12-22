@@ -4,8 +4,16 @@ plugins {
 //    id 'com.google.firebase.crashlytics'
 //    id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
+    id 'stringfog'
 }
-
+import com.github.megatronking.stringfog.plugin.kg.RandomKeyGenerator
+import com.github.megatronking.stringfog.plugin.StringFogMode
+stringfog {
+    implementation 'com.github.megatronking.stringfog.xor.StringFogImpl'
+    enable true
+    kg new RandomKeyGenerator()
+    mode StringFogMode.base64
+}
 android {
     namespace 'com.fast.open.ss.dual.agreement'
     compileSdk 33
@@ -69,5 +77,6 @@ dependencies {
     implementation project(':open')
     implementation project(':core')
     implementation 'com.tencent:mmkv:1.3.0'
+    implementation 'com.github.megatronking.stringfog:xor:4.0.1'
 
 }

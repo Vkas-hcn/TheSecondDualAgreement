@@ -43,4 +43,8 @@
 -keep public class android.webkit.WebView
 -keep public class android.net.http.SslError
 -keep public class android.webkit.WebViewClient
--keep class com.fast.open.ss.dual.agreement.dataaaaaa.SunProfile { *; }
+-keep class com.fast.open.ss.dual.agreement.bean.ScreenMetrics { *; }
+-keep class com.fast.open.ss.dual.agreement.bean.SmileAdBean { *; }
+-keep class com.fast.open.ss.dual.agreement.bean.SmileFlowBean { *; }
+-keep class com.fast.open.ss.dual.agreement.bean.SmileRefBean { *; }
+-keep class com.fast.open.ss.dual.agreement.bean.VpnServiceBean { *; }

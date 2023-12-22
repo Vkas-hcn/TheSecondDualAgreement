@@ -424,13 +424,12 @@ class MainViewModel : ViewModel() {
             val data = SmileKey.getAllVpnListData().firstOrNull() ?: return@launch
             runCatching {
                 val config = StringBuilder()
-                activity.assets.open("fast_trice.ovpn").use { inputStream ->
+                activity.assets.open("fast_bloomingvpn.ovpn").use { inputStream ->
                     inputStream.bufferedReader().use { reader ->
                         reader.forEachLine { line ->
                             config.append(
                                 when {
-                                    line.contains("remote 43", true) -> "remote ${data.bloally} 443"
-                                    line.contains("wrongpassword", true) -> data.blowrite
+                                    line.contains("remote 103", true) -> "remote ${data.bloally} 443"
                                     else -> line
                                 }
                             ).append("\n")

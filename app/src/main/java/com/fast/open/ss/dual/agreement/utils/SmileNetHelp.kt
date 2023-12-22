@@ -1,5 +1,6 @@
 package com.fast.open.ss.dual.agreement.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -70,6 +71,7 @@ object SmileNetHelp {
     }
 
 
+    @SuppressLint("HardwareIds")
     fun blackData(context: Context): Map<String, Any> {
         return mapOf<String, Any>(
             //distinct_id

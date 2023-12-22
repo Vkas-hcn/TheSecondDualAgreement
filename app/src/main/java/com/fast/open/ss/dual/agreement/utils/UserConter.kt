@@ -30,8 +30,8 @@ object UserConter {
             return
         }
 //        installReferrer = "gclid"
-        installReferrer = "utm_source=(not%20set)&utm_medium=(not%20set)"
-        SmileKey.local_ref = installReferrer
+//        installReferrer = "utm_source=(not%20set)&utm_medium=(not%20set)"
+//        SmileKey.local_ref = installReferrer
         runCatching {
             val referrerClient = InstallReferrerClient.newBuilder(context).build()
             referrerClient.startConnection(object : InstallReferrerStateListener {
@@ -40,7 +40,7 @@ object UserConter {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
-//                            SmileKey.local_ref = installReferrer
+                            SmileKey.local_ref = installReferrer
                         }
                     }
                     referrerClient.endConnection()
