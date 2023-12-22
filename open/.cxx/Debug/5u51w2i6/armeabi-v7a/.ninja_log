@@ -1059,3 +1059,11 @@
 25	48	0	CMakeFiles/makeassetdir	70fbc13e5055f9d0
 25	49	0	CMakeFiles/makeassetdir	70fbc13e5055f9d0
 21	38	0	CMakeFiles/makeassetdir	70fbc13e5055f9d0
+21	55	0	CMakeFiles/makeassetdir	70fbc13e5055f9d0
+20	581	1702951741	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libosslutil.so	44678d86b04219b5
+21	581	1702951741	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libosslspeedtest.so	dd4fd47ae81440eb
+21	636	1702951741	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libopenvpn.so	1bfec3debeace0b8
+636	686	1702951741	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libovpnexec.so	320c307572c06a01
+636	697	1702951741	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/pie_openvpn.armeabi-v7a	d74026a6b87efde6
+698	748	1702951741	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libovpnutil.so	be05deddf718e401
+20	753	1702951741	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/armeabi-v7a/libovpn3.so	b4f0cdc403fae878

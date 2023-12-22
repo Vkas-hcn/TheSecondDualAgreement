@@ -70,16 +70,17 @@ class SubscriptionService : Service(), CoroutineScope {
         if (worker == null) {
             idle.value = false
             if (!receiverRegistered) {
-                registerReceiver(cancelReceiver, IntentFilter(Action.ABORT), "$packageName.SERVICE", null)
+                ContextCompat.registerReceiver(this, cancelReceiver, IntentFilter(Action.ABORT),
+                    ContextCompat.RECEIVER_NOT_EXPORTED)
                 receiverRegistered = true
             }
             worker = launch {
                 val urls = Subscription.instance.urls
                 val notification = NotificationCompat.Builder(this@SubscriptionService, NOTIFICATION_CHANNEL).apply {
-                    color = ContextCompat.getColor(this@SubscriptionService, R.color.material_primary_500)
+                    color = ContextCompat.getColor(this@SubscriptionService, R.color.ic_launcher_background)
                     priority = NotificationCompat.PRIORITY_LOW
                     addAction(NotificationCompat.Action.Builder(
-                            R.drawable.ic_navigation_close,
+                            R.drawable.ic_service_active,
                             getText(R.string.stop),
                             PendingIntent.getBroadcast(this@SubscriptionService, 0,
                                     Intent(Action.ABORT).setPackage(packageName), PendingIntent.FLAG_IMMUTABLE)).apply {

@@ -1,1 +1,0 @@
-/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/src/main/cpp/CMakeLists.txt

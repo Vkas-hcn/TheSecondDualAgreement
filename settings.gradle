@@ -13,8 +13,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TheSecondDualAgreement"
-include ':app '
+rootProject.name = "BloomingVPN"
+include ':app'
 include ':open'
 include ':core'
 

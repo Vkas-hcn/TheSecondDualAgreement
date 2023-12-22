@@ -1,9 +1,0 @@
-/Users/vkas/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja \
-  -C \
-  /Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/.cxx/Debug/5u51w2i6/x86_64 \
-  libovpnexec.so \
-  openvpn \
-  osslspeedtest \
-  osslutil \
-  ovpn3 \
-  ovpnutil

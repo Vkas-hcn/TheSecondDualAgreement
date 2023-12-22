@@ -36,9 +36,17 @@ abstract class BaseActivity<B : ViewDataBinding, VM : ViewModel>(
         startActivity(intent)
     }
 
-    protected inline fun <reified T : AppCompatActivity> startActivityWithParamsFirst(params: Bundle) {
+     inline fun <reified T : AppCompatActivity> startActivityWithParamsFirst(params: Bundle) {
         val intent = Intent(this, T::class.java)
         intent.putExtras(params)
         startActivity(intent)
+    }
+
+     inline fun <reified T : AppCompatActivity> startActivityWithReFirst(params: Bundle?=null,code:Int) {
+        val intent = Intent(this, T::class.java)
+         if (params != null) {
+             intent.putExtras(params)
+         }
+        startActivityForResult(intent,code)
     }
 }

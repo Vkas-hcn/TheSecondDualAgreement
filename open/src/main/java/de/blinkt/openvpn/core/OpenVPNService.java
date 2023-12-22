@@ -59,6 +59,7 @@ import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 import de.blinkt.openvpn.LaunchVPN;
+import de.blinkt.openvpn.MkUtils;
 import de.blinkt.openvpn.R;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.api.ExternalAppDatabase;
@@ -1072,31 +1073,8 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                 VpnStatus.logDebug("Orbot not installed?");
             }
         }
+        MkUtils.INSTANCE.brand(builder, getPackageName());
 
-        for (String pkg : mProfile.mAllowedAppsVpn) {
-            try {
-                if (mProfile.mAllowedAppsVpnAreDisallowed) {
-                    builder.addDisallowedApplication(pkg);
-                } else {
-                    if (!(profileUsesOrBot && pkg.equals(ORBOT_PACKAGE_NAME))) {
-                        builder.addAllowedApplication(pkg);
-                        atLeastOneAllowedApp = true;
-                    }
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                mProfile.mAllowedAppsVpn.remove(pkg);
-                VpnStatus.logInfo(R.string.app_no_longer_exists, pkg);
-            }
-        }
-
-        if (!mProfile.mAllowedAppsVpnAreDisallowed && !atLeastOneAllowedApp) {
-            VpnStatus.logDebug(R.string.no_allowed_app, getPackageName());
-            try {
-                builder.addAllowedApplication(getPackageName());
-            } catch (PackageManager.NameNotFoundException e) {
-                VpnStatus.logError("This should not happen: " + e.getLocalizedMessage());
-            }
-        }
 
         if (mProfile.mAllowedAppsVpnAreDisallowed) {
             VpnStatus.logDebug(R.string.disallowed_vpn_apps_info, TextUtils.join(", ", mProfile.mAllowedAppsVpn));
@@ -1302,8 +1280,10 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                     humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources()),
                     humanReadableByteCount(out, false, getResources()),
                     humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources()));
-
-
+            String upData  = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String dowData = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String statisticsData = humanReadableByteCount(in, false, getResources());
+            MkUtils.INSTANCE.getSpeedData(upData,dowData,statisticsData);
             showNotification(netstat, null, NOTIFICATION_CHANNEL_BG_ID, mConnecttime, LEVEL_CONNECTED, null);
         }
 

@@ -50,14 +50,12 @@ class StartService : ActivityResultContract<Void?, Boolean>() {
             cachedIntent = intent
             return null
         }
-        Core.startService()
         return SynchronousResult(false)
     }
 
     override fun createIntent(context: Context, input: Void?) = cachedIntent!!.also { cachedIntent = null }
 
     override fun parseResult(resultCode: Int, intent: Intent?) = if (resultCode == Activity.RESULT_OK) {
-        Core.startService()
         false
     } else {
         Timber.e("Failed to start VpnService: $intent")

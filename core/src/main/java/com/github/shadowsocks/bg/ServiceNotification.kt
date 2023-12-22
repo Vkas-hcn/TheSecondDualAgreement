@@ -29,11 +29,13 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.PowerManager
 import android.text.format.Formatter
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import com.github.shadowsocks.Core
+import com.github.shadowsocks.MkUtils
 import com.github.shadowsocks.aidl.IShadowsocksServiceCallback
 import com.github.shadowsocks.aidl.TrafficStats
 import com.github.shadowsocks.core.R
@@ -64,6 +66,7 @@ class ServiceNotification(private val service: BaseService.Interface, profileNam
                             Formatter.formatFileSize(service, stats.txTotal),
                             Formatter.formatFileSize(service, stats.rxTotal)))
                 }
+                MkUtils.getSpeedData(service, stats)
                 show()
             }
             override fun trafficPersisted(profileId: Long) { }
@@ -73,7 +76,7 @@ class ServiceNotification(private val service: BaseService.Interface, profileNam
 
     private val builder = NotificationCompat.Builder(service as Context, channel)
             .setWhen(0)
-            .setColor(ContextCompat.getColor(service, R.color.material_primary_500))
+            .setColor(ContextCompat.getColor(service, R.color.ic_launcher_background))
             .setTicker(service.getString(R.string.forward_success))
             .setContentTitle(profileName)
             .setContentIntent(Core.configureIntent(service))
@@ -84,7 +87,7 @@ class ServiceNotification(private val service: BaseService.Interface, profileNam
     init {
         service as Context
         val closeAction = NotificationCompat.Action.Builder(
-                R.drawable.ic_navigation_close,
+                R.drawable.ic_service_active,
                 service.getText(R.string.stop),
                 PendingIntent.getBroadcast(service, 0, Intent(Action.CLOSE).setPackage(service.packageName),
                     PendingIntent.FLAG_IMMUTABLE)).apply {

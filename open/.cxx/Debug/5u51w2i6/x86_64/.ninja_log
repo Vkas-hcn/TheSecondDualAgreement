@@ -1073,3 +1073,11 @@
 23	47	0	CMakeFiles/makeassetdir	5acf31e902ebb230
 23	47	0	CMakeFiles/makeassetdir	5acf31e902ebb230
 23	48	0	CMakeFiles/makeassetdir	5acf31e902ebb230
+28	56	0	CMakeFiles/makeassetdir	5acf31e902ebb230
+28	641	1702951744	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libosslspeedtest.so	8b187b1f9c020388
+27	642	1702951744	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libosslutil.so	f839a4c8d2cc2804
+27	694	1702951744	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libopenvpn.so	b3c6a0a2e27788e5
+695	744	1702951744	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libovpnexec.so	1381449cd01792e8
+694	753	1702951744	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/pie_openvpn.x86_64	f82e6852a5ee7cdb
+753	800	1702951744	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libovpnutil.so	43ddc6139d60e801
+27	828	1702951744	/Users/vkas/AndroidStudioProjects/TheSecondDualAgreement/open/build/intermediates/cxx/Debug/5u51w2i6/obj/x86_64/libovpn3.so	319d081df3735d29

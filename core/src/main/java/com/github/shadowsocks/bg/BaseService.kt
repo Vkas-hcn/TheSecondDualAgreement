@@ -28,6 +28,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.RemoteCallbackList
 import android.os.RemoteException
+import androidx.core.content.ContextCompat
 import com.github.shadowsocks.BootReceiver
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.Core.app
@@ -41,10 +42,7 @@ import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Action
 import com.github.shadowsocks.utils.broadcastReceiver
 import com.github.shadowsocks.utils.readableMessage
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
+
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
@@ -268,7 +266,6 @@ object BaseService {
             // channge the state
             data.changeState(State.Stopping)
             GlobalScope.launch(Dispatchers.Main.immediate) {
-                Firebase.analytics.logEvent("stop") { param(FirebaseAnalytics.Param.METHOD, tag) }
                 data.connectingJob?.cancelAndJoin() // ensure stop connecting first
                 this@Interface as Service
                 // we use a coroutineScope here to allow clean-up in parallel
@@ -334,16 +331,15 @@ object BaseService {
 
             BootReceiver.enabled = DataStore.persistAcrossReboot
             if (!data.closeReceiverRegistered) {
-                registerReceiver(data.closeReceiver, IntentFilter().apply {
+                ContextCompat.registerReceiver(this, data.closeReceiver, IntentFilter().apply {
                     addAction(Action.RELOAD)
                     addAction(Intent.ACTION_SHUTDOWN)
                     addAction(Action.CLOSE)
-                }, "$packageName.SERVICE", null)
+                }, ContextCompat.RECEIVER_NOT_EXPORTED)
                 data.closeReceiverRegistered = true
             }
 
             data.notification = createNotification(profile.formattedName)
-            Firebase.analytics.logEvent("start") { param(FirebaseAnalytics.Param.METHOD, tag) }
 
             data.changeState(State.Connecting)
             data.connectingJob = GlobalScope.launch(Dispatchers.Main) {

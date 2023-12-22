@@ -1,2 +1,0 @@
-#- File Locator -
-listingFile=../../../outputs/apk/androidTest/skeletonOvpn23/debug/output-metadata.json

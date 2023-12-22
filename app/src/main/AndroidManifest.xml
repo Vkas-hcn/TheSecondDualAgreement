@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".app.App"
         android:allowBackup="true"
@@ -15,21 +16,41 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:fullBackupContent,android:label,android:name,android:theme,android:roundIcon,android:icon"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/google_ad_id" />
 
         <activity
             android:name=".ui.first.FirstActivity"
             android:exported="true"
-            android:theme="@style/Theme.Agreement.Splash"
-            android:screenOrientation="portrait">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Agreement.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.MainActivity"
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
-
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.agreement.AgreementActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.finish.FinishActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.list.ListActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

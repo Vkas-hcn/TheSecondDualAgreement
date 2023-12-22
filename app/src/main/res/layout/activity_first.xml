@@ -32,6 +32,9 @@
             android:layout_marginBottom="101dp"
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
+            android:progress="66"
+            android:progressDrawable="@drawable/bg_first_pr"
+            android:background="@drawable/bg_first_stroke"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

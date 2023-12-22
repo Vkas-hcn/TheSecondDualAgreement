@@ -20,6 +20,8 @@ import android.os.strictmode.Violation;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.tencent.mmkv.MMKV;
+
 import java.util.concurrent.Executors;
 
 import de.blinkt.openvpn.BuildConfig;
@@ -39,6 +41,7 @@ public class ICSOpenVPNApplication extends Application {
 
         LocaleHelper.setDesiredLocale(this);
         super.onCreate();
+        MMKV.initialize(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             createNotificationChannels();

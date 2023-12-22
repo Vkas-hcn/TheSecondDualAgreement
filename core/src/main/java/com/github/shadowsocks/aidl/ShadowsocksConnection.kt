@@ -26,6 +26,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.os.RemoteException
+import android.util.Log
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.bg.ProxyService
 import com.github.shadowsocks.bg.TransproxyService
@@ -75,7 +76,9 @@ class ShadowsocksConnection(private var listenForDeath: Boolean = false) : Servi
         }
         override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
             val callback = callback ?: return
-            GlobalScope.launch(Dispatchers.Main.immediate) { callback.trafficUpdated(profileId, stats) }
+            GlobalScope.launch(Dispatchers.Main.immediate) {
+                Log.e("smile", "trafficUpdated: 2", )
+                callback.trafficUpdated(profileId, stats) }
         }
         override fun trafficPersisted(profileId: Long) {
             val callback = callback ?: return

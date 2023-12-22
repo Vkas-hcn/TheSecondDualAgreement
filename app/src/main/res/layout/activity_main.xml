@@ -1,13 +1,322 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="serviceState"
+            type="String"
+            android:value="0" />
+
+        <variable
+            name="agreement"
+            type="String"
+            android:value="0" />
+
+        <variable
+            name="showGuide"
+            type="Boolean"
+            android:value="false" />
+
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_main">
 
+        <ImageView
+            android:id="@+id/img_setting"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_setting"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/img_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/bg_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_setting" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="00:00:00"
+            android:textColor="@{serviceState.equals(`2`) ? @color/color_connect : @color/color_3}"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/img_bg"
+            app:layout_constraintStart_toStartOf="@+id/img_bg"
+            app:layout_constraintTop_toTopOf="@+id/img_bg" />
+
+        <ImageView
+            android:id="@+id/img_connect"
+            android:layout_width="164dp"
+            android:layout_height="155dp"
+            android:layout_marginTop="20dp"
+            android:src="@{serviceState.equals(`0`) ? @drawable/ic_disconnect : serviceState.equals(`2`) ?@drawable/ic_connect:@drawable/ic_end_dis}"
+            app:layout_constraintBottom_toBottomOf="@+id/img_bg"
+            app:layout_constraintEnd_toEndOf="@+id/img_bg"
+            app:layout_constraintStart_toStartOf="@+id/img_bg"
+            app:layout_constraintTop_toTopOf="@+id/img_bg" />
+
+        <LinearLayout
+            android:id="@+id/ll_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_flag"
+            android:gravity="center"
+            android:padding="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_bg"
+            app:layout_constraintEnd_toStartOf="@+id/ll_switch"
+            app:layout_constraintStart_toStartOf="@+id/img_bg">
+
+            <ImageView
+                android:id="@+id/img_flag"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/fast" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_flag"
+            android:gravity="center"
+            android:padding="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_bg"
+            app:layout_constraintEnd_toEndOf="@+id/img_bg"
+            app:layout_constraintStart_toEndOf="@+id/ll_flag">
+
+            <ImageView
+                android:id="@+id/img_switch"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_swith" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_mode"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_bg">
+
+            <TextView
+                android:id="@+id/tv_auto"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Auto"
+                android:textColor="@{agreement.equals(`0`) ? @color/color_0 : @color/color_9}"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/black" />
+
+
+            <TextView
+                android:id="@+id/tv_open"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="OpenVpn(UDP)"
+                android:textColor="@{agreement.equals(`1`) ? @color/color_0 : @color/color_9}"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/view_open"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_ss"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="SS"
+                android:textColor="@{agreement.equals(`2`) ? @color/color_0 : @color/color_9}"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/view_ss"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_ad"
+            android:layout_width="match_parent"
+            android:layout_height="224dp"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/img_ad_type"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_ad_type" />
+
+            <com.google.android.gms.ads.nativead.NativeAdView
+                android:id="@+id/native_ad_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:padding="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <com.google.android.gms.ads.nativead.MediaView
+                        android:id="@+id/ad_media"
+                        android:layout_width="match_parent"
+                        android:layout_height="136dp"
+                        android:layout_gravity="center_horizontal"
+                        android:foreground="@drawable/ic_ad_oc"
+                        android:foregroundGravity="left|top" />
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical|start"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/ad_app_icon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:adjustViewBounds="true"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="3"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/ad_app_icon"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/ad_headline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="3dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:textColor="#FF000000"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ad_body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:singleLine="true"
+                                android:textColor="#FF8087A2"
+                                android:textSize="11sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/ad_call_to_action"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_button_ad"
+                            android:gravity="center"
+                            android:padding="7dp"
+                            android:text="install"
+                            android:textColor="#FFFFFFFF"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.gms.ads.nativead.NativeAdView>
+        </FrameLayout>
+
+        <View
+            android:id="@+id/view_guide_smile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#87000000"
+            android:visibility="@{showGuide ? View.VISIBLE : View.GONE}" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lav_smile"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="22dp"
+            android:visibility="@{showGuide ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="@+id/ll_switch"
+            app:layout_constraintTop_toTopOf="@+id/ll_switch"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="data.json"
+            app:lottie_imageAssetsFolder="images"
+            app:lottie_loop="true" />
+
+        <include
+            android:id="@+id/il_setting"
+            layout="@layout/layout_setting"
+            android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
