@@ -31,12 +31,14 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
     R.layout.activity_finish, FinishViewModel::class.java
 ) {
     private lateinit var vpnServiceBean: VpnServiceBean
+    private  var isConnect:Boolean = false
     override fun intiView() {
         val bundle = intent.extras
         vpnServiceBean = Gson().fromJson(
             bundle?.getString(SmileKey.cuSmileConnected),
             object : TypeToken<VpnServiceBean?>() {}.type
         )
+        isConnect = bundle?.getBoolean(SmileKey.isSmileConnected)?:false
         binding.imgBack.setOnClickListener {
             viewModel.returnToHomePage(this)
         }
@@ -45,7 +47,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
 
     @SuppressLint("SetTextI18n")
     override fun initData() {
-        if (App.vpnLink) {
+        if (isConnect) {
             binding.imgVpnEnd.setImageResource(R.drawable.ic_end_connect)
             binding.tvTitle.text = "Connected succeed"
             viewModel.getSpeedData(this)

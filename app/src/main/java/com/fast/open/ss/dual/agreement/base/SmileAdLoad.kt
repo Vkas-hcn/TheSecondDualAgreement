@@ -78,6 +78,7 @@ object SmileAdLoad {
                 res = res,
                 callback = {
                     Load.of(where)?.let { load ->
+                        Log.e(TAG, "showNativeOf: clearCache", )
                         load.clearCache()
 //                        if (preload) {
 //                            load.load()
@@ -145,6 +146,7 @@ object SmileAdLoad {
                     && ((System.currentTimeMillis() - cacheTime) > (1000L * 60L * 60L))
                 ) {
                     printLog("cache is expired")
+                    Log.e(TAG, "load: clearCache", )
                     clearCache()
                 } else {
                     printLog("Existing cache")

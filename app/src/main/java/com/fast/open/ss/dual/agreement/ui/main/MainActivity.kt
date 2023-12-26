@@ -248,6 +248,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         if (SmileUtils.isAppOnline(this)) {
             SmileAdLoad.loadOf(SmileKey.POS_CONNECT)
             SmileAdLoad.loadOf(SmileKey.POS_BACK)
+            SmileAdLoad.loadOf(SmileKey.POS_RESULT)
             if (!App.vpnLink) {
                 SmileKey.connection_mode = binding?.agreement!!
             }

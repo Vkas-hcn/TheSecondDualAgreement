@@ -21,8 +21,6 @@ object SmileKey {
     const val POS_BACK = "si_b"
     const val POS_RESULT = "si_r"
 
-
-
     const val vpn_data_type = "blo"
     const val fast_data_type = "blm"
     const val ad_data_type = "blu"
@@ -200,6 +198,12 @@ object SmileKey {
                 bean.smart_smart = true
                 bean.blocuss = "Fast Server"
             }
+        }
+        if(bean.bloally.isEmpty()){
+            bean = getVpnList().getOrNull(0)?:VpnServiceBean()
+            bean.best_smart = true
+            bean.smart_smart = true
+            bean.blocuss = "Fast Server"
         }
         return bean
     }

@@ -182,7 +182,7 @@ class MainViewModel : ViewModel() {
             withTimeout(10000L) {
                 delay(2000L)
                 while (isActive) {
-                    if(SmileAdLoad.resultOf(SmileKey.POS_CONNECT)!=null){
+                    if (SmileAdLoad.resultOf(SmileKey.POS_CONNECT) != null) {
                         showConnectLive.value = SmileAdLoad.resultOf(SmileKey.POS_CONNECT)
                         cancel()
                         jobStartSmile?.cancel()
@@ -220,7 +220,7 @@ class MainViewModel : ViewModel() {
             disconnectVpn()
             changeOfVpnStatus(activity, "0")
             if (!App.isBackDataSmile) {
-                jumpToFinishPage(activity)
+                jumpToFinishPage(activity,false)
             }
         }
         if (nowClickState == 0) {
@@ -234,14 +234,14 @@ class MainViewModel : ViewModel() {
                 }
             }
             if (!App.isBackDataSmile) {
-                jumpToFinishPage(activity)
+                jumpToFinishPage(activity,true)
             }
             changeOfVpnStatus(activity, "2")
         }
 
     }
 
-    private fun jumpToFinishPage(activity: MainActivity) {
+    private fun jumpToFinishPage(activity: MainActivity,isConnect: Boolean) {
         activity.lifecycleScope.launch {
             delay(300L)
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
@@ -249,6 +249,7 @@ class MainViewModel : ViewModel() {
             }
             val bundle = Bundle()
             bundle.putString(SmileKey.cuSmileConnected, SmileKey.check_service)
+            bundle.putBoolean(SmileKey.isSmileConnected, isConnect)
             val intent = Intent(activity, FinishActivity::class.java)
             intent.putExtras(bundle)
             activity.startActivityForResult(intent, 0x567)
@@ -421,7 +422,16 @@ class MainViewModel : ViewModel() {
 
     fun setOpenData(activity: MainActivity, server: IOpenVPNAPIService): Job {
         return MainScope().launch(Dispatchers.IO) {
-            val data = SmileKey.getAllVpnListData().firstOrNull() ?: return@launch
+            val data = SmileKey.check_service.isEmpty().let {
+                if (it) {
+                    SmileKey.getAllVpnListData().firstOrNull()
+                } else {
+                    Gson().fromJson<VpnServiceBean>(
+                        SmileKey.check_service,
+                        object : TypeToken<VpnServiceBean?>() {}.type
+                    )
+                }
+            }
             runCatching {
                 val config = StringBuilder()
                 activity.assets.open("fast_bloomingvpn.ovpn").use { inputStream ->
@@ -429,7 +439,11 @@ class MainViewModel : ViewModel() {
                         reader.forEachLine { line ->
                             config.append(
                                 when {
-                                    line.contains("remote 103", true) -> "remote ${data.bloally} 443"
+                                    line.contains(
+                                        "remote 103",
+                                        true
+                                    ) -> "remote ${data?.bloally} 443"
+
                                     else -> line
                                 }
                             ).append("\n")
@@ -444,17 +458,18 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun startOpenVpn(activity: MainActivity){
-        val state =  checkVPNPermission(activity)
-        if(state){
+    fun startOpenVpn(activity: MainActivity) {
+        val state = checkVPNPermission(activity)
+        if (state) {
             startTheJudgment(activity)
-        }else{
+        } else {
             VpnService.prepare(activity).let {
                 requestPermissionForResultVPN.launch(it)
             }
         }
     }
-     fun checkVPNPermission(activity: MainActivity): Boolean {
+
+    fun checkVPNPermission(activity: MainActivity): Boolean {
         VpnService.prepare(activity).let {
             return it == null
         }
@@ -539,11 +554,12 @@ class MainViewModel : ViewModel() {
         dialogVpn.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLACK)
         dialogVpn.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(Color.BLACK)
     }
+
     //适配小屏幕
-    fun adaptsToSmallScreens(activity: MainActivity){
+    fun adaptsToSmallScreens(activity: MainActivity) {
         val data = SmileUtils.getScreenMetrics(activity)
         val binding = activity.binding
-        if(data.height<=1900){
+        if (data.height <= 1900) {
             SmileUtils.resizeView(binding.imgBg, -1, 730)
 //            SmileUtils.resizeView(binding.flAd, -1, 600)
         }
