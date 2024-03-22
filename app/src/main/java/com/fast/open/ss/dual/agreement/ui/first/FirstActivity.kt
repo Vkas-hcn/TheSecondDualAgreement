@@ -43,17 +43,17 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
             finish()
         }
         lifecycleScope.launch {
+            SmileNetHelp.getOnlineSmData(this@FirstActivity)
             SmileNetHelp.getLoadIp()
             SmileNetHelp.getLoadOthIp()
             SmileNetHelp.getBlackData(this@FirstActivity)
+            SmileNetHelp.getOnlyIp()
         }
         viewModel.getFileBaseData(this) {
             SmileAdLoad.isLoadOpenFist = false
             SmileAdLoad.init(this)
-            SmileAdLoad.loadOf(SmileKey.POS_OPEN)
             loadOpenAd()
         }
-
     }
 
     private fun countDown() {

@@ -24,8 +24,6 @@ class FirstViewModel:ViewModel() {
             if (!BuildConfig.DEBUG) {
                 val auth = Firebase.remoteConfig
                 auth.fetchAndActivate().addOnSuccessListener {
-                    SmileKey.local_service = auth.getString(SmileKey.vpn_data_type)
-                    SmileKey.local_service_fast = auth.getString(SmileKey.fast_data_type)
                     SmileKey.local_ad = auth.getString(SmileKey.ad_data_type)
                     SmileKey.local_ref_center = auth.getString(SmileKey.user_data_type)
                     SmileKey.local_control = auth.getString(SmileKey.lj_data_type)
@@ -34,10 +32,7 @@ class FirstViewModel:ViewModel() {
             }
             try {
                 withTimeout(4000L) {
-                    while (true) {
-                        if (!isActive) {
-                            break
-                        }
+                    while (isActive) {
                         if (isCa) {
                             loadAdFun()
                             cancel()

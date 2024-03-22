@@ -28,6 +28,7 @@ class FinishViewModel : ViewModel() {
 
     fun showEndAd(activity: FinishActivity) {
         activity.lifecycleScope.launch {
+            SmileAdLoad.loadOf(SmileKey.POS_RESULT)
             delay(300)
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch

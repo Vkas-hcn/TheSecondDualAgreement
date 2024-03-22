@@ -58,8 +58,11 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import android.text.format.Formatter
+import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.UserConter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
@@ -232,37 +235,49 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
     private fun toClickConnect() {
         lifecycleScope.launch {
-            SmileNetHelp.getLoadIp()
-            SmileNetHelp.getLoadOthIp()
+            withContext(Dispatchers.IO) {
+                SmileNetHelp.getLoadIp()
+                SmileNetHelp.getLoadOthIp()
+            }
+            if (binding.serviceState == "1") {
+                return@launch
+            }
         }
-        if (binding.serviceState == "1") {
-            return
-        }
-        lifecycleScope.launch {
-            toConnectVpn()
-        }
+        toConnectVpn()
     }
 
     private fun toConnectVpn() {
-        binding.showGuide = false
-        if (SmileUtils.isAppOnline(this)) {
-            SmileAdLoad.loadOf(SmileKey.POS_CONNECT)
-            SmileAdLoad.loadOf(SmileKey.POS_BACK)
-            SmileAdLoad.loadOf(SmileKey.POS_RESULT)
-            if (!App.vpnLink) {
-                SmileKey.connection_mode = binding?.agreement!!
+        lifecycleScope.launch {
+            binding.showGuide = false
+            if (!SmileKey.isHaveServeData(this@MainActivity)) {
+                binding.pbLoading.visibility = View.VISIBLE
+                delay(2000)
+                binding.pbLoading.visibility = View.GONE
+                viewModel.initServerData()
+                return@launch
             }
-            if (viewModel.isCanUser(this) == 0) {
-                return
-            }
-            if (binding.agreement == "1") {
-                viewModel.startOpenVpn(this)
+            if (SmileUtils.isAppOnline(this@MainActivity)) {
+                SmileAdLoad.loadOf(SmileKey.POS_CONNECT)
+                SmileAdLoad.loadOf(SmileKey.POS_BACK)
+                SmileAdLoad.loadOf(SmileKey.POS_RESULT)
+                if (!App.vpnLink) {
+                    SmileKey.connection_mode = binding?.agreement!!
+                }
+                if (viewModel.isCanUser(this@MainActivity) == 0) {
+                    return@launch
+                }
+                if (binding.agreement == "1") {
+                    viewModel.startOpenVpn(this@MainActivity)
+                } else {
+                    connect.launch(null)
+                }
             } else {
-                connect.launch(null)
+                Toast.makeText(
+                    this@MainActivity,
+                    "Please check your network connection",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } else {
-            Toast.makeText(this, "Please check your network connection", Toast.LENGTH_SHORT)
-                .show()
         }
     }
 
@@ -380,7 +395,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     override fun onResume() {
         super.onResume()
         handleWarmBoot()
-//        setOpenVpnState()
     }
 
     private fun handleWarmBoot() {
@@ -397,7 +411,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         } else {
             viewModel.changeOfVpnStatus(this, "0")
         }
-
     }
 
     override fun onPause() {
@@ -414,12 +427,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         super.onDestroy()
         DataStore.publicStore.unregisterChangeListener(this)
         viewModel.connection.disconnect(this)
-        Log.e(TAG, "onDestroy: Main", )
-        App.isBoot =false
+        App.isBoot = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0x567) {
+            App.isBoot = false
+        }
         if (requestCode == 0x567 && viewModel.whetherRefreshServer) {
             viewModel.setFastInformation(viewModel.afterDisconnectionServerData, binding)
             val serviceData = Gson().toJson(viewModel.afterDisconnectionServerData)
@@ -431,6 +446,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                 "disconnect" -> {
                     viewModel.updateSkServer(false)
                 }
+
                 "connect" -> {
                     viewModel.updateSkServer(true)
                 }
@@ -469,6 +485,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             handleSmileTimerLock()
         }
     }
+
     private fun setOpenVpnState() {
         if (SmileKey.connection_mode == "1") {
             handleSmileTimerLock()

@@ -53,8 +53,8 @@ class ListServiceAdapter(private val dataList: MutableList<VpnServiceBean>) :
             holder.aivFlag.setImageResource(R.drawable.fast)
             holder.imgSmart.visibility = View.VISIBLE
         } else {
-            holder.tvName.text = String.format(item.blocuss + "," + item.blogono)
-            holder.aivFlag.setImageResource(item.blocuss.getSmileImage())
+            holder.tvName.text = String.format(item.country_name + "," + item.city)
+            holder.aivFlag.setImageResource(item.country_name.getSmileImage())
             holder.imgSmart.visibility = View.GONE
         }
 

@@ -12,7 +12,7 @@ import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class ListActivity: BaseActivity<ActivityListBinding, ListViewModel>(
+class ListActivity : BaseActivity<ActivityListBinding, ListViewModel>(
     R.layout.activity_list, ListViewModel::class.java
 ) {
     override fun intiView() {
@@ -23,17 +23,25 @@ class ListActivity: BaseActivity<ActivityListBinding, ListViewModel>(
     }
 
     override fun initData() {
-        viewModel.checkSkVpnServiceBean = VpnServiceBean()
-        viewModel.checkSkVpnServiceBean = Gson().fromJson(
-            SmileKey.check_service,
-            object : TypeToken<VpnServiceBean?>() {}.type
-        )
-        viewModel.checkSkVpnServiceBeanClick = viewModel.checkSkVpnServiceBean
-        viewModel.initAllAdapter(this) { activity, position ->
-            viewModel.selectServer(activity, position)
+        if (SmileKey.isHaveServeData(this)) {
+            binding.showList = true
+            viewModel.checkSkVpnServiceBean = VpnServiceBean()
+            viewModel.checkSkVpnServiceBean = if (SmileKey.check_service.isBlank()) {
+                SmileKey.getFastVpn()!!
+            } else {
+                Gson().fromJson(
+                    SmileKey.check_service,
+                    VpnServiceBean::class.java
+                )
+            }
+            viewModel.checkSkVpnServiceBeanClick = viewModel.checkSkVpnServiceBean
+            viewModel.initAllAdapter(this) { activity, position ->
+                viewModel.selectServer(activity, position)
+            }
+        } else {
+            binding.showList = false
         }
     }
-
 
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

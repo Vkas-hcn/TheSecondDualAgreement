@@ -5,18 +5,21 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import com.fast.open.ss.dual.agreement.R
 import com.fast.open.ss.dual.agreement.bean.ScreenMetrics
 import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.github.shadowsocks.database.Profile
+import android.util.Base64
 
 object SmileUtils {
     fun String.getSmileImage():  Int {
@@ -41,11 +44,13 @@ object SmileUtils {
         }
     }
     fun setSkServerData(profile: Profile, bestData: VpnServiceBean): Profile {
-        profile.name = bestData.blocuss + "-" + bestData.blogono
-        profile.host = bestData.bloally
-        profile.password = bestData.blowrite
-        profile.method = bestData.bloira
-        profile.remotePort = bestData.blodis.toInt()
+        SmileKey.vpn_city = bestData.city
+        SmileKey.vpn_ip =  bestData.ip
+        profile.name = bestData.country_name + "-" + bestData.city
+        profile.host = bestData.ip
+        profile.password = bestData.user_pwd
+        profile.method = bestData.mode
+        profile.remotePort = bestData.port
         return profile
     }
     fun rotateImageViewInfinite(imageView: ImageView, duration: Long) {
@@ -106,13 +111,6 @@ object SmileUtils {
     }
 
 
-    /**
-     * 重设 View 的宽高，保持宽高比。
-     *
-     * @param view 要调整的 View
-     * @param newWidth 新的宽度，如果不改变则传入 -1
-     * @param newHeight 新的高度，如果不改变则传入 -1
-     */
     fun resizeView(view: View, newWidth: Int, newHeight: Int) {
         view.post {
             val width = view.width
@@ -137,4 +135,10 @@ object SmileUtils {
         }
     }
 
+
+    fun decodeTheData(responseString:String):String{
+        val trimmedString = responseString.substring(14)
+        val reversedString = trimmedString.reversed()
+        return String(Base64.decode(reversedString?.toByteArray(), Base64.DEFAULT))
+    }
 }

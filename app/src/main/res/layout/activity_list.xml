@@ -4,7 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
 
+        <variable
+            name="showList"
+            type="Boolean"
+            android:value="false" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,6 +50,7 @@
             android:paddingTop="30dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
+            android:visibility="@{showList ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_back">
             <TextView
@@ -63,5 +69,19 @@
                 tools:listitem="@layout/item_service"
                 android:layout_height="0dp"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="No Data"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:visibility="@{showList ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_back"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

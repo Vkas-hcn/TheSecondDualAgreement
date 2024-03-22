@@ -3,6 +3,7 @@ package com.fast.open.ss.dual.agreement.utils
 import android.content.Context
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
+import com.fast.open.ss.dual.agreement.app.App
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -41,6 +42,9 @@ object UserConter {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
                             SmileKey.local_ref = installReferrer
+                            referrerClient.installReferrer?.run {
+                                SmileNetHelp.postInstallData(App.getAppContext(),this)
+                            }
                         }
                     }
                     referrerClient.endConnection()
@@ -61,7 +65,7 @@ object UserConter {
         return (pattern.containsMatchIn(referrer) && data.fb4a == "1")
     }
 
-    fun isItABuyingUser(): Boolean {
+    private fun isItABuyingUser(): Boolean {
         val data = SmileKey.getRefJson()
         val referrer = SmileKey.local_ref
         return isFacebookUser()
@@ -74,6 +78,7 @@ object UserConter {
                 || (data.qiB22 == "1" && referrer.contains("%7B%22", true))
                 || (data.adjust == "1" && referrer.contains("adjust", true))
                 || (data.bytedance == "1" && referrer.contains("bytedance", true))
+                || (SmileKey.adjust_smile.isNotEmpty())
     }
 
     //屏蔽广告用户

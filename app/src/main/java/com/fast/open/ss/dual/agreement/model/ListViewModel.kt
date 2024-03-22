@@ -41,7 +41,7 @@ class ListViewModel:ViewModel() {
     }
 
     private fun isSameServerSelected(position: Int): Boolean {
-        return ecVpnServiceBeanList[position].bloally == checkSkVpnServiceBeanClick.bloally &&
+        return ecVpnServiceBeanList[position].ip == checkSkVpnServiceBeanClick.ip &&
                 ecVpnServiceBeanList[position].best_smart == checkSkVpnServiceBeanClick.best_smart
     }
 
@@ -80,7 +80,7 @@ class ListViewModel:ViewModel() {
     }
 
     private fun initializeData() {
-        allVpnListData = SmileKey.getAllVpnListData()
+        allVpnListData = SmileKey.getAllVpnListData()!!
         ecVpnServiceBeanList = allVpnListData
     }
 
@@ -93,7 +93,7 @@ class ListViewModel:ViewModel() {
             } else {
                 ecVpnServiceBeanList[0].check_smart = false
 
-                vpnServiceBean.bloally == checkSkVpnServiceBeanClick.bloally
+                vpnServiceBean.ip == checkSkVpnServiceBeanClick.ip
             }
         }
     }
@@ -177,7 +177,7 @@ class ListViewModel:ViewModel() {
     private fun updateEcVpnServiceBeanListSelection() {
         ecVpnServiceBeanList.forEachIndexed { index, _ ->
             ecVpnServiceBeanList[index].check_smart =
-                (ecVpnServiceBeanList[index].bloally == checkSkVpnServiceBeanClick.bloally && ecVpnServiceBeanList[index].best_smart == checkSkVpnServiceBeanClick.best_smart)
+                (ecVpnServiceBeanList[index].ip == checkSkVpnServiceBeanClick.ip && ecVpnServiceBeanList[index].best_smart == checkSkVpnServiceBeanClick.best_smart)
         }
     }
 

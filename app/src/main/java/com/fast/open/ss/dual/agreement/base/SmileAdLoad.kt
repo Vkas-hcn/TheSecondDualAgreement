@@ -23,11 +23,20 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.fast.open.ss.dual.agreement.R
+import com.fast.open.ss.dual.agreement.bean.AdInformation
+import com.fast.open.ss.dual.agreement.utils.PutDataUtils
+import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils.isVisible
 import com.fast.open.ss.dual.agreement.utils.UserConter
 
 object SmileAdLoad {
     var isLoadOpenFist = false
+    var openAdData = AdInformation()
+    var homeAdData = AdInformation()
+    var connectAdData = AdInformation()
+    var endAdData = AdInformation()
+    var backAdData = AdInformation()
+
     fun init(context: Context) {
         GoogleAds.init(context) {
             preloadAds()
@@ -78,7 +87,7 @@ object SmileAdLoad {
                 res = res,
                 callback = {
                     Load.of(where)?.let { load ->
-                        Log.e(TAG, "showNativeOf: clearCache", )
+                        Log.e(TAG, "showNativeOf: clearCache")
                         load.clearCache()
 //                        if (preload) {
 //                            load.load()
@@ -146,7 +155,7 @@ object SmileAdLoad {
                     && ((System.currentTimeMillis() - cacheTime) > (1000L * 60L * 60L))
                 ) {
                     printLog("cache is expired")
-                    Log.e(TAG, "load: clearCache", )
+                    Log.e(TAG, "load: clearCache")
                     clearCache()
                 } else {
                     printLog("Existing cache")
@@ -233,7 +242,7 @@ object SmileAdLoad {
                 return
             }
             isShowingFullScreen = true
-            Log.e(TAG, "showFullScreen: ", )
+            Log.e(TAG, "showFullScreen: ")
             GoogleAds(where)
                 .showFullScreen(
                     context = context,
@@ -306,6 +315,9 @@ object SmileAdLoad {
             val requestContext = context.applicationContext
             when (way) {
                 SmileKey.POS_OPEN -> {
+                    openAdData.id = unit
+                    openAdData.type = way
+                    openAdData = PutDataUtils.beforeLoadLink(openAdData)
                     AppOpenAd.load(
                         requestContext,
                         unit,
@@ -320,13 +332,30 @@ object SmileAdLoad {
 
                             override fun onAdLoaded(appOpenAd: AppOpenAd) {
                                 callback(appOpenAd)
-
+                                appOpenAd.setOnPaidEventListener { adValue ->
+                                    adValue.let {
+                                        SmileNetHelp.postAdData(
+                                            App.getAppContext(),
+                                            adValue,
+                                            appOpenAd.responseInfo,
+                                            openAdData
+                                        )
+                                    }
+                                }
                             }
                         })
                 }
 
                 SmileKey.POS_CONNECT, SmileKey.POS_BACK -> {
-
+                    if (way == SmileKey.POS_CONNECT) {
+                        connectAdData.id = unit
+                        connectAdData.type = way
+                        connectAdData = PutDataUtils.beforeLoadLink(connectAdData)
+                    } else {
+                        backAdData.id = unit
+                        backAdData.type = way
+                        backAdData = PutDataUtils.beforeLoadLink(backAdData)
+                    }
                     InterstitialAd.load(
                         requestContext,
                         unit,
@@ -339,23 +368,54 @@ object SmileAdLoad {
 
                             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                                 callback(interstitialAd)
-
+                                interstitialAd.setOnPaidEventListener { adValue ->
+                                    val bean = if (way == SmileKey.POS_CONNECT) {
+                                        connectAdData
+                                    } else {
+                                        backAdData
+                                    }
+                                    adValue.let {
+                                        SmileNetHelp.postAdData(
+                                            App.getAppContext(),
+                                            adValue,
+                                            interstitialAd.responseInfo,
+                                            bean
+                                        )
+                                    }
+                                }
                             }
                         }
                     )
                 }
 
                 SmileKey.POS_HOME, SmileKey.POS_RESULT -> {
-
+                    val bean = if (way == SmileKey.POS_HOME) {
+                        homeAdData.id = unit
+                        homeAdData.type = way
+                        homeAdData = PutDataUtils.beforeLoadLink(homeAdData)
+                        homeAdData
+                    } else {
+                        endAdData.id = unit
+                        endAdData.type = way
+                        endAdData = PutDataUtils.beforeLoadLink(endAdData)
+                        endAdData
+                    }
                     AdLoader.Builder(requestContext, unit)
                         .forNativeAd {
                             callback(it)
                             it.setOnPaidEventListener { adValue ->
+                                it.responseInfo?.let { nav ->
+                                    SmileNetHelp.postAdData(
+                                        App.getAppContext(),
+                                        adValue,
+                                        nav,
+                                        bean
+                                    )
+                                }
                                 loadOf(where)
                             }
                         }
                         .withAdListener(object : AdListener() {
-
                             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                                 Log.d(TAG, "${where} ---request fail: ${loadAdError.message}")
                                 callback(null)
@@ -392,12 +452,13 @@ object SmileAdLoad {
             res: Any,
             callback: () -> Unit
         ) {
-            Log.e(TAG, "showFullScreen: 0", )
+            Log.e(TAG, "showFullScreen: 0")
 
             when (res) {
                 is AppOpenAd -> {
                     res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
                     res.show(context)
+                    openAdData = PutDataUtils.afterLoadLink(openAdData)
                 }
 
                 is InterstitialAd -> {
@@ -413,7 +474,11 @@ object SmileAdLoad {
 
                     res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
                     res.show(context)
-
+                    if (where == SmileKey.POS_CONNECT) {
+                        connectAdData = PutDataUtils.afterLoadLink(connectAdData)
+                    } else {
+                        backAdData = PutDataUtils.afterLoadLink(backAdData)
+                    }
                 }
 
                 else -> callback()
@@ -465,6 +530,11 @@ object SmileAdLoad {
             Log.d(TAG, "${where} ---showed")
             nativeAdView.setNativeAd(nativeAd)
             callback()
+            if (where == SmileKey.POS_HOME) {
+                homeAdData = PutDataUtils.afterLoadLink(homeAdData)
+            } else {
+                endAdData = PutDataUtils.afterLoadLink(endAdData)
+            }
         }
     }
 }

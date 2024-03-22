@@ -12,23 +12,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustConfig
+import com.adjust.sdk.LogLevel
 import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.ui.first.FirstActivity
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.SmileKey
+import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
+import com.fast.open.ss.dual.agreement.utils.SmileUtils
 import com.fast.open.ss.dual.agreement.utils.TimeData
 import com.fast.open.ss.dual.agreement.utils.UserConter
 import com.github.shadowsocks.Core
 import com.google.android.gms.ads.AdActivity
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 
 class App : Application(), LifecycleObserver {
@@ -42,7 +50,7 @@ class App : Application(), LifecycleObserver {
         var vpnLink = false
         var isBoot = false
         var whetherBackgroundSmild = false
-        var serviceState:String = "mo"
+        var serviceState: String = "mo"
         val mmkvSmile by lazy {
             MMKV.mmkvWithID("smile", MMKV.MULTI_PROCESS_MODE)
         }
@@ -70,7 +78,6 @@ class App : Application(), LifecycleObserver {
     }
 
     private fun setActivityLifecycleSmart(application: Application) {
-        //注册监听每个activity的生命周期,便于堆栈式管理
         application.registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 if (activity !is AdActivity) {
@@ -140,11 +147,12 @@ class App : Application(), LifecycleObserver {
             delay(3000L)
             whetherBackgroundSmild = true
             ad_activity_smart?.finish()
-            if(top_activity_smart is FirstActivity){
+            if (top_activity_smart is FirstActivity) {
                 top_activity_smart?.finish()
             }
         }
     }
+
     private fun isMainProcess(context: Context): Boolean {
         val pid = Process.myPid()
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -160,8 +168,8 @@ class App : Application(), LifecycleObserver {
     }
 
 
-    fun iniApp(){
-        if(isMainProcess(this)){
+    fun iniApp() {
+        if (isMainProcess(this)) {
             instance = this
             MobileAds.initialize(this) {}
             Firebase.initialize(this)
@@ -174,8 +182,38 @@ class App : Application(), LifecycleObserver {
             }
             TimeData.sendTimerInformation()
             UserConter.getReferInformation(this)
+            SmileNetHelp.postSessionData(this)
+            initAdJust(this)
+            getGid(this)
         }
     }
 
+    private fun initAdJust(application: Application) {
+        Adjust.addSessionCallbackParameter("customer_user_id", SmileKey.uuid_smile)
+        val appToken = "ih2pm2dr3k74"
+        val environment: String = AdjustConfig.ENVIRONMENT_SANDBOX
+        val config = AdjustConfig(application, appToken, environment)
+        config.setLogLevel(LogLevel.WARN)
+        config.needsCost = true
+        config.setOnAttributionChangedListener { attribution ->
+            Timber.tag(TAG).e("adjust --data= %s", attribution)
+            if (SmileKey.adjust_smile.isEmpty() && attribution.network.isNotEmpty() && attribution.network.contains(
+                    "organic",
+                    true
+                ).not()
+            ) {
+                SmileKey.adjust_smile = attribution.network
+            }
+        }
+        Adjust.onCreate(config)
+    }
+
+    fun getGid(context: Context) {
+        GlobalScope.launch(Dispatchers.IO) {
+            runCatching {
+                SmileKey.gidData = AdvertisingIdClient.getAdvertisingIdInfo(context).id ?: ""
+            }
+        }
+    }
 
 }

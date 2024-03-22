@@ -8,6 +8,7 @@ import android.net.Uri
 import android.net.VpnService
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.view.animation.Animation
@@ -30,8 +31,10 @@ import com.fast.open.ss.dual.agreement.ui.list.ListActivity
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileKey
+import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
 import com.fast.open.ss.dual.agreement.utils.SmileUtils.getSmileImage
+import com.fast.open.ss.dual.agreement.utils.SmileUtils.isVisible
 import com.fast.open.ss.dual.agreement.utils.TimeData
 import com.fast.open.ss.dual.agreement.utils.TimeUtils
 import com.fast.open.ss.dual.agreement.utils.UserConter
@@ -52,6 +55,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -95,7 +99,7 @@ class MainViewModel : ViewModel() {
         connection.connect(activity, call)
         DataStore.publicStore.registerChangeListener(activity)
         if (SmileKey.check_service.isEmpty()) {
-            initializeServerData()
+            initServerData()
         } else {
             val serviceData = SmileKey.check_service
             val currentServerData: VpnServiceBean =
@@ -120,6 +124,11 @@ class MainViewModel : ViewModel() {
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
+            activity.binding.pbLoading.visibility = View.VISIBLE
+            if (!SmileKey.isHaveServeData(activity)) {
+                delay(2000)
+            }
+            activity.binding.pbLoading.visibility = View.GONE
             SmileAdLoad.loadOf(SmileKey.POS_BACK)
             activity.startActivityWithReFirst<ListActivity>(null, 567)
         }
@@ -129,7 +138,7 @@ class MainViewModel : ViewModel() {
         if (meteorVpnBean.best_smart) {
             binding.imgFlag.setImageResource("Fast Server".getSmileImage())
         } else {
-            binding.imgFlag.setImageResource(meteorVpnBean.blocuss.getSmileImage())
+            binding.imgFlag.setImageResource(meteorVpnBean.country_name.getSmileImage())
         }
     }
 
@@ -178,8 +187,13 @@ class MainViewModel : ViewModel() {
 
 
     private suspend fun loadSmileAdvertisements(activity: AppCompatActivity) {
+        val contData = try {
+            (SmileKey.getFlowJson().cont.toLong())*1000
+        }catch (e:Exception){
+            10000L
+        }
         try {
-            withTimeout(10000L) {
+            withTimeout(contData) {
                 delay(2000L)
                 while (isActive) {
                     if (SmileAdLoad.resultOf(SmileKey.POS_CONNECT) != null) {
@@ -220,7 +234,7 @@ class MainViewModel : ViewModel() {
             disconnectVpn()
             changeOfVpnStatus(activity, "0")
             if (!App.isBackDataSmile) {
-                jumpToFinishPage(activity,false)
+                jumpToFinishPage(activity, false)
             }
         }
         if (nowClickState == 0) {
@@ -234,14 +248,14 @@ class MainViewModel : ViewModel() {
                 }
             }
             if (!App.isBackDataSmile) {
-                jumpToFinishPage(activity,true)
+                jumpToFinishPage(activity, true)
             }
             changeOfVpnStatus(activity, "2")
         }
 
     }
 
-    private fun jumpToFinishPage(activity: MainActivity,isConnect: Boolean) {
+    private fun jumpToFinishPage(activity: MainActivity, isConnect: Boolean) {
         activity.lifecycleScope.launch {
             delay(300L)
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
@@ -331,32 +345,29 @@ class MainViewModel : ViewModel() {
     }
 
     fun showHomeAd(activity: MainActivity) {
-
-
         activity.lifecycleScope.launch {
             delay(300)
-            if (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) || App.isBoot) {
-                return@launch
-            }
-            activity.binding.nativeAdView.visibility = android.view.View.GONE
-            activity.binding.imgAdType.visibility = android.view.View.VISIBLE
-            App.isBoot = true
-            val adHomeData = SmileAdLoad.resultOf(SmileKey.POS_HOME)
-            while (isActive) {
-                if (adHomeData != null) {
-                    activity.binding.nativeAdView.visibility = android.view.View.VISIBLE
-                    SmileAdLoad.showNativeOf(
-                        where = SmileKey.POS_HOME,
-                        nativeRoot = activity.binding.nativeAdView,
-                        res = adHomeData,
-                        preload = true,
-                        onShowCompleted = {
-                        }
-                    )
-                    cancel()
-                    break
+            SmileAdLoad.loadOf(SmileKey.POS_HOME)
+            if (activity.isVisible() && !App.isBoot) {
+                Log.e(TAG, "showHomeAd: ", )
+                App.isBoot = true
+                while (isActive) {
+                    val adHomeData = SmileAdLoad.resultOf(SmileKey.POS_HOME)
+                    if (adHomeData != null) {
+                        activity.binding.nativeAdView.visibility = View.VISIBLE
+                        SmileAdLoad.showNativeOf(
+                            where = SmileKey.POS_HOME,
+                            nativeRoot = activity.binding.nativeAdView,
+                            res = adHomeData,
+                            preload = true,
+                            onShowCompleted = {
+                            }
+                        )
+                        cancel()
+                        break
+                    }
+                    delay(500)
                 }
-                delay(500)
             }
         }
     }
@@ -377,8 +388,8 @@ class MainViewModel : ViewModel() {
 
     var afterDisconnectionServerData: VpnServiceBean = VpnServiceBean()
 
-    fun initializeServerData() {
-        val bestData = SmileKey.getFastVpn()
+    fun initServerData() {
+        val bestData = SmileKey.getFastVpn() ?: return
         ProfileManager.getProfile(DataStore.profileId).let {
             if (it != null) {
                 ProfileManager.updateProfile(SmileUtils.setSkServerData(it, bestData))
@@ -424,7 +435,7 @@ class MainViewModel : ViewModel() {
         return MainScope().launch(Dispatchers.IO) {
             val data = SmileKey.check_service.isEmpty().let {
                 if (it) {
-                    SmileKey.getAllVpnListData().firstOrNull()
+                    SmileKey.getAllVpnListData()?.firstOrNull()
                 } else {
                     Gson().fromJson<VpnServiceBean>(
                         SmileKey.check_service,
@@ -432,6 +443,8 @@ class MainViewModel : ViewModel() {
                     )
                 }
             }
+            SmileKey.vpn_city = data?.city ?: ""
+            SmileKey.vpn_ip = data?.ip ?: ""
             runCatching {
                 val config = StringBuilder()
                 activity.assets.open("fast_bloomingvpn.ovpn").use { inputStream ->
@@ -442,7 +455,7 @@ class MainViewModel : ViewModel() {
                                     line.contains(
                                         "remote 103",
                                         true
-                                    ) -> "remote ${data?.bloally} 443"
+                                    ) -> "remote ${data?.ip} 443"
 
                                     else -> line
                                 }
