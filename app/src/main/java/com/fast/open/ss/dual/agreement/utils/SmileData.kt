@@ -18,7 +18,7 @@ object SmileData {
     "blydmit": "1",
     "blymajor": "2",
     "blyyarium": "2",
-    "cont": "10"
+    "cont": "3"
 }    """
     val local_smile_ad_data = """
 {

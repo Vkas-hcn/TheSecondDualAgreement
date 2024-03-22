@@ -98,12 +98,14 @@ class App : Application(), LifecycleObserver {
             }
 
             override fun onActivityResumed(activity: Activity) {
+                Adjust.onResume()
                 if (activity !is AdActivity) {
                     top_activity_smart = activity
                 }
             }
 
             override fun onActivityPaused(activity: Activity) {
+                Adjust.onPause()
                 if (activity is AdActivity) {
                     ad_activity_smart = activity
                 } else {
@@ -191,10 +193,8 @@ class App : Application(), LifecycleObserver {
     private fun initAdJust(application: Application) {
         Adjust.addSessionCallbackParameter("customer_user_id", SmileKey.uuid_smile)
         val appToken = "ih2pm2dr3k74"
-        val environment: String = AdjustConfig.ENVIRONMENT_SANDBOX
+        val environment: String = AdjustConfig.ENVIRONMENT_PRODUCTION
         val config = AdjustConfig(application, appToken, environment)
-        config.setLogLevel(LogLevel.WARN)
-        config.needsCost = true
         config.setOnAttributionChangedListener { attribution ->
             Timber.tag(TAG).e("adjust --data= %s", attribution)
             if (SmileKey.adjust_smile.isEmpty() && attribution.network.isNotEmpty() && attribution.network.contains(

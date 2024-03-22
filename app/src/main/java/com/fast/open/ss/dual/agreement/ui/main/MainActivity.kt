@@ -70,7 +70,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 ),
     ShadowsocksConnection.Callback,
     OnPreferenceDataStoreChangeListener, TimeUtils.TimeUtilsListener {
-
+    var showHomeJob:Job?=null
 
     override fun intiView() {
         clickListener()

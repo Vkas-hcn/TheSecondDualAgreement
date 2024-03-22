@@ -288,8 +288,6 @@ object SmileAdLoad {
             }
 
             override fun onAdShowedFullScreenContent() {
-                Log.d(TAG, "${where} ---showed")
-
             }
 
             override fun onAdClicked() {

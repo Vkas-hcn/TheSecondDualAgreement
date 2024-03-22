@@ -175,7 +175,6 @@ class MainViewModel : ViewModel() {
                 Core.startService()
             }
         }
-
     }
 
 
@@ -345,15 +344,19 @@ class MainViewModel : ViewModel() {
     }
 
     fun showHomeAd(activity: MainActivity) {
-        activity.lifecycleScope.launch {
+        activity.showHomeJob?.cancel()
+        activity.showHomeJob ==null
+        activity.showHomeJob= activity.lifecycleScope.launch {
             delay(300)
             SmileAdLoad.loadOf(SmileKey.POS_HOME)
             if (activity.isVisible() && !App.isBoot) {
-                Log.e(TAG, "showHomeAd: ", )
+                activity.binding.nativeAdView.visibility = View.GONE
+                activity.binding.imgAdType.visibility = View.VISIBLE
                 App.isBoot = true
                 while (isActive) {
                     val adHomeData = SmileAdLoad.resultOf(SmileKey.POS_HOME)
                     if (adHomeData != null) {
+                        Log.e(TAG, "showHomeAd: ", )
                         activity.binding.nativeAdView.visibility = View.VISIBLE
                         SmileAdLoad.showNativeOf(
                             where = SmileKey.POS_HOME,
@@ -363,8 +366,8 @@ class MainViewModel : ViewModel() {
                             onShowCompleted = {
                             }
                         )
-                        cancel()
-                        break
+                        activity.showHomeJob?.cancel()
+                        activity.showHomeJob = null
                     }
                     delay(500)
                 }
