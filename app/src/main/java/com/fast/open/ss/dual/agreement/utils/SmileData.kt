@@ -27,111 +27,41 @@ object SmileData {
     "bluvivics": [
         {
             "we": "c",
-            "id": "ca-app-pub-3940256099942544/9257395921",
+            "id": "ca-app-pub-4419180522015933/1339806637",
             "name": "si_o",
-            "type": "open",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
-        },
-        {
-            "we": "a",
-            "id": "ca-app-pub-3940256099942544/9257395921x",
-            "name": "si_o",
-            "type": "open",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
+            "type": "open"
         }
     ],
     "bluvity": [
         {
             "we": "c",
-            "id": "ca-app-pub-3940256099942544/8691691433",
+            "id": "ca-app-pub-4419180522015933/6400561626",
             "name": "si_c",
-            "type": "interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
-        },
-        {
-            "we": "a",
-            "id": "ca-app-pub-3940256099942544/8691691433x",
-            "name": "si_c",
-            "type": "interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
+            "type": "interstitial"
         }
     ],
     "bluhangan": [
         {
             "we": "c",
-            "id": "ca-app-pub-3940256099942544/1033173712",
+            "id": "ca-app-pub-4419180522015933/1452638655",
             "name": "si_b",
-            "type": "interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
-        },
-        {
-            "we": "a",
-            "id": "ca-app-pub-3940256099942544/1033173712x",
-            "name": "si_b",
-            "type": "interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
+            "type": "interstitial"
         }
     ],
     "blupp": [
         {
             "we": "b",
-            "id": "ca-app-pub-3940256099942544/1033173712",
+            "id": "ca-app-pub-4419180522015933/4293197053",
             "name": "si_in3",
-            "type": "Interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
-        },
-        {
-            "we": "a",
-            "id": "ca-app-pub-3940256099942544/1033173712x",
-            "name": "si_in3",
-            "type": "Interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
+            "type": "Interstitial"
         }
     ],
     "bluads": [
         {
             "we": "c",
-            "id": "ca-app-pub-3940256099942544/5224354917",
+            "id": "ca-app-pub-4419180522015933/7432380182",
             "name": "si_re",
-            "type": "Interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
-        },
-        {
-            "we": "a",
-            "id": "ca-app-pub-3940256099942544/5224354917x",
-            "name": "si_re",
-            "type": "Interstitial",
-            "loadCity": "",
-            "showTheCity": "",
-            "loadIp": "",
-            "showIp": ""
+            "type": "Interstitial"
         }
     ],
     "clickNum": 5,
