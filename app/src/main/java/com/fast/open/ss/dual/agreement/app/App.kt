@@ -55,10 +55,11 @@ class App : Application(), LifecycleObserver {
             MMKV.mmkvWithID("smile", MMKV.MULTI_PROCESS_MODE)
         }
         var isAppRunning = false
-
+        val timeVpnNum = 1*20
         //剩余连接时长
-        var reConnectTime = 60 * 60
+        var reConnectTime = timeVpnNum
         var add30Num = 3
+        var isStopVpn = false
     }
 
     var flag = 0

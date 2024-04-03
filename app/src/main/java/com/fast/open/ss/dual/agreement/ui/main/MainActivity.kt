@@ -190,10 +190,20 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             })
         }
         binding.tvMain30.setOnClickListener {
-            clickAddTimeFun(true)
+            SmileUtils.haveMoreTime({
+                Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
+
+            }, {
+                clickAddTimeFun(true)
+            })
         }
         binding.tvMain60.setOnClickListener {
-            clickAddTimeFun(false)
+            SmileUtils.haveMoreTime({
+                Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
+
+            }, {
+                clickAddTimeFun(false)
+            })
         }
 
 
@@ -443,6 +453,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             binding.showGuide = false
             viewModel.changeOfVpnStatus(this, "2")
         } else {
+            Log.e(TAG, "changeOfVpnStatus: D")
             viewModel.changeOfVpnStatus(this, "0")
         }
     }
@@ -488,13 +499,15 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             }
             App.serviceState = "mo"
         }
-        if (requestCode == 0x567 || requestCode == 567) {
-            lifecycleScope.launch {
-                SmileAdLoad.loadOf(SmileKey.POS_RE)
-                delay(300)
-                binding.showAddTime = true
-                SmileUtils.rotateImageView(binding.imgLoad)
-            }
+        if ((requestCode == 0x567 || requestCode == 567) && App.vpnLink) {
+            SmileUtils.haveMoreTime({
+            }, {
+                lifecycleScope.launch {
+                    SmileAdLoad.loadOf(SmileKey.POS_RE)
+                    delay(300)
+                    binding.showAddTime = true
+                }
+            })
         }
     }
 
@@ -527,11 +540,24 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     }
 
     override fun onTimeChanged() {
-        binding.tvTime.text = TimeData.getTiming()
-        binding.tvDialogTime.text = TimeData.getTiming()
-        if (TimeData.getTiming() == "00:00:00") {
-            Core.stopService()
+        if (App.vpnLink) {
+            if (App.isStopVpn) {
+                lifecycleScope.launch {
+                    Core.stopService()
+                }
+                TimeData.resetCountdown()
+                binding.serviceState = "0"
+                SmileUtils.stopRotation(binding.imgSwitch)
+                binding.imgSwitch.setImageResource(R.drawable.ic_swith)
+            } else {
+                binding.tvTime.text = TimeData.getTiming()
+                binding.tvDialogTime.text = TimeData.getTiming()
+            }
         }
+        SmileUtils.haveMoreTime({
+            binding.tvMain30.background = resources.getDrawable(R.drawable.ic_60mins)
+            binding.tvMain60.background = resources.getDrawable(R.drawable.ic_120mins)
+        }, {})
     }
 
     private fun clickNextFun() {
@@ -632,6 +658,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         var loadNum = SmileKey.local_addNum
         if (num == null) {
             nextFun()
+            return
         }
         if (num != 0 && loadNum <= 0) {
             loadNum = num ?: 0

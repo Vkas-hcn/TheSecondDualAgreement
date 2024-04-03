@@ -21,6 +21,7 @@ import com.fast.open.ss.dual.agreement.bean.ScreenMetrics
 import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.github.shadowsocks.database.Profile
 import android.util.Base64
+import com.fast.open.ss.dual.agreement.app.App
 
 object SmileUtils {
     fun String.getSmileImage():  Int {
@@ -148,5 +149,13 @@ object SmileUtils {
         rotationAnimator.duration = duration
         rotationAnimator.repeatCount = ObjectAnimator.INFINITE
         rotationAnimator.start()
+    }
+
+    fun haveMoreTime(nextFun1:()->Unit,nextFun2:()->Unit){
+        if (App.reConnectTime >= 1000 * 60) {
+            nextFun1()
+        }else{
+            nextFun2()
+        }
     }
 }

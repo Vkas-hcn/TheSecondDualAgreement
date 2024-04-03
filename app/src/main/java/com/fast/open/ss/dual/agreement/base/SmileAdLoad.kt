@@ -10,6 +10,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAdRevenue
+import com.adjust.sdk.AdjustConfig
 import com.fast.open.ss.dual.agreement.app.App
 import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
 import com.fast.open.ss.dual.agreement.bean.SmileAdBean
@@ -340,6 +343,14 @@ object SmileAdLoad {
                                             openAdData
                                         )
                                     }
+
+//                                    val loadedAdapterResponseInfo: AdapterResponseInfo =
+//                                        appOpenAd.getResponseInfo().getLoadedAdapterResponseInfo()
+//
+//                                    val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+//                                    adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode())
+//                                    adRevenue.setAdRevenueNetwork(loadedAdapterResponseInfo.getAdSourceName())
+//                                    Adjust.trackAdRevenue(adRevenue)
                                 }
                             }
                         })

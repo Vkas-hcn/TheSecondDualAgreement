@@ -1,5 +1,7 @@
 package com.fast.open.ss.dual.agreement.utils
 
+import android.util.Log
+import com.fast.open.ss.dual.agreement.app.App
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -39,13 +41,14 @@ class TimeUtils {
         if (isStopThread) {
             TimeData.startCountdown()
             sendTimerInformation()
+        } else {
+            TimeData.startCountdown()
         }
         isStopThread = false
     }
 
     fun endTiming() {
         isStopThread = true
-        job?.cancel()
         TimeData.pauseCountdown()
         listener?.onTimeChanged()
     }
@@ -58,7 +61,6 @@ class TimeUtils {
 
     fun endTimingENd() {
         isStopThread = true
-        job?.cancel()
         listener?.onTimeChanged()
     }
 

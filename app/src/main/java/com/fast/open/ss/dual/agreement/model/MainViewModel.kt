@@ -182,7 +182,7 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun disconnectVpn() {
+    private fun disconnectVpn() {
         if (App.vpnLink) {
             Core.stopService()
         }
@@ -274,6 +274,7 @@ class MainViewModel : ViewModel() {
             if (!App.isBackDataSmile) {
                 jumpToFinishPage(activity, false)
             }
+            Log.e(TAG, "changeOfVpnStatus===A")
             changeOfVpnStatus(activity, "0")
         }
         if (nowClickState == 0) {
@@ -288,6 +289,7 @@ class MainViewModel : ViewModel() {
             if (App.vpnLink) {
                 changeOfVpnStatus(activity, "2")
             } else {
+                Log.e(TAG, "changeOfVpnStatus: B")
                 changeOfVpnStatus(activity, "0")
             }
         }
@@ -323,7 +325,6 @@ class MainViewModel : ViewModel() {
             }
 
             false -> {
-                changeOfVpnStatus(activity, "0")
             }
         }
     }
@@ -333,6 +334,10 @@ class MainViewModel : ViewModel() {
         stateInt: String
     ) {
         val binding = activity.binding
+//        if (binding.serviceState == null || stateInt == binding.serviceState!!) {
+//            return
+//        }
+
         binding.serviceState = stateInt
         Log.e(TAG, "changeOfVpnStatus: ${stateInt}")
         when (stateInt) {
@@ -544,18 +549,22 @@ class MainViewModel : ViewModel() {
         connection.bandwidthTimeout = 0
         jobStartSmile?.cancel()
         jobStartSmile = null
-        if (App.vpnLink) {
-            changeOfVpnStatus(activity, "2")
-        } else {
-            changeOfVpnStatus(activity, "0")
+        if (activity.binding.serviceState == "1") {
+            if (App.vpnLink) {
+                changeOfVpnStatus(activity, "2")
+            } else {
+                Log.e(TAG, "changeOfVpnStatus: C")
+                changeOfVpnStatus(activity, "0")
+            }
         }
+
     }
 
     fun isCanUser(activity: MainActivity): Int {
-        if (isIllegalIp()) {
-            displayCannotUsePopUpBoxes(activity)
-            return 0
-        }
+//        if (isIllegalIp()) {
+//            displayCannotUsePopUpBoxes(activity)
+//            return 0
+//        }
         return 1
     }
 

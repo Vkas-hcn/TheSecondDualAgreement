@@ -2,6 +2,8 @@ package com.fast.open.ss.dual.agreement.utils
 
 import android.util.Log
 import com.fast.open.ss.dual.agreement.app.App
+import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
+import com.fast.open.ss.dual.agreement.app.App.Companion.isStopVpn
 import com.github.shadowsocks.Core
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -17,6 +19,8 @@ object TimeData {
     private var startTime = 0L
     private var pausedTime = 0L
     private var timerJob: Job? = null
+    var userTime = 0
+    var isAddTime= false
     fun sendTimerInformation() {
         timerJob?.cancel()
         timerJob = null
@@ -26,19 +30,22 @@ object TimeData {
                 if (isCounting) {
                     skTime =
                         (App.reConnectTime - ((System.currentTimeMillis() - startTime) / 1000)).toInt()
+                    userTime= skTime
                     if (skTime <= 0) {
-                        Core.stopService()
                         skTime = 0
                         isCounting = false
+                        isStopVpn = true
                     }
                 }
             }
         }
     }
 
+
+
     fun startCountdown() {
         isCounting = true
-        if (skTime == App.reConnectTime) {
+        if (skTime == App.reConnectTime || isAddTime) {
             startTime = System.currentTimeMillis()
         } else {
             startTime += System.currentTimeMillis() - pausedTime
@@ -47,16 +54,19 @@ object TimeData {
 
     fun pauseCountdown() {
         isCounting = false
+        isAddTime =false
         pausedTime = System.currentTimeMillis()
     }
 
     fun resetCountdown() {
+        isStopVpn = false
         isCounting = false
-        timerJob?.cancel()
-        skTime = SmileKey.reConnectTime
+        App.reConnectTime = App.timeVpnNum
+        skTime = App.reConnectTime
+        sendTimerInformation()
     }
 
-     fun formatTime(timerData: Int): String {
+    fun formatTime(timerData: Int): String {
         val hh: String = DecimalFormat("00").format(timerData / 3600)
         val mm: String = DecimalFormat("00").format(timerData % 3600 / 60)
         val ss: String = DecimalFormat("00").format(timerData % 60)
@@ -68,7 +78,11 @@ object TimeData {
         return formatTime(skTime)
     }
 
-    fun getTimingDialog(time:Int): String {
-        return formatTime(skTime+time)
+    fun getUserTime(): String {
+        return formatTime(userTime)
+    }
+
+    fun getTimingDialog(time: Int): String {
+        return formatTime(skTime + time)
     }
 }

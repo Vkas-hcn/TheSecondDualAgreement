@@ -67,7 +67,7 @@ class FinishViewModel : ViewModel() {
     }
 
     suspend fun addTimeSuccess(time: Int, activity: FinishActivity) {
-        Log.e(TAG, "addTimeSuccess: ${activity.isVisible()}")
+        Log.e(TAG, "addTimeSuccess-fin: ${TimeData.userTime}")
         delay(300)
         if (activity.isVisible()) {
             App.reConnectTime = App.reConnectTime + time

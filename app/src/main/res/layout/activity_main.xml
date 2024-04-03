@@ -67,14 +67,26 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="30dp"
             android:text="00:00:00"
-            android:textColor="@{serviceState.equals(`2`) ? @color/color_connect : @color/color_3}"
+            android:textColor="@color/color_connect"
+            android:visibility="@{serviceState.equals(`2`) ? View.VISIBLE : View.GONE}"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="@+id/img_bg"
             app:layout_constraintStart_toStartOf="@+id/img_bg"
             app:layout_constraintTop_toTopOf="@+id/img_bg" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_connect_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remaining Connection Time"
+            android:textColor="@color/color_3"
+            android:textSize="12sp"
+            android:visibility="@{serviceState.equals(`2`) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="@+id/img_bg"
+            app:layout_constraintStart_toStartOf="@+id/img_bg"
+            app:layout_constraintTop_toBottomOf="@+id/tv_time" />
         <ImageView
             android:id="@+id/img_connect"
             android:layout_width="164dp"

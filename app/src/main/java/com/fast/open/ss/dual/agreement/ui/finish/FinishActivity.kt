@@ -82,11 +82,16 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
 
     @SuppressLint("SetTextI18n")
     override fun initData() {
-        lifecycleScope.launch {
-            SmileAdLoad.loadOf(SmileKey.POS_RE)
-            delay(300)
-            binding.showAddTime = App.vpnLink
-        }
+        SmileUtils.haveMoreTime({
+            Toast.makeText(this@FinishActivity, "Usage limit reached today", Toast.LENGTH_SHORT)
+                .show()
+        }, {
+            lifecycleScope.launch {
+                SmileAdLoad.loadOf(SmileKey.POS_RE)
+                delay(300)
+                binding.showAddTime = App.vpnLink
+            }
+        })
         if (App.vpnLink) {
             binding.serviceState = "2"
             binding.tvTitle.text = "Connected succeed"
@@ -97,18 +102,18 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
             binding.tvTitle.text = "VPN disconnect"
         }
         binding.tvEnd30.setOnClickListener {
-            if (App.reConnectTime >= 1000 * 60) {
+            SmileUtils.haveMoreTime({
                 Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
-            } else {
+            }, {
                 clickAddTimeFun(true)
-            }
+            })
         }
         binding.tvEnd60.setOnClickListener {
-            if (App.reConnectTime >= 1000 * 60) {
+            SmileUtils.haveMoreTime({
                 Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
-            } else {
+            }, {
                 clickAddTimeFun(false)
-            }
+            })
         }
 
         binding.imgAddSuccessX.setOnClickListener {
@@ -166,6 +171,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
         var loadNum = SmileKey.local_addNum
         if (num == null) {
             nextFun()
+            return
         }
         if (num != 0 && loadNum <= 0) {
             loadNum = num ?: 0
@@ -258,17 +264,26 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
     }
 
     override fun onTimeChanged() {
-        binding.tvTime.text = TimeData.getTiming()
-        binding.tvDialogTime.text = TimeData.getTiming()
+        val time = TimeData.getTiming()
+        val userTime = TimeData.getUserTime()
+        if (App.vpnLink) {
+            binding.tvTime.text = time
+            binding.tvDialogTime.text = time
+        } else {
+            binding.tvTime.text = userTime
+            binding.tvDialogTime.text = userTime
+        }
+        SmileUtils.haveMoreTime({
+            binding.tvEnd30.background = resources.getDrawable(R.drawable.ic_60mins)
+            binding.tvEnd60.background = resources.getDrawable(R.drawable.ic_120mins)
+        }, {})
     }
 
     override fun onResume() {
         super.onResume()
-        if (App.reConnectTime >= 1000 * 60) {
-            binding.tvEnd30.background = resources.getDrawable(R.drawable.ic_60mins)
-            binding.tvEnd60.background = resources.getDrawable(R.drawable.ic_120mins)
-        }
+
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

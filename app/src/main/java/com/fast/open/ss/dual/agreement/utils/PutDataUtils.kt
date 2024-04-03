@@ -6,18 +6,23 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.webkit.WebSettings
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAdRevenue
+import com.adjust.sdk.AdjustConfig
 import com.android.installreferrer.api.ReferrerDetails
 import com.facebook.appevents.AppEventsLogger
 import com.fast.open.ss.dual.agreement.BuildConfig
 import com.fast.open.ss.dual.agreement.app.App
 import com.fast.open.ss.dual.agreement.bean.AdInformation
 import com.google.android.gms.ads.AdValue
+import com.google.android.gms.ads.AdapterResponseInfo
 import com.google.android.gms.ads.ResponseInfo
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import org.json.JSONObject
 import java.util.Currency
 import java.util.Locale
 import java.util.UUID
+
 
 object PutDataUtils {
     private fun firstJsonData(context: Context): JSONObject {
@@ -274,6 +279,7 @@ object PutDataUtils {
 //    }
 
     fun postAdOnline(adValue: Long) {
+
         if (BuildConfig.DEBUG) {
             return
         }

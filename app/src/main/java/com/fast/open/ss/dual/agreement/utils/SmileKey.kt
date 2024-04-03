@@ -61,15 +61,7 @@ object SmileKey {
             field = value
         }
         get() = sharedPreferences.getInt("local_addNum", 0)
-    var reConnectTime = 60 * 60
-        set(value) {
-            sharedPreferences.edit().run {
-                putInt("reConnectTime", value)
-                commit()
-            }
-            field = value
-        }
-        get() = sharedPreferences.getInt("reConnectTime", 60 * 60)
+
     var ump_data_dialog = false
         set(value) {
             sharedPreferences.edit().run {

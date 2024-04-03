@@ -19,7 +19,7 @@ object SmileData {
     "blymajor": "1",
     "blyyarium": "1",
     "cont": "10",
-    "adNum":"a"
+    "adNum":"1"
 }    """
 
     val local_smile_ad_data = """
@@ -115,7 +115,7 @@ object SmileData {
     "bluads": [
         {
             "we": "c",
-            "id": "ca-app-pub-3940256099942544/5224354917x",
+            "id": "ca-app-pub-3940256099942544/5224354917",
             "name": "si_re",
             "type": "Interstitial",
             "loadCity": "",
