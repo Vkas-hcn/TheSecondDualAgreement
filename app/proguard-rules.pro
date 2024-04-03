@@ -48,3 +48,5 @@
 -keep class com.fast.open.ss.dual.agreement.bean.SmileFlowBean { *; }
 -keep class com.fast.open.ss.dual.agreement.bean.SmileRefBean { *; }
 -keep class com.fast.open.ss.dual.agreement.bean.VpnServiceBean { *; }
+-keep class com.fast.open.ss.dual.agreement.bean.OnlineBean { *; }
+-keep class com.fast.open.ss.dual.agreement.bean.Data { *; }

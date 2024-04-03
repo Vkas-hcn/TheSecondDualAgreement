@@ -30,9 +30,9 @@ object UserConter {
         if (referrer.isNotBlank()) {
             return
         }
-//        installReferrer = "gclid"
+        installReferrer = "facebook"
 //        installReferrer = "utm_source=(not%20set)&utm_medium=(not%20set)"
-//        SmileKey.local_ref = installReferrer
+        SmileKey.local_ref = installReferrer
         runCatching {
             val referrerClient = InstallReferrerClient.newBuilder(context).build()
             referrerClient.startConnection(object : InstallReferrerStateListener {
@@ -41,7 +41,7 @@ object UserConter {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
-                            SmileKey.local_ref = installReferrer
+//                            SmileKey.local_ref = installReferrer
                             referrerClient.installReferrer?.run {
                                 SmileNetHelp.postInstallData(App.getAppContext(),this)
                             }

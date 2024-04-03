@@ -13,5 +13,6 @@ data class SmileFlowBean(
     @SerializedName("blyyarium")
     val flowAround: String = "",
 
-    val cont: String = "0"
+    val cont: String = "0",
+    val adNum:String = "0"
 ) : Serializable

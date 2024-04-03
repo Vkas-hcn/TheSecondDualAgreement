@@ -59,6 +59,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.text.DecimalFormat
 import java.util.Locale
 import kotlin.system.exitProcess
 
@@ -68,6 +69,7 @@ class MainViewModel : ViewModel() {
     val connection = ShadowsocksConnection(true)
     var whetherRefreshServer = false
     var jobStartSmile: Job? = null
+    var jobRewardedSmile: Job? = null
 
     var nowClickState: Int = 1
 
@@ -106,9 +108,7 @@ class MainViewModel : ViewModel() {
                 Gson().fromJson(serviceData, object : TypeToken<VpnServiceBean?>() {}.type)
             setFastInformation(currentServerData, binding)
         }
-
     }
-
 
     fun changeState(
         state: BaseService.State = BaseService.State.Idle,
@@ -150,7 +150,7 @@ class MainViewModel : ViewModel() {
      * 启动VPN
      */
     private fun startVpn(activity: AppCompatActivity) {
-        jobStartSmile = activity.lifecycleScope.launch {
+        jobStartSmile = activity.lifecycleScope.launch(Dispatchers.Main) {
             nowClickState = if (App.vpnLink) {
                 2
             } else {
@@ -163,17 +163,21 @@ class MainViewModel : ViewModel() {
     }
 
     private suspend fun connectVpn(activity: MainActivity) {
-        if (!App.vpnLink) {
-            if (activity.binding.agreement == "1") {
-                mService?.let {
-                    setOpenData(activity, it)
+        try {
+            if (!App.vpnLink) {
+                if (activity.binding.agreement == "1") {
+                    mService?.let {
+                        setOpenData(activity, it)
+                    }
+                    Core.stopService()
+                } else {
+                    delay(2000)
+                    Core.startService()
+                    mService?.disconnect()
                 }
-                Core.stopService()
-            } else {
-                delay(2000)
-                mService?.disconnect()
-                Core.startService()
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "connectVpn:Exception-$e ")
         }
     }
 
@@ -187,14 +191,14 @@ class MainViewModel : ViewModel() {
 
     private suspend fun loadSmileAdvertisements(activity: AppCompatActivity) {
         val contData = try {
-            (SmileKey.getFlowJson().cont.toLong())*1000
-        }catch (e:Exception){
+            (SmileKey.getFlowJson().cont.toLong()) * 1000
+        } catch (e: Exception) {
             10000L
         }
         try {
             withTimeout(contData) {
-                delay(2000L)
                 while (isActive) {
+                    delay(2000)
                     if (SmileAdLoad.resultOf(SmileKey.POS_CONNECT) != null) {
                         showConnectLive.value = SmileAdLoad.resultOf(SmileKey.POS_CONNECT)
                         cancel()
@@ -223,33 +227,69 @@ class MainViewModel : ViewModel() {
         )
     }
 
+
+    fun loadSmileRewarded(activity: MainActivity) {
+        jobRewardedSmile = activity.lifecycleScope.launch(Dispatchers.Main) {
+            try {
+                withTimeout(12000) {
+                    activity.binding.showLoading = true
+                    delay(1000L)
+                    while (isActive) {
+                        if (SmileAdLoad.resultOf(SmileKey.POS_RE) != null) {
+                            SmileAdLoad.resultOf(SmileKey.POS_RE)
+                                ?.let { showRewardedFun(activity, it) }
+                            cancel()
+                            jobRewardedSmile?.cancel()
+                            jobRewardedSmile = null
+                        }
+                        delay(500L)
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                activity.binding.showLoading = false
+                addTimeSuccess(60 * 60, activity)
+            }
+        }
+    }
+
+    private fun showRewardedFun(activity: MainActivity, it: Any) {
+        SmileAdLoad.showFullScreenOf(
+            where = SmileKey.POS_RE,
+            context = activity,
+            res = it,
+            preload = true,
+            onShowCompleted = {
+                activity.lifecycleScope.launch {
+                    activity.binding.showLoading = false
+                    addTimeSuccess(60 * 60, activity)
+                }
+            }
+        )
+    }
+
     fun connectOrDisconnectSmile(activity: MainActivity, isOpenJump: Boolean = false) {
         if (nowClickState == 2) {
-//            if(App.vpnLink){
-//                Toast.makeText(activity, "VPN is connecting. Please try again later.", Toast.LENGTH_SHORT).show()
-//                return
-//            }
             mService?.disconnect()
             disconnectVpn()
-            changeOfVpnStatus(activity, "0")
             if (!App.isBackDataSmile) {
                 jumpToFinishPage(activity, false)
             }
+            changeOfVpnStatus(activity, "0")
         }
         if (nowClickState == 0) {
-//            if(!App.vpnLink){
-//                Toast.makeText(activity, "The connection failed", Toast.LENGTH_SHORT).show()
-//                return
-//            }
             if (!isOpenJump) {
                 if (activity.binding.agreement == "1") {
                     return
                 }
             }
-            if (!App.isBackDataSmile) {
+            if (!App.isBackDataSmile && App.vpnLink) {
                 jumpToFinishPage(activity, true)
             }
-            changeOfVpnStatus(activity, "2")
+            if (App.vpnLink) {
+                changeOfVpnStatus(activity, "2")
+            } else {
+                changeOfVpnStatus(activity, "0")
+            }
         }
 
     }
@@ -277,35 +317,17 @@ class MainViewModel : ViewModel() {
         val binding = (activity as MainActivity).binding
         when (vpnLink) {
             true -> {
-                // 连接成功
-                connectionServerSuccessful(binding)
+                binding.serviceState = "2"
+                SmileAdLoad.loadOf(SmileKey.POS_INT3)
+                SmileAdLoad.loadOf(SmileKey.POS_RE)
             }
 
             false -> {
-                disconnectServerSuccessful(binding)
+                changeOfVpnStatus(activity, "0")
             }
         }
     }
 
-    /**
-     * 连接服务器成功
-     */
-    fun connectionServerSuccessful(binding: ActivityMainBinding) {
-        binding.serviceState = "2"
-    }
-
-    /**
-     * 断开服务器
-     */
-    fun disconnectServerSuccessful(binding: ActivityMainBinding) {
-
-
-    }
-
-    /**
-     * vpn状态变化
-     * 是否连接
-     */
     fun changeOfVpnStatus(
         activity: MainActivity,
         stateInt: String
@@ -343,35 +365,38 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun showHomeAd(activity: MainActivity) {
-        activity.showHomeJob?.cancel()
-        activity.showHomeJob ==null
-        activity.showHomeJob= activity.lifecycleScope.launch {
-            delay(300)
-            SmileAdLoad.loadOf(SmileKey.POS_HOME)
-            if (activity.isVisible() && !App.isBoot) {
-                activity.binding.nativeAdView.visibility = View.GONE
-                activity.binding.imgAdType.visibility = View.VISIBLE
-                App.isBoot = true
-                while (isActive) {
-                    val adHomeData = SmileAdLoad.resultOf(SmileKey.POS_HOME)
-                    if (adHomeData != null) {
-                        Log.e(TAG, "showHomeAd: ", )
-                        activity.binding.nativeAdView.visibility = View.VISIBLE
-                        SmileAdLoad.showNativeOf(
-                            where = SmileKey.POS_HOME,
-                            nativeRoot = activity.binding.nativeAdView,
-                            res = adHomeData,
-                            preload = true,
-                            onShowCompleted = {
-                            }
-                        )
-                        activity.showHomeJob?.cancel()
-                        activity.showHomeJob = null
+    fun showInt3Fun(addNum: Int, it: Any, activity: MainActivity) {
+        SmileAdLoad.showFullScreenOf(
+            where = SmileKey.POS_INT3,
+            context = activity,
+            res = it,
+            preload = true,
+            onShowCompleted = {
+                if (addNum != 0) {
+                    activity.lifecycleScope.launch(Dispatchers.Main) {
+                        addTimeSuccess(addNum, activity)
                     }
-                    delay(500)
+                } else {
+                    activity.binding.showAddTime = false
                 }
             }
+        )
+    }
+
+    suspend fun addTimeSuccess(time: Int, activity: MainActivity) {
+        delay(300)
+        if (activity.isVisible()) {
+            App.reConnectTime = App.reConnectTime + time
+            activity.binding.tvAddTime.text = if (time >= 60 * 60) {
+                "+60mins"
+            } else {
+                "+30mins"
+            }
+            activity.binding.tvTimeTip.text =
+                "Your remaining duration is ${TimeData.getTimingDialog(time)}"
+            activity.binding.showAddSuccess = true
+            activity.binding.showAddTime = false
+            SmileAdLoad.loadOf(SmileKey.POS_RE)
         }
     }
 
@@ -434,7 +459,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun setOpenData(activity: MainActivity, server: IOpenVPNAPIService): Job {
+    private fun setOpenData(activity: MainActivity, server: IOpenVPNAPIService): Job {
         return MainScope().launch(Dispatchers.IO) {
             val data = SmileKey.check_service.isEmpty().let {
                 if (it) {
@@ -450,7 +475,7 @@ class MainViewModel : ViewModel() {
             SmileKey.vpn_ip = data?.ip ?: ""
             runCatching {
                 val config = StringBuilder()
-                activity.assets.open("fast_bloomingvpn.ovpn").use { inputStream ->
+                activity.assets.open("fast_ippooltest.ovpn").use { inputStream ->
                     inputStream.bufferedReader().use { reader ->
                         reader.forEachLine { line ->
                             config.append(
@@ -517,7 +542,7 @@ class MainViewModel : ViewModel() {
 
     fun stopOperate(activity: MainActivity) {
         connection.bandwidthTimeout = 0
-        jobStartSmile?.cancel() // 取消执行方法的协程
+        jobStartSmile?.cancel()
         jobStartSmile = null
         if (App.vpnLink) {
             changeOfVpnStatus(activity, "2")
@@ -527,10 +552,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun isCanUser(activity: MainActivity): Int {
-//        if (isIllegalIp()) {
-//            displayCannotUsePopUpBoxes(activity)
-//            return 0
-//        }
+        if (isIllegalIp()) {
+            displayCannotUsePopUpBoxes(activity)
+            return 0
+        }
         return 1
     }
 
@@ -571,13 +596,11 @@ class MainViewModel : ViewModel() {
         dialogVpn.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(Color.BLACK)
     }
 
-    //适配小屏幕
     fun adaptsToSmallScreens(activity: MainActivity) {
         val data = SmileUtils.getScreenMetrics(activity)
         val binding = activity.binding
         if (data.height <= 1900) {
             SmileUtils.resizeView(binding.imgBg, -1, 730)
-//            SmileUtils.resizeView(binding.flAd, -1, 600)
         }
     }
 

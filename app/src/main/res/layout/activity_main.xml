@@ -22,7 +22,20 @@
             type="Boolean"
             android:value="false" />
 
+        <variable
+            name="showLoading"
+            type="Boolean"
+            android:value="false" />
 
+        <variable
+            name="showAddTime"
+            type="Boolean"
+            android:value="false" />
+
+        <variable
+            name="showAddSuccess"
+            type="Boolean"
+            android:value="false" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,7 +52,6 @@
             android:src="@drawable/ic_setting"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <ImageView
             android:id="@+id/img_bg"
@@ -112,17 +124,59 @@
                 android:src="@drawable/ic_swith" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_main_30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_60mins"
+            android:gravity="center"
+            android:text="+30mins"
+            android:textColor="#FF333333"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="@{serviceState.equals(`2`) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toStartOf="@+id/tv_main_60"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_bg" />
+
+        <TextView
+            android:id="@+id/tv_main_60"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_120mins"
+            android:gravity="center"
+            android:text="+60mins"
+            android:textColor="#FF333333"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="@{serviceState.equals(`2`) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_main_30"
+            app:layout_constraintTop_toBottomOf="@+id/img_bg" />
+
+        <ImageView
+            android:id="@+id/img_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_ad_oc"
+            app:layout_constraintEnd_toEndOf="@+id/tv_main_60"
+            app:layout_constraintTop_toTopOf="@+id/tv_main_60" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="12dp"
             android:background="@drawable/bg_mode"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_bg">
+            app:layout_constraintTop_toBottomOf="@+id/tv_main_60">
 
             <TextView
                 android:id="@+id/tv_auto"
@@ -186,6 +240,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_margin="12dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -302,6 +357,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <View
             android:id="@+id/view_guide_smile"
             android:layout_width="match_parent"
@@ -323,9 +379,214 @@
             app:lottie_imageAssetsFolder="images"
             app:lottie_loop="true" />
 
+        <View
+            android:id="@+id/view_add_time_smile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#87000000"
+            android:visibility="@{showAddTime ? View.VISIBLE : View.GONE}" />
+
+        <LinearLayout
+            android:id="@+id/ll_add_time"
+            android:layout_width="match_parent"
+            android:layout_height="255dp"
+            android:layout_marginHorizontal="16sp"
+            android:background="@drawable/bg_add_time"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="26dp"
+            android:visibility="@{showAddTime ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_add_x"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="14dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_dialog_x" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remaining Connection Time: "
+                android:textColor="#FF333333"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_dialog_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="00:00:00"
+                android:textColor="#FF4EBD12"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Automatically disconnect after expiration."
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
+
+                <TextView
+                    android:id="@+id/tv_main_30_dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_60mins"
+                    android:gravity="center"
+                    android:text="+30mins"
+                    android:textColor="#FF333333"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_main_60_dialog"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_main_60_dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_120mins"
+                    android:gravity="center"
+                    android:text="+60mins"
+                    android:textColor="#FF333333"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_main_30_dialog"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/img_type_dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_ad_oc"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_main_60_dialog"
+                    app:layout_constraintTop_toTopOf="@+id/tv_main_60_dialog" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_add_success"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16sp"
+            android:background="@drawable/bg_add_time"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="26dp"
+            android:visibility="@{showAddSuccess ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_add_success_x"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="14dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_dialog_x" />
+
+            <TextView
+                android:id="@+id/tv_add_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+60mins"
+                android:textColor="#FF4EBD12"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Success！"
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_time_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your remaining duration is 01:29:05"
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_main_go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bg_120mins"
+                android:gravity="center"
+                android:text="Go"
+                android:textColor="#FF333333"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_main_30_dialog"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+        <View
+            android:id="@+id/view_loading_smile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#87000000"
+            android:visibility="@{showLoading ? View.VISIBLE : View.GONE}" />
+        <LinearLayout
+            android:id="@+id/ll_loading"
+            android:layout_width="168dp"
+            android:layout_height="130dp"
+            android:background="@drawable/bg_loading"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{showLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_load"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_connecting" />
+
+            <TextView
+                android:id="@+id/tv_load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading..."
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+        </LinearLayout>
+
         <include
             android:id="@+id/il_setting"
             layout="@layout/layout_setting"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

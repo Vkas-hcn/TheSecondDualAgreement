@@ -5,30 +5,33 @@ import com.google.gson.annotations.SerializedName
 
 data class SmileAdBean(
     @SerializedName("bluvivics")
-    val open_smile: String = "",
+    val open_smile: MutableList<AdInformation> = ArrayList(),
 
-    @SerializedName("bluagr")
-    val home_smile: String = "",
-
-    @SerializedName("blumiso")
-    val end_smile: String = "",
 
     @SerializedName("bluvity")
-    val connect_smile: String = "",
+    val connect_smile: MutableList<AdInformation> = ArrayList(),
 
     @SerializedName("bluhangan")
-    val back_smile: String = "",
+    val back_smile: MutableList<AdInformation> = ArrayList(),
 
+    @SerializedName("blupp")
+    val int3: MutableList<AdInformation> = ArrayList(),
+
+    @SerializedName("bluads")
+    val rewarded: MutableList<AdInformation> = ArrayList(),
+
+    val clickNum:Int,
+    val showNum:Int,
 )
 
 @Keep
 data class AdInformation(
-    var id: String?=null,
-    var where: String?=null,
-    var name:String?=null,
-    var type: String?=null,
-    var loadCity: String?=null,
-    var showTheCity: String?=null,
-    var loadIp: String?=null,
-    var showIp: String?=null,
+    var id: String? = null,
+    var name: String? = null,
+    var type: String? = null,
+    var we: String? = null,
+    var loadCity: String? = null,
+    var showTheCity: String? = null,
+    var loadIp: String? = null,
+    var showIp: String? = null,
 )

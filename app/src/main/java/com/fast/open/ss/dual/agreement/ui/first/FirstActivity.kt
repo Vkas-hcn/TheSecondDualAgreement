@@ -15,7 +15,12 @@ import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
+import com.google.android.ump.ConsentDebugSettings
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
@@ -33,11 +38,11 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
 
     private var jobOpenSmile: Job? = null
     var count = 0
-
+    private lateinit var consentInformation: ConsentInformation
     override fun initData() {
         showOpenFun()
         countDown()
-
+        updateUserOpinions()
         viewModel.toMainLive.observe(this) {
             startActivityFirst<MainActivity>()
             finish()
@@ -52,13 +57,12 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
         viewModel.getFileBaseData(this) {
             SmileAdLoad.isLoadOpenFist = false
             SmileAdLoad.init(this)
-            loadOpenAd()
+            waitForTheOpenAdToAppear()
         }
     }
 
     private fun countDown() {
         lifecycleScope.launch {
-            //跳转到主页
             while (true) {
                 count += 1
                 binding.progressBarFirst.progress = count
@@ -71,7 +75,14 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
         }
     }
 
+
     private fun loadOpenAd() {
+        SmileKey.isAppGreenSameDayGreen()
+        if (SmileKey.isThresholdReached()) {
+            Log.d("TAG", "广告达到上线")
+            viewModel.toMainLive.postValue("")
+            return
+        }
         jobOpenSmile?.cancel()
         jobOpenSmile = null
         jobOpenSmile = lifecycleScope.launch {
@@ -98,6 +109,18 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
         }
     }
 
+    private fun waitForTheOpenAdToAppear() {
+        GlobalScope.launch {
+            while (isActive) {
+                if (SmileKey.ump_data_dialog) {
+                    loadOpenAd()
+                    cancel()
+                }
+                delay(500)
+            }
+        }
+    }
+
     private fun showOpenFun() {
         viewModel.showOpen.observe(this) {
             SmileAdLoad.showFullScreenOf(
@@ -112,6 +135,36 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
                 }
             )
         }
+    }
+
+    private fun updateUserOpinions() {
+        if (SmileKey.ump_data_dialog) {
+            return
+        }
+
+        val debugSettings =
+            ConsentDebugSettings.Builder(this)
+                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                .addTestDeviceHashedId("AC2561437987A1BF036B1ADB0A89BDB4")
+                .build()
+        val params = ConsentRequestParameters
+            .Builder()
+            .setConsentDebugSettings(debugSettings)
+            .build()
+        consentInformation = UserMessagingPlatform.getConsentInformation(this)
+        consentInformation.requestConsentInfoUpdate(
+            this,
+            params, {
+                UserMessagingPlatform.loadAndShowConsentFormIfRequired(this) { loadAndShowError ->
+                    if (consentInformation.canRequestAds()) {
+                        SmileKey.ump_data_dialog = true
+                    }
+                }
+            },
+            {
+                SmileKey.ump_data_dialog = true
+            }
+        )
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

@@ -1,5 +1,6 @@
 package com.fast.open.ss.dual.agreement.utils
 
+import android.animation.ObjectAnimator
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
@@ -78,7 +79,8 @@ object SmileUtils {
         val activeNetwork = connectivityManager.activeNetwork ?: return false
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
         if (networkCapabilities != null) {
-            return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+            return (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ||
+                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
         }
         return false
     }
@@ -140,5 +142,11 @@ object SmileUtils {
         val trimmedString = responseString.substring(14)
         val reversedString = trimmedString.reversed()
         return String(Base64.decode(reversedString?.toByteArray(), Base64.DEFAULT))
+    }
+    fun rotateImageView(imageView: ImageView, duration: Long = 1000L) {
+        val rotationAnimator = ObjectAnimator.ofFloat(imageView, View.ROTATION, 0f, 360f)
+        rotationAnimator.duration = duration
+        rotationAnimator.repeatCount = ObjectAnimator.INFINITE
+        rotationAnimator.start()
     }
 }

@@ -55,11 +55,14 @@ class App : Application(), LifecycleObserver {
             MMKV.mmkvWithID("smile", MMKV.MULTI_PROCESS_MODE)
         }
         var isAppRunning = false
+
+        //剩余连接时长
+        var reConnectTime = 60 * 60
+        var add30Num = 3
     }
 
     var flag = 0
     var job_smart: Job? = null
-
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(this)
@@ -93,6 +96,7 @@ class App : Application(), LifecycleObserver {
                 } else {
                     ad_activity_smart = activity
                 }
+
                 flag++
                 isBackDataSmile = false
             }
@@ -178,6 +182,7 @@ class App : Application(), LifecycleObserver {
             FirebaseApp.initializeApp(this)
             ProcessLifecycleOwner.get().lifecycle.addObserver(this)
             setActivityLifecycleSmart(this)
+            SmileKey.isAppGreenSameDayGreen()
             val data = SmileKey.uuid_smile
             if (data.isEmpty()) {
                 SmileKey.uuid_smile = UUID.randomUUID().toString()
@@ -187,6 +192,8 @@ class App : Application(), LifecycleObserver {
             SmileNetHelp.postSessionData(this)
             initAdJust(this)
             getGid(this)
+            Core.stopService()
+            SmileKey.local_addNum = 0
         }
     }
 

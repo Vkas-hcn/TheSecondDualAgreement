@@ -12,6 +12,9 @@ import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp.getOnlineSmData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 object SmileKey {
     const val SHARE_URL = "https://play.google.com/store/apps/details?id="
@@ -30,17 +33,17 @@ object SmileKey {
     const val cuSmileConnected = "cuSmileConnected"
 
     const val POS_OPEN = "si_o"
-    const val POS_HOME = "si_h"
     const val POS_CONNECT = "si_c"
     const val POS_BACK = "si_b"
-    const val POS_RESULT = "si_r"
+
+    const val POS_INT3 = "si_in3"
+    const val POS_RE = "si_re"
 
     const val vpn_data_type = "blo"
     const val fast_data_type = "blm"
     const val ad_data_type = "blu"
     const val user_data_type = "blg"
     const val lj_data_type = "bly"
-
     var gidData = ""
     private val sharedPreferences by lazy {
         App.getAppContext().getSharedPreferences(
@@ -49,6 +52,33 @@ object SmileKey {
         )
     }
 
+    var local_addNum = 0
+        set(value) {
+            sharedPreferences.edit().run {
+                putInt("local_addNum", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getInt("local_addNum", 0)
+    var reConnectTime = 60 * 60
+        set(value) {
+            sharedPreferences.edit().run {
+                putInt("reConnectTime", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getInt("reConnectTime", 60 * 60)
+    var ump_data_dialog = false
+        set(value) {
+            sharedPreferences.edit().run {
+                putBoolean("ump_data_dialog", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getBoolean("ump_data_dialog", false)
     var vpn_online_data = "vpn_online_data"
         set(value) {
             sharedPreferences.edit().run {
@@ -206,6 +236,37 @@ object SmileKey {
         }
         get() = sharedPreferences.getString("adjust_smile", "").toString()
 
+
+    var current_smile_date = ""
+        set(value) {
+            sharedPreferences.edit().run {
+                putString("current_smile_date", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getString("current_smile_date", "").toString()
+
+    var clicks_smile_count = 0
+        set(value) {
+            sharedPreferences.edit().run {
+                putInt("clicks_smile_count", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getInt("clicks_smile_count", 0)
+
+    var show_smile_count = 0
+        set(value) {
+            sharedPreferences.edit().run {
+                putInt("show_smile_count", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getInt("show_smile_count", 0)
+
     fun decodeBase64(str: String): String {
         return String(android.util.Base64.decode(str, android.util.Base64.DEFAULT))
     }
@@ -312,4 +373,63 @@ object SmileKey {
         }
     }
 
+    /**
+     * 是否达到阀值
+     */
+    fun isThresholdReached(): Boolean {
+        return clicks_smile_count >= getAdJson().clickNum || show_smile_count >= getAdJson().showNum
+    }
+
+    /**
+     * 记录广告展示次数
+     */
+    fun recordNumberOfAdDisplaysGreen() {
+        var showCount = show_smile_count
+        showCount++
+        show_smile_count = showCount
+    }
+
+    /**
+     * 记录广告点击次数
+     */
+    fun recordNumberOfAdClickGreen() {
+        var clicksCount = clicks_smile_count
+        clicksCount++
+        clicks_smile_count = clicksCount
+    }
+
+    fun isAppGreenSameDayGreen() {
+        if (current_smile_date == "") {
+            current_smile_date = formatDateNow()
+        } else {
+            if (dateAfterDate(current_smile_date, formatDateNow())) {
+                current_smile_date = formatDateNow()
+                clicks_smile_count = 0
+                show_smile_count = 0
+            }
+        }
+    }
+
+    private fun formatDateNow(): String {
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val date = Date()
+        return simpleDateFormat.format(date)
+    }
+
+    fun dateAfterDate(startTime: String?, endTime: String?): Boolean {
+        val format = SimpleDateFormat("yyyy-MM-dd")
+        try {
+            val startDate: Date = format.parse(startTime)
+            val endDate: Date = format.parse(endTime)
+            val start: Long = startDate.getTime()
+            val end: Long = endDate.getTime()
+            if (end > start) {
+                return true
+            }
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            return false
+        }
+        return false
+    }
 }

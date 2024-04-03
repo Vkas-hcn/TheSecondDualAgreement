@@ -1,5 +1,8 @@
 package com.fast.open.ss.dual.agreement.ui.main
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
@@ -58,11 +61,17 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import android.text.format.Formatter
+import android.view.animation.LinearInterpolator
+import androidx.activity.addCallback
 import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.UserConter
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
@@ -70,18 +79,30 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 ),
     ShadowsocksConnection.Callback,
     OnPreferenceDataStoreChangeListener, TimeUtils.TimeUtilsListener {
-    var showHomeJob:Job?=null
-
+    var jobMainInt: Job? = null
     override fun intiView() {
         clickListener()
         initVpnSetting()
         setServiceData()
-
     }
 
     override fun initData() {
+        binding.showAddTime = false
         if (viewModel.isCanUser(this) != 0) {
             viewModel.initData(this, this)
+        }
+        onBackPressedDispatcher.addCallback(this) {
+            if (binding.showGuide == true || binding.ilSetting.root.visibility == View.VISIBLE) {
+                binding.showGuide = false
+                binding.ilSetting.root.visibility = View.GONE
+            } else {
+                if (binding.showAddTime == true || binding.showAddSuccess == true || binding.showLoading == true) {
+                    return@addCallback
+                }
+                viewModel.clickChange(this@MainActivity, nextFun = {
+                    finish()
+                })
+            }
         }
     }
 
@@ -167,6 +188,32 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             viewModel.clickChange(this, nextFun = {
                 viewModel.jumpToServerList(this)
             })
+        }
+        binding.tvMain30.setOnClickListener {
+            clickAddTimeFun(true)
+        }
+        binding.tvMain60.setOnClickListener {
+            clickAddTimeFun(false)
+        }
+
+
+        binding.tvMain30Dialog.setOnClickListener {
+            clickAddTimeFun(true)
+        }
+        binding.tvMain60Dialog.setOnClickListener {
+            clickAddTimeFun(false)
+        }
+
+        binding.imgAddX.setOnClickListener {
+            lifecycleScope.launch {
+                loadSmileInt3(0)
+            }
+        }
+        binding.imgAddSuccessX.setOnClickListener {
+            clickNextFun()
+        }
+        binding.tvMainGo.setOnClickListener {
+            clickNextFun()
         }
     }
 
@@ -259,7 +306,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             if (SmileUtils.isAppOnline(this@MainActivity)) {
                 SmileAdLoad.loadOf(SmileKey.POS_CONNECT)
                 SmileAdLoad.loadOf(SmileKey.POS_BACK)
-                SmileAdLoad.loadOf(SmileKey.POS_RESULT)
                 if (!App.vpnLink) {
                     SmileKey.connection_mode = binding?.agreement!!
                 }
@@ -281,13 +327,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         }
     }
 
-
     private fun initVpnSetting() {
-        if (UserConter.showAdCenter()) {
-            binding.flAd.visibility = View.VISIBLE
-        } else {
-            binding.flAd.visibility = View.GONE
-        }
+
         val data = UserConter.spoilerOrNot()
         SmileKey.smile_arrow = data
         bindService(
@@ -358,7 +399,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                         this@MainActivity,
                         App.vpnLink
                     )
-//                    binding.serviceState = "2"
                     handleSmileTimerLock()
                 }
 
@@ -378,7 +418,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                     handleSmileTimerLock()
                 }
 
-
                 else -> {}
             }
 
@@ -394,24 +433,20 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
     override fun onResume() {
         super.onResume()
-        handleWarmBoot()
-    }
-
-    private fun handleWarmBoot() {
-        viewModel.showHomeAd(this)
+        if (!App.vpnLink) {
+            binding.tvTime.text = TimeData.getTiming()
+        }
     }
 
     private fun handleSmileTimerLock() {
         if (App.vpnLink) {
             binding.showGuide = false
             viewModel.changeOfVpnStatus(this, "2")
-            if (binding.tvTime.text.toString() == "00:00:00") {
-                TimeData.startTiming()
-            }
         } else {
             viewModel.changeOfVpnStatus(this, "0")
         }
     }
+
 
     override fun onPause() {
         super.onPause()
@@ -453,25 +488,21 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             }
             App.serviceState = "mo"
         }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (binding.showGuide == true || binding.ilSetting.root.visibility == View.VISIBLE) {
-                binding.showGuide = false
-                binding.ilSetting.root.visibility = View.GONE
-            } else {
-                viewModel.clickChange(this, nextFun = {
-                    finish()
-                })
+        if (requestCode == 0x567 || requestCode == 567) {
+            lifecycleScope.launch {
+                SmileAdLoad.loadOf(SmileKey.POS_RE)
+                delay(300)
+                binding.showAddTime = true
+                SmileUtils.rotateImageView(binding.imgLoad)
             }
         }
-        return true
     }
+
 
     override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) {
         App.vpnLink = state.canStop
         viewModel.changeState(state, this)
+        Log.e(TAG, "stateChanged: ${App.vpnLink}")
     }
 
     override fun onServiceConnected(service: IShadowsocksService) {
@@ -486,12 +517,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         }
     }
 
-    private fun setOpenVpnState() {
-        if (SmileKey.connection_mode == "1") {
-            handleSmileTimerLock()
-        }
-    }
-
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
         when (key) {
             Key.serviceMode -> {
@@ -502,8 +527,124 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     }
 
     override fun onTimeChanged() {
-        lifecycleScope.launch {
-            binding.tvTime.text = TimeData.getTiming()
+        binding.tvTime.text = TimeData.getTiming()
+        binding.tvDialogTime.text = TimeData.getTiming()
+        if (TimeData.getTiming() == "00:00:00") {
+            Core.stopService()
         }
+    }
+
+    private fun clickNextFun() {
+        binding.showAddSuccess = false
+        if (App.add30Num <= 0) {
+            startCountdown()
+        }
+    }
+
+    private fun clickAddTimeFun(isInt3: Boolean) {
+
+        jobMainInt?.cancel()
+        jobMainInt = null
+        jobMainInt = lifecycleScope.launch {
+            delay(100)
+            if (binding.showLoading == true) {
+                return@launch
+            }
+            if (isInt3) {
+                if (App.add30Num > 0) {
+                    loadSmileInt3(30 * 60)
+                    App.add30Num--
+                }
+            } else {
+                viewModel.loadSmileRewarded(this@MainActivity)
+            }
+        }
+    }
+
+    private suspend fun loadSmileInt3(addNum: Int) {
+        binding.showLoading = true
+        SmileUtils.rotateImageView(binding.imgLoad)
+        timeShowDetailAd({
+            jobMainInt = lifecycleScope.launch {
+                SmileAdLoad.loadOf(SmileKey.POS_INT3)
+                try {
+                    withTimeout(5000L) {
+                        delay(1000L)
+                        while (isActive) {
+                            if (SmileAdLoad.resultOf(SmileKey.POS_INT3) != null) {
+                                SmileAdLoad.resultOf(SmileKey.POS_INT3)
+                                    ?.let { viewModel.showInt3Fun(addNum, it, this@MainActivity) }
+                                binding.showLoading = false
+                                jobMainInt?.cancel()
+                                jobMainInt = null
+                                break
+                            }
+                            delay(500L)
+                        }
+                    }
+                } catch (e: TimeoutCancellationException) {
+                    binding.showLoading = false
+                    if (addNum != 0) {
+                        viewModel.addTimeSuccess(addNum, this@MainActivity)
+                    } else {
+                        binding.showAddTime = false
+                    }
+                }
+            }
+        }, {
+            lifecycleScope.launch {
+                delay(1000)
+                binding.showLoading = false
+                if (addNum != 0) {
+                    viewModel.addTimeSuccess(addNum, this@MainActivity)
+                } else {
+                    binding.showAddTime = false
+                }
+            }
+        })
+    }
+
+    private fun startCountdown() {
+        val animator = ValueAnimator.ofInt(1, 5)
+        animator.duration = 5000
+        animator.interpolator = LinearInterpolator()
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Int
+            binding.tvMain30.text = "Wait...${(5 - progress)}s"
+            binding.tvMain30Dialog.text = "Wait...${(5 - progress)}s"
+            binding.tvMain30Dialog.isEnabled = false
+            binding.tvMain30.isEnabled = false
+        }
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                binding.tvMain30.text = "+30mins"
+                binding.tvMain30.isEnabled = true
+                binding.tvMain30Dialog.text = "+30mins"
+                binding.tvMain30Dialog.isEnabled = true
+                App.add30Num = 3
+            }
+        })
+        animator.start()
+    }
+
+    private fun timeShowDetailAd(showAdFun: () -> Unit, nextFun: () -> Unit) {
+        val num = SmileKey.getFlowJson().adNum.toIntOrNull()
+        var loadNum = SmileKey.local_addNum
+        if (num == null) {
+            nextFun()
+        }
+        if (num != 0 && loadNum <= 0) {
+            loadNum = num ?: 0
+            SmileKey.local_addNum = loadNum
+            showAdFun()
+            return
+        }
+        if (loadNum > 0) {
+            loadNum--
+            SmileKey.local_addNum = loadNum
+            nextFun()
+            return
+        }
+        showAdFun()
     }
 }

@@ -24,6 +24,7 @@ class TimeUtils {
 
     fun sendTimerInformation() {
         job?.cancel()
+        job = null
         job = GlobalScope.launch(Dispatchers.Main) {
             while (isActive) {
                 if (!isStopThread) {
@@ -36,7 +37,7 @@ class TimeUtils {
 
     fun startTiming() {
         if (isStopThread) {
-            TimeData.startTiming()
+            TimeData.startCountdown()
             sendTimerInformation()
         }
         isStopThread = false
@@ -45,7 +46,19 @@ class TimeUtils {
     fun endTiming() {
         isStopThread = true
         job?.cancel()
-        TimeData.endTiming()
+        TimeData.pauseCountdown()
+        listener?.onTimeChanged()
+    }
+
+
+    fun startTimingEnd() {
+        isStopThread = false
+        sendTimerInformation()
+    }
+
+    fun endTimingENd() {
+        isStopThread = true
+        job?.cancel()
         listener?.onTimeChanged()
     }
 

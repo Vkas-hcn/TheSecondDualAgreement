@@ -4,6 +4,27 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="serviceState"
+            type="String"
+            android:value="0" />
+
+        <variable
+            name="showLoading"
+            type="Boolean"
+            android:value="false" />
+
+        <variable
+            name="showAddTime"
+            type="Boolean"
+            android:value="false" />
+
+        <variable
+            name="showAddSuccess"
+            type="Boolean"
+            android:value="false" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -111,20 +132,286 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/img_vpn_end"
+        <TextView
+            android:id="@+id/tv_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:src="@drawable/ic_end_dis"
+            android:layout_marginTop="28dp"
+            android:text="Remaining Connection Time: "
+            android:textColor="#FF333333"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_download" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="00:00:00"
+            android:textColor="@{serviceState.equals(`2`) ? @color/color_connect : @color/color_3}"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_tips" />
+
+        <TextView
+            android:id="@+id/tv_end_30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:background="@drawable/bg_60mins"
+            android:gravity="center"
+            android:text="+30mins"
+            android:textColor="#FF333333"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="@{serviceState.equals(`2`) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toStartOf="@+id/tv_end_60"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_time" />
+
+        <TextView
+            android:id="@+id/tv_end_60"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:background="@drawable/bg_120mins"
+            android:gravity="center"
+            android:text="+60mins"
+            android:textColor="#FF333333"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="@{serviceState.equals(`2`) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_end_30"
+            app:layout_constraintTop_toBottomOf="@+id/tv_time" />
+
+        <ImageView
+            android:id="@+id/img_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_ad_oc"
+            android:visibility="@{serviceState.equals(`2`) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="@+id/tv_end_60"
+            app:layout_constraintTop_toTopOf="@+id/tv_end_60" />
+
+        <View
+            android:id="@+id/view_add_time_smile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#87000000"
+            android:visibility="@{showAddTime ? View.VISIBLE : View.GONE}" />
+
+        <LinearLayout
+            android:id="@+id/ll_add_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16sp"
+            android:background="@drawable/bg_add_time"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="26dp"
+            android:visibility="@{showAddTime ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_add_x"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="14dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_dialog_x" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remaining Connection Time: "
+                android:textColor="#FF333333"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_dialog_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="00:00:00"
+                android:textColor="#FF4EBD12"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Automatically disconnect after expiration."
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
+
+                <TextView
+                    android:id="@+id/tv_main_30_dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_60mins"
+                    android:gravity="center"
+                    android:text="+30mins"
+                    android:textColor="#FF333333"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_main_60_dialog"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_main_60_dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_120mins"
+                    android:gravity="center"
+                    android:text="+60mins"
+                    android:textColor="#FF333333"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_main_30_dialog"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/img_type_dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_ad_oc"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_main_60_dialog"
+                    app:layout_constraintTop_toTopOf="@+id/tv_main_60_dialog" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_success_smile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#87000000"
+            android:visibility="@{showAddSuccess ? View.VISIBLE : View.GONE}" />
+
+        <LinearLayout
+            android:id="@+id/ll_add_success"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16sp"
+            android:background="@drawable/bg_add_time"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="26dp"
+            android:visibility="@{showAddSuccess ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_add_success_x"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="14dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_dialog_x" />
+
+            <TextView
+                android:id="@+id/tv_add_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+0mins"
+                android:textColor="#FF4EBD12"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Success！"
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_time_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your remaining duration is 01:29:05"
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_end_go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bg_120mins"
+                android:gravity="center"
+                android:text="Go"
+                android:textColor="#FF333333"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_main_30_dialog"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_loading"
+            android:layout_width="168dp"
+            android:layout_height="130dp"
+            android:background="@drawable/bg_loading"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{showLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_load"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_connecting" />
+
+            <TextView
+                android:id="@+id/tv_load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading..."
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="224dp"
             android:layout_margin="16dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -142,30 +429,31 @@
                 android:id="@+id/native_ad_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/white"
                     android:orientation="vertical">
+
                     <com.google.android.gms.ads.nativead.MediaView
                         android:id="@+id/ad_media"
                         android:layout_width="match_parent"
                         android:layout_height="136dp"
                         android:layout_gravity="center_horizontal"
-                        android:foregroundGravity="left|top"
-                        android:foreground="@drawable/ic_ad_oc" />
+                        android:foreground="@drawable/ic_ad_oc"
+                        android:foregroundGravity="left|top" />
 
                     <LinearLayout
                         android:id="@+id/linearLayout2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:padding="8dp"
                         android:gravity="center_vertical|start"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="8dp">
 
                         <ImageView
                             android:id="@+id/ad_app_icon"
@@ -214,12 +502,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
                             android:background="@drawable/bg_button_ad"
+                            android:gravity="center"
+                            android:padding="7dp"
                             android:text="install"
                             android:textColor="#FFFFFFFF"
                             android:textSize="12sp"
-                            android:padding="7dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

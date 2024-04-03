@@ -134,10 +134,10 @@ object PutDataUtils {
         //ad_code_id
         topLevelJson.put("dateline", adInformation.id)
         //ad_pos_id
-        topLevelJson.put("expand", getAdType(adInformation.type!!).name)
+        topLevelJson.put("expand", adInformation.name)
 
         //ad_format
-        topLevelJson.put("kingsley", getAdType(adInformation.type!!).type)
+        topLevelJson.put("kingsley", adInformation.type)
         //precision_type
         topLevelJson.put("breakup", getPrecisionType(adValue.precisionType))
         //ad_load_ip
@@ -240,33 +240,6 @@ object PutDataUtils {
         return 0
     }
 
-    private fun getAdType(type: String): AdInformation {
-        var adInformation = AdInformation()
-        when (type) {
-            SmileKey.POS_OPEN -> {
-                adInformation = AdInformation(where = "open", name = type, type = "open")
-            }
-
-            SmileKey.POS_HOME -> {
-                adInformation = AdInformation(where = "home", name = type, type = "native")
-            }
-
-            SmileKey.POS_RESULT -> {
-                adInformation = AdInformation(where = "end", name = type, type = "native")
-            }
-
-            SmileKey.POS_CONNECT -> {
-                adInformation =
-                    AdInformation(where = "connect", name = type, type = "interstitial")
-            }
-
-            SmileKey.POS_BACK -> {
-                adInformation =
-                    AdInformation(where = "back", name = type, type = "interstitial")
-            }
-        }
-        return adInformation
-    }
 
     private fun getPrecisionType(precisionType: Int): String {
         return when (precisionType) {

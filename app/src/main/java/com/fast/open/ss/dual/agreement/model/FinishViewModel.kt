@@ -8,14 +8,23 @@ import com.fast.open.ss.dual.agreement.app.App
 import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
 import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.ui.finish.FinishActivity
+import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.SmileKey
+import com.fast.open.ss.dual.agreement.utils.SmileUtils
+import com.fast.open.ss.dual.agreement.utils.SmileUtils.isVisible
+import com.fast.open.ss.dual.agreement.utils.TimeData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import java.text.DecimalFormat
 
 class FinishViewModel : ViewModel() {
+    var jobRewardedSmile: Job? = null
 
     fun returnToHomePage(activity: FinishActivity) {
         val res = SmileAdLoad.resultOf(SmileKey.POS_BACK)
@@ -24,42 +33,6 @@ class FinishViewModel : ViewModel() {
         } else {
             showBackFun(res, activity)
         }
-    }
-
-    fun showEndAd(activity: FinishActivity) {
-        activity.lifecycleScope.launch {
-            SmileAdLoad.loadOf(SmileKey.POS_RESULT)
-            delay(300)
-            if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
-                return@launch
-            }
-            activity.binding.nativeAdView.visibility = android.view.View.GONE
-            activity.binding.imgAdType.visibility = android.view.View.VISIBLE
-            while (isActive) {
-                val res = SmileAdLoad.resultOf(SmileKey.POS_RESULT)
-                if (res != null) {
-                    Log.e(TAG, "showEndAd: 1")
-                    activity.binding.nativeAdView.visibility = android.view.View.VISIBLE
-                    showResultNativeAd(res, activity)
-                    cancel()
-                    break
-                } else {
-                    Log.e(TAG, "showEndAd: 2")
-                }
-                delay(500)
-            }
-        }
-    }
-
-    private fun showResultNativeAd(res: Any, activity: FinishActivity) {
-        SmileAdLoad.showNativeOf(
-            where = SmileKey.POS_RESULT,
-            nativeRoot = activity.binding.nativeAdView,
-            res = res,
-            preload = true,
-            onShowCompleted = {
-            }
-        )
     }
 
     private fun showBackFun(it: Any, activity: FinishActivity) {
@@ -75,6 +48,43 @@ class FinishViewModel : ViewModel() {
         )
     }
 
+    fun showInt3Fun(addNum: Int, it: Any, activity: FinishActivity, isDialogAd: Boolean = false) {
+        SmileAdLoad.showFullScreenOf(
+            where = SmileKey.POS_INT3,
+            context = activity,
+            res = it,
+            preload = true,
+            onShowCompleted = {
+                if (!isDialogAd) {
+                    activity.lifecycleScope.launch(Dispatchers.Main) {
+                        addTimeSuccess(addNum, activity)
+                    }
+                } else {
+                    activity.binding.showAddTime = false
+                }
+            }
+        )
+    }
+
+    suspend fun addTimeSuccess(time: Int, activity: FinishActivity) {
+        Log.e(TAG, "addTimeSuccess: ${activity.isVisible()}")
+        delay(300)
+        if (activity.isVisible()) {
+            App.reConnectTime = App.reConnectTime + time
+            activity.binding.tvAddTime.text = if (time >= 60 * 60) {
+                "+60mins"
+            } else {
+                "+30mins"
+            }
+            activity.binding.tvTimeTip.text =
+                "Your remaining duration is ${TimeData.getTimingDialog(time)}"
+            activity.binding.showAddSuccess = true
+            activity.binding.showAddTime = false
+            SmileAdLoad.loadOf(SmileKey.POS_RE)
+        }
+
+    }
+
     fun getSpeedData(activity: FinishActivity) {
         activity.lifecycleScope.launch {
             while (isActive) {
@@ -85,5 +95,45 @@ class FinishViewModel : ViewModel() {
                 delay(500)
             }
         }
+    }
+
+    fun loadSmileRewarded(activity: FinishActivity) {
+        jobRewardedSmile = activity.lifecycleScope.launch(Dispatchers.Main) {
+            try {
+                withTimeout(12000) {
+                    activity.binding.showLoading = true
+                    SmileUtils.rotateImageView(activity.binding.imgLoad)
+                    delay(1000L)
+                    while (isActive) {
+                        if (SmileAdLoad.resultOf(SmileKey.POS_RE) != null) {
+                            SmileAdLoad.resultOf(SmileKey.POS_RE)
+                                ?.let { showRewardedFun(activity, it) }
+                            cancel()
+                            jobRewardedSmile?.cancel()
+                            jobRewardedSmile = null
+                        }
+                        delay(500L)
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                activity.binding.showLoading = false
+                addTimeSuccess(60 * 60, activity)
+            }
+        }
+    }
+
+    private fun showRewardedFun(activity: FinishActivity, it: Any) {
+        SmileAdLoad.showFullScreenOf(
+            where = SmileKey.POS_RE,
+            context = activity,
+            res = it,
+            preload = true,
+            onShowCompleted = {
+                activity.lifecycleScope.launch {
+                    activity.binding.showLoading = false
+                    addTimeSuccess(60 * 60, activity)
+                }
+            }
+        )
     }
 }
