@@ -9,6 +9,7 @@ import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.fast.open.ss.dual.agreement.databinding.ActivityListBinding
 import com.fast.open.ss.dual.agreement.model.ListViewModel
 import com.fast.open.ss.dual.agreement.utils.SmileKey
+import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -19,7 +20,7 @@ class ListActivity : BaseActivity<ActivityListBinding, ListViewModel>(
         binding.imgBack.setOnClickListener {
             viewModel.returnToHomePage(this)
         }
-
+        SmileNetHelp.postPotIntData(this, "oom17")
     }
 
     override fun initData() {

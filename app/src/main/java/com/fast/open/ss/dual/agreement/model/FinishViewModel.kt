@@ -9,7 +9,9 @@ import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
 import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.ui.finish.FinishActivity
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
+import com.fast.open.ss.dual.agreement.utils.DaDianUtils
 import com.fast.open.ss.dual.agreement.utils.SmileKey
+import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
 import com.fast.open.ss.dual.agreement.utils.SmileUtils.isVisible
 import com.fast.open.ss.dual.agreement.utils.TimeData
@@ -27,6 +29,7 @@ class FinishViewModel : ViewModel() {
     var jobRewardedSmile: Job? = null
 
     fun returnToHomePage(activity: FinishActivity) {
+        SmileNetHelp.postPotIntData(activity, "oom19")
         val res = SmileAdLoad.resultOf(SmileKey.POS_BACK)
         if (res == null) {
             activity.finish()
@@ -79,6 +82,7 @@ class FinishViewModel : ViewModel() {
             activity.binding.tvTimeTip.text =
                 "Your remaining duration is ${TimeData.getTimingDialog(time)}"
             activity.binding.showAddSuccess = true
+            DaDianUtils.oom24(activity)
             activity.binding.showAddTime = false
             SmileAdLoad.loadOf(SmileKey.POS_RE)
         }

@@ -66,6 +66,7 @@ object SmileNetHelp {
                     object : SmileNetManager.Callback {
                         override fun onSuccess(response: String) {
                             SmileKey.local_clock = response
+                            DaDianUtils.oom1(context, response)
                         }
 
                         override fun onFailure(error: String) {
@@ -92,11 +93,11 @@ object SmileNetHelp {
             //distinct_id
             "haze" to SmileKey.uuid_smile,
             //client_ts
-            "rabbet" to (System.currentTimeMillis()),//日志发生的客户端时间，毫秒数
+            "rabbet" to (System.currentTimeMillis()),
             //device_model
             "sorrow" to Build.MODEL,
             //bundle_id
-            "celia" to ("com.blooming.unlimited.fast"),//当前的包名称，a.b.c
+            "celia" to ("com.blooming.unlimited.fast"),
             //os_version
             "va" to Build.VERSION.RELEASE,
             //gaid
@@ -200,11 +201,16 @@ object SmileNetHelp {
         }
     }
 
-    fun postPotIntData(context: Context, name: String,key:String?=null,time:Int=0) {
-        val data =  if(key!=null){
-            PutDataUtils.getTbaTimeDataJson(context,name,key,time)
-        }else{
-            PutDataUtils.getTbaDataJson(context,name)
+    fun postPotIntData(
+        context: Context,
+        name: String,
+        key: String? = null,
+        keyValue: String? = null
+    ) {
+        val data = if (key != null) {
+            PutDataUtils.getTbaTimeDataJson(context, name, key, keyValue)
+        } else {
+            PutDataUtils.getTbaDataJson(context, name)
         }
         Log.e(TAG, "postPotIntData--${name}: data=${data}")
         try {
@@ -227,19 +233,62 @@ object SmileNetHelp {
     }
 
 
-    fun getOnlineSmData(context: Context){
-        val timeStart = System.currentTimeMillis()
-        postPotIntData(context,"blom1")
-        smileNetManager.getServiceData(context,SmileKey.put_sm_service_data_url,{
-                val data = SmileUtils.decodeTheData(it)
-            SmileKey.vpn_online_data = data
-            Log.e(TAG, "getOnlineSmData: ${SmileKey.vpn_online_data }", )
-            val timeEnd = (System.currentTimeMillis()-timeStart)/1000
-            postPotIntData(context,"blom2t","time",timeEnd.toInt())
-            postPotIntData(context,"blom2")
+    fun postPotListData(
+        context: Context,
+        name: String,
+        key1: String? = null,
+        keyValue1: String? = null,
+        key2: String? = null,
+        keyValue2: String? = null,
+        key3: String? = null,
+        keyValue3: String? = null
+    ) {
+        val data =
+            PutDataUtils.getTbaTimeListDataJson(
+                context,
+                name,
+                key1,
+                keyValue1,
+                key2,
+                keyValue2,
+                key3,
+                keyValue3
+            )
 
-        },{
-            Log.e(TAG, "getOnlineSmData---error=: ${it}", )
+        Log.e(TAG, "postPotListData--${name}: data=${data}")
+        try {
+            smileNetManager.postPutData(
+                SmileKey.put_data_url,
+                data,
+                object : SmileNetManager.Callback {
+                    override fun onSuccess(response: String) {
+                        Log.e(TAG, "postPotListData--${name}: onSuccess=${response}")
+                    }
+
+                    override fun onFailure(error: String) {
+                        Log.e(TAG, "postPotListData--${name}: onFailure=${error}")
+
+                    }
+                })
+        } catch (e: Exception) {
+            Log.e(TAG, "postPotListData--${name}: Exception=${e}")
+        }
+    }
+
+
+    fun getOnlineSmData(context: Context) {
+        val timeStart = System.currentTimeMillis()
+        postPotIntData(context, "blom1")
+        smileNetManager.getServiceData(context, SmileKey.put_sm_service_data_url, {
+            val data = SmileUtils.decodeTheData(it)
+            SmileKey.vpn_online_data = data
+            Log.e(TAG, "getOnlineSmData: ${SmileKey.vpn_online_data}")
+            val timeEnd = (System.currentTimeMillis() - timeStart) / 1000
+            postPotIntData(context, "blom2t", "time", timeEnd.toString())
+            postPotIntData(context, "blom2")
+
+        }, {
+            Log.e(TAG, "getOnlineSmData---error=: ${it}")
 
         })
     }

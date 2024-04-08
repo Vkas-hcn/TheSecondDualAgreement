@@ -65,7 +65,7 @@ object UserConter {
         return (pattern.containsMatchIn(referrer) && data.fb4a == "1")
     }
 
-    private fun isItABuyingUser(): Boolean {
+     fun isItABuyingUser(): Boolean {
         val data = SmileKey.getRefJson()
         val referrer = SmileKey.local_ref
         return isFacebookUser()

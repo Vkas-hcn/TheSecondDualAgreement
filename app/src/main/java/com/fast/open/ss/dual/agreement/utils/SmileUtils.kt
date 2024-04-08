@@ -24,7 +24,7 @@ import android.util.Base64
 import com.fast.open.ss.dual.agreement.app.App
 
 object SmileUtils {
-    fun String.getSmileImage():  Int {
+    fun String.getSmileImage(): Int {
         return when (this) {
             "United States" -> R.drawable.unitedstates
             "Australia" -> R.drawable.australia
@@ -45,9 +45,10 @@ object SmileUtils {
             else -> R.drawable.fast
         }
     }
+
     fun setSkServerData(profile: Profile, bestData: VpnServiceBean): Profile {
         SmileKey.vpn_city = bestData.city
-        SmileKey.vpn_ip =  bestData.ip
+        SmileKey.vpn_ip = bestData.ip
         profile.name = bestData.country_name + "-" + bestData.city
         profile.host = bestData.ip
         profile.password = bestData.user_pwd
@@ -55,6 +56,7 @@ object SmileUtils {
         profile.remotePort = bestData.port
         return profile
     }
+
     fun rotateImageViewInfinite(imageView: ImageView, duration: Long) {
         val rotateAnimation = RotateAnimation(
             0f, 360f,
@@ -71,6 +73,7 @@ object SmileUtils {
     fun stopRotation(imageView: ImageView) {
         imageView.clearAnimation()
     }
+
     fun isAppOnline(context: Context?): Boolean {
         if (context == null) {
             return false
@@ -85,13 +88,15 @@ object SmileUtils {
         }
         return false
     }
+
     fun AppCompatActivity.isVisible(): Boolean {
         return lifecycle.currentState == Lifecycle.State.RESUMED
     }
 
 
     fun isAppRunning(context: Context, packageName: String): Boolean {
-        val activityManager = context.getSystemService(Application.ACTIVITY_SERVICE) as ActivityManager
+        val activityManager =
+            context.getSystemService(Application.ACTIVITY_SERVICE) as ActivityManager
         val runningProcesses = activityManager.runningAppProcesses ?: return false
         for (processInfo in runningProcesses) {
             if (processInfo.processName == packageName) {
@@ -128,6 +133,7 @@ object SmileUtils {
                     layoutParams.width = newWidth
                     layoutParams.height = (newWidth / aspectRatio).toInt()
                 }
+
                 newHeight > 0 -> {
                     layoutParams.width = (newHeight * aspectRatio).toInt()
                     layoutParams.height = newHeight
@@ -139,11 +145,12 @@ object SmileUtils {
     }
 
 
-    fun decodeTheData(responseString:String):String{
+    fun decodeTheData(responseString: String): String {
         val trimmedString = responseString.substring(14)
         val reversedString = trimmedString.reversed()
         return String(Base64.decode(reversedString?.toByteArray(), Base64.DEFAULT))
     }
+
     fun rotateImageView(imageView: ImageView, duration: Long = 1000L) {
         val rotationAnimator = ObjectAnimator.ofFloat(imageView, View.ROTATION, 0f, 360f)
         rotationAnimator.duration = duration
@@ -151,10 +158,10 @@ object SmileUtils {
         rotationAnimator.start()
     }
 
-    fun haveMoreTime(nextFun1:()->Unit,nextFun2:()->Unit){
+    fun haveMoreTime(nextFun1: () -> Unit, nextFun2: () -> Unit) {
         if (App.reConnectTime >= 1000 * 60) {
             nextFun1()
-        }else{
+        } else {
             nextFun2()
         }
     }

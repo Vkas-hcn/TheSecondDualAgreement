@@ -16,6 +16,7 @@ import com.fast.open.ss.dual.agreement.databinding.ActivityListBinding
 import com.fast.open.ss.dual.agreement.ui.list.ListActivity
 import com.fast.open.ss.dual.agreement.ui.list.ListServiceAdapter
 import com.fast.open.ss.dual.agreement.utils.SmileKey
+import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -106,6 +107,7 @@ class ListViewModel:ViewModel() {
 
 
     fun returnToHomePage(activity: ListActivity) {
+        SmileNetHelp.postPotIntData(activity, "oom18")
         val res = SmileAdLoad.resultOf(SmileKey.POS_BACK)
         if (res == null) {
             activity.finish()

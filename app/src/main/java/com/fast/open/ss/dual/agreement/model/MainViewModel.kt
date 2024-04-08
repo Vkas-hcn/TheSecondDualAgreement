@@ -29,6 +29,8 @@ import com.fast.open.ss.dual.agreement.databinding.ActivityMainBinding
 import com.fast.open.ss.dual.agreement.ui.finish.FinishActivity
 import com.fast.open.ss.dual.agreement.ui.list.ListActivity
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
+import com.fast.open.ss.dual.agreement.utils.DaDianUtils
+import com.fast.open.ss.dual.agreement.utils.PutDataUtils
 import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
@@ -142,7 +144,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun startTheJudgment(activity: AppCompatActivity) {
+    fun startTheJudgment(activity: MainActivity) {
         startVpn(activity)
     }
 
@@ -170,10 +172,13 @@ class MainViewModel : ViewModel() {
                         setOpenData(activity, it)
                     }
                     Core.stopService()
+                    SmileNetHelp.postPotIntData(activity, "oom8", "oo", "open")
                 } else {
+                    SmileNetHelp.postPotIntData(activity, "oom8", "oo", "ss")
                     delay(2000)
                     Core.startService()
                     mService?.disconnect()
+
                 }
             }
         } catch (e: Exception) {
@@ -271,10 +276,10 @@ class MainViewModel : ViewModel() {
         if (nowClickState == 2) {
             mService?.disconnect()
             disconnectVpn()
+            SmileNetHelp.postPotIntData(activity, "oom12")
             if (!App.isBackDataSmile) {
                 jumpToFinishPage(activity, false)
             }
-            Log.e(TAG, "changeOfVpnStatus===A")
             changeOfVpnStatus(activity, "0")
         }
         if (nowClickState == 0) {
@@ -289,11 +294,10 @@ class MainViewModel : ViewModel() {
             if (App.vpnLink) {
                 changeOfVpnStatus(activity, "2")
             } else {
-                Log.e(TAG, "changeOfVpnStatus: B")
+                SmileNetHelp.postPotIntData(activity, "oom10")
                 changeOfVpnStatus(activity, "0")
             }
         }
-
     }
 
     private fun jumpToFinishPage(activity: MainActivity, isConnect: Boolean) {
@@ -322,6 +326,11 @@ class MainViewModel : ViewModel() {
                 binding.serviceState = "2"
                 SmileAdLoad.loadOf(SmileKey.POS_INT3)
                 SmileAdLoad.loadOf(SmileKey.POS_RE)
+                if(SmileAdLoad.resultOf(SmileKey.POS_CONNECT)!=null){
+                    SmileNetHelp.postPotIntData(activity, "oom9", "oo", "true")
+                }else{
+                    SmileNetHelp.postPotIntData(activity, "oom9", "oo", "false")
+                }
             }
 
             false -> {
@@ -400,6 +409,7 @@ class MainViewModel : ViewModel() {
             activity.binding.tvTimeTip.text =
                 "Your remaining duration is ${TimeData.getTimingDialog(time)}"
             activity.binding.showAddSuccess = true
+            DaDianUtils.oom24(activity)
             activity.binding.showAddTime = false
             SmileAdLoad.loadOf(SmileKey.POS_RE)
         }
@@ -509,6 +519,7 @@ class MainViewModel : ViewModel() {
         if (state) {
             startTheJudgment(activity)
         } else {
+            SmileNetHelp.postPotIntData(activity, "oom6")
             VpnService.prepare(activity).let {
                 requestPermissionForResultVPN.launch(it)
             }
@@ -603,6 +614,7 @@ class MainViewModel : ViewModel() {
         dialogVpn.show()
         dialogVpn.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLACK)
         dialogVpn.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(Color.BLACK)
+        DaDianUtils.oom4(context)
     }
 
     fun adaptsToSmallScreens(activity: MainActivity) {

@@ -44,6 +44,8 @@ class App : Application(), LifecycleObserver {
         var TAG = "smile"
         var ad_activity_smart: Activity? = null
         var top_activity_smart: Activity? = null
+        var top_activity_name: String? = null
+
         private lateinit var instance: App
         fun getAppContext() = instance
         var isBackDataSmile = false
@@ -55,7 +57,8 @@ class App : Application(), LifecycleObserver {
             MMKV.mmkvWithID("smile", MMKV.MULTI_PROCESS_MODE)
         }
         var isAppRunning = false
-        val timeVpnNum = 60*30
+        val timeVpnNum = 60 * 30
+
         //剩余连接时长
         var reConnectTime = timeVpnNum
         var add30Num = 3
@@ -94,6 +97,7 @@ class App : Application(), LifecycleObserver {
             override fun onActivityStarted(activity: Activity) {
                 if (activity !is AdActivity) {
                     top_activity_smart = activity
+                    top_activity_name = activity.javaClass.simpleName
                 } else {
                     ad_activity_smart = activity
                 }

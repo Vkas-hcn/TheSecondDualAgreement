@@ -27,7 +27,7 @@ object SmileData {
     "bluvivics": [
         {
             "we": "c",
-            "id": "ca-app-pub-4419180522015933/1339806637",
+            "id": "ca-app-pub-3940256099942544/9257395921",
             "name": "si_o",
             "type": "open"
         }
@@ -35,7 +35,7 @@ object SmileData {
     "bluvity": [
         {
             "we": "c",
-            "id": "ca-app-pub-4419180522015933/6400561626",
+            "id": "ca-app-pub-3940256099942544/8691691433",
             "name": "si_c",
             "type": "interstitial"
         }
@@ -43,7 +43,7 @@ object SmileData {
     "bluhangan": [
         {
             "we": "c",
-            "id": "ca-app-pub-4419180522015933/1452638655",
+            "id": "ca-app-pub-3940256099942544/1033173712",
             "name": "si_b",
             "type": "interstitial"
         }
@@ -51,7 +51,7 @@ object SmileData {
     "blupp": [
         {
             "we": "b",
-            "id": "ca-app-pub-4419180522015933/4293197053",
+            "id": "ca-app-pub-3940256099942544/1033173712",
             "name": "si_in3",
             "type": "Interstitial"
         }
@@ -59,7 +59,7 @@ object SmileData {
     "bluads": [
         {
             "we": "c",
-            "id": "ca-app-pub-4419180522015933/7432380182",
+            "id": "ca-app-pub-3940256099942544/5224354917",
             "name": "si_re",
             "type": "Interstitial"
         }

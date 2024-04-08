@@ -26,8 +26,10 @@ import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.fast.open.ss.dual.agreement.databinding.ActivityFinishBinding
 import com.fast.open.ss.dual.agreement.model.FinishViewModel
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
+import com.fast.open.ss.dual.agreement.utils.DaDianUtils
 import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileKey
+import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
 import com.fast.open.ss.dual.agreement.utils.TimeData
 import com.fast.open.ss.dual.agreement.utils.TimeUtils
@@ -78,6 +80,13 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
                 viewModel.returnToHomePage(this@FinishActivity)
             }
         }
+        val connectState = SmileAdLoad.resultOf(SmileKey.POS_CONNECT) != null
+        val vpnState = if (App.vpnLink) {
+            "cont"
+        } else {
+            "dis"
+        }
+        SmileNetHelp.postPotListData(this, "oom11", "oo", connectState.toString(), "oo2", vpnState)
     }
 
     @SuppressLint("SetTextI18n")
@@ -90,6 +99,9 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
                 SmileAdLoad.loadOf(SmileKey.POS_RE)
                 delay(300)
                 binding.showAddTime = App.vpnLink
+                if(binding.showAddTime == true){
+                    SmileNetHelp.postPotIntData(this@FinishActivity,"oom20","oo",App.top_activity_name)
+                }
             }
         })
         if (App.vpnLink) {
@@ -102,6 +114,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
             binding.tvTitle.text = "VPN disconnect"
         }
         binding.tvEnd30.setOnClickListener {
+            DaDianUtils.oom21(this@FinishActivity,false)
             SmileUtils.haveMoreTime({
                 Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
             }, {
@@ -109,6 +122,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
             })
         }
         binding.tvEnd60.setOnClickListener {
+            DaDianUtils.oom22(this@FinishActivity,false)
             SmileUtils.haveMoreTime({
                 Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
             }, {
@@ -117,24 +131,26 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
         }
 
         binding.imgAddSuccessX.setOnClickListener {
+            DaDianUtils.oom25(this)
             clickNextFun()
         }
 
         binding.tvMain30Dialog.setOnClickListener {
+            DaDianUtils.oom21(this@FinishActivity,true)
             clickAddTimeFun(true)
         }
         binding.tvMain60Dialog.setOnClickListener {
+            DaDianUtils.oom22(this@FinishActivity,true)
             clickAddTimeFun(false)
         }
         binding.imgAddX.setOnClickListener {
+            DaDianUtils.oom23(this@FinishActivity)
             lifecycleScope.launch {
                 loadSmileInt3(0, true)
             }
         }
-        binding.imgAddSuccessX.setOnClickListener {
-            clickNextFun()
-        }
         binding.tvEndGo.setOnClickListener {
+            DaDianUtils.oom26(this)
             clickNextFun()
         }
     }

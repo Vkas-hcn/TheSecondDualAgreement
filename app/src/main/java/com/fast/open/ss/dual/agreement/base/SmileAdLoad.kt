@@ -148,7 +148,8 @@ object SmileAdLoad {
                 }
             }
             if ((cache == null || cache == "") && SmileKey.isThresholdReached()) {
-                printLog("广告达到上线")
+                printLog("The ad reaches the go-live")
+                SmileNetHelp.postPotIntData(context, "oom15", "oo", "show=${SmileKey.getAdJson().showNum}-click=${SmileKey.getAdJson().clickNum}")
                 res = ""
                 return
             }
@@ -197,7 +198,6 @@ object SmileAdLoad {
 
         fun sortArrayByWeight(items: MutableList<AdInformation>): MutableList<AdInformation> {
             val priorityMap = hashMapOf<String, Int>()
-            // 设置字母优先级，不区分大小写
             ('a'..'z').forEachIndexed { index, string ->
                 priorityMap[string.toString()] = index
                 priorityMap[string.toUpperCase().toString()] = index
@@ -313,6 +313,7 @@ object SmileAdLoad {
             unit: AdInformation,
             callback: ((result: Any?) -> Unit)
         ) {
+            SmileNetHelp.postPotListData(context, "oom13", "oo", "${unit.name}+${unit.id}+${App.top_activity_name}", "oo1", App.vpnLink.toString())
             val requestContext = context.applicationContext
             when (unit.name) {
                 SmileKey.POS_OPEN -> {
@@ -334,6 +335,7 @@ object SmileAdLoad {
 
                             override fun onAdLoaded(appOpenAd: AppOpenAd) {
                                 callback(appOpenAd)
+                                SmileNetHelp.postPotIntData(context, "oom14", "oo","${where}+${unit.id}")
                                 appOpenAd.setOnPaidEventListener { adValue ->
                                     adValue.let {
                                         SmileNetHelp.postAdData(
@@ -343,14 +345,10 @@ object SmileAdLoad {
                                             openAdData
                                         )
                                     }
-
-//                                    val loadedAdapterResponseInfo: AdapterResponseInfo =
-//                                        appOpenAd.getResponseInfo().getLoadedAdapterResponseInfo()
-//
-//                                    val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-//                                    adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode())
-//                                    adRevenue.setAdRevenueNetwork(loadedAdapterResponseInfo.getAdSourceName())
-//                                    Adjust.trackAdRevenue(adRevenue)
+                                    val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                                    adRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
+                                    adRevenue.setAdRevenueNetwork(appOpenAd.responseInfo.mediationAdapterClassName)
+                                    Adjust.trackAdRevenue(adRevenue)
                                 }
                             }
                         })
@@ -369,7 +367,7 @@ object SmileAdLoad {
                         backAdData.name = unit.name
                         backAdData = PutDataUtils.beforeLoadLink(backAdData)
                     }
-                    if (unit.name == SmileKey.POS_RE) {
+                    if (unit.name == SmileKey.POS_INT3) {
                         int3AdData.id = unit.id
                         int3AdData.type = unit.type
                         int3AdData.name = unit.name
@@ -386,6 +384,7 @@ object SmileAdLoad {
                             }
 
                             override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                                SmileNetHelp.postPotIntData(context, "oom14", "oo","${where}+${unit.id}")
                                 callback(interstitialAd)
                                 interstitialAd.setOnPaidEventListener { adValue ->
                                     val bean = when (unit.name) {
@@ -412,6 +411,10 @@ object SmileAdLoad {
                                                 it1
                                             )
                                         }
+                                        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                                        adRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
+                                        adRevenue.setAdRevenueNetwork(interstitialAd.responseInfo.mediationAdapterClassName)
+                                        Adjust.trackAdRevenue(adRevenue)
                                     }
                                 }
                             }
@@ -431,7 +434,19 @@ object SmileAdLoad {
                         }
 
                         override fun onAdLoaded(ad: RewardedAd) {
-                            println("激励广告加载成功")
+                            SmileNetHelp.postPotIntData(context, "oom14", "oo","${where}+${unit.id}")
+                            ad.setOnPaidEventListener { adValue ->
+                                SmileNetHelp.postAdData(
+                                    App.getAppContext(),
+                                    adValue,
+                                    ad.responseInfo,
+                                    reWardeAdData
+                                )
+                                val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                                adRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
+                                adRevenue.setAdRevenueNetwork(ad.responseInfo.mediationAdapterClassName)
+                                Adjust.trackAdRevenue(adRevenue)
+                            }
                             callback(ad)
                         }
                     })
@@ -488,21 +503,8 @@ object SmileAdLoad {
                             // Handle the reward.
                             val rewardAmount = rewardItem.amount
                             val rewardType = rewardItem.type
-                           println("获取到奖励")
                         }
-                        when (where) {
-                            SmileKey.POS_CONNECT -> {
-                                connectAdData = PutDataUtils.afterLoadLink(connectAdData)
-                            }
-
-                            SmileKey.POS_BACK -> {
-                                backAdData = PutDataUtils.afterLoadLink(backAdData)
-                            }
-
-                            SmileKey.POS_INT3 -> {
-                                int3AdData = PutDataUtils.afterLoadLink(int3AdData)
-                            }
-                        }
+                        reWardeAdData =  PutDataUtils.afterLoadLink(reWardeAdData)
                     }
 
                 }

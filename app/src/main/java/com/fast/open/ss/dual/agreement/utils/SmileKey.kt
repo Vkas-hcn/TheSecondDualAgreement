@@ -258,6 +258,25 @@ object SmileKey {
             field = value
         }
         get() = sharedPreferences.getInt("show_smile_count", 0)
+    var isMlState = "0"
+        set(value) {
+            sharedPreferences.edit().run {
+                putString("isMlState", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getString("isMlState", "").toString()
+
+    var permiss = false
+        set(value) {
+            sharedPreferences.edit().run {
+                putBoolean("permiss", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getBoolean("permiss", false)
 
     fun decodeBase64(str: String): String {
         return String(android.util.Base64.decode(str, android.util.Base64.DEFAULT))
@@ -365,25 +384,16 @@ object SmileKey {
         }
     }
 
-    /**
-     * 是否达到阀值
-     */
     fun isThresholdReached(): Boolean {
         return clicks_smile_count >= getAdJson().clickNum || show_smile_count >= getAdJson().showNum
     }
 
-    /**
-     * 记录广告展示次数
-     */
     fun recordNumberOfAdDisplaysGreen() {
         var showCount = show_smile_count
         showCount++
         show_smile_count = showCount
     }
 
-    /**
-     * 记录广告点击次数
-     */
     fun recordNumberOfAdClickGreen() {
         var clicksCount = clicks_smile_count
         clicksCount++

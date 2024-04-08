@@ -1,5 +1,6 @@
 package com.fast.open.ss.dual.agreement.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -120,9 +121,9 @@ object PutDataUtils {
         adInformation: AdInformation
     ): String {
         val topLevelJson = firstJsonData(context)
-        topLevelJson.put("curate",JSONObject().apply {
-            put("rid_yawn",adInformation.loadCity)
-            put("rid_fist",adInformation.showTheCity)
+        topLevelJson.put("curate", JSONObject().apply {
+            put("rid_yawn", adInformation.loadCity)
+            put("rid_fist", adInformation.showTheCity)
         })
         //ad_pre_ecpm
         topLevelJson.put("bassett", adValue.valueMicros)
@@ -164,15 +165,38 @@ object PutDataUtils {
         context: Context,
         name: String,
         parameterName: String,
-        time: Any,
-
+        time: String?,
     ): String {
-        val data = JSONObject()
-        data.put(parameterName, time)
         return firstJsonData(context).apply {
             put("scoop", name)
             put(name, JSONObject().apply {
                 put(parameterName, time)
+            })
+        }.toString()
+    }
+
+    fun getTbaTimeListDataJson(
+        context: Context,
+        name: String,
+        pName1: String?,
+        pValue1: String?,
+        pName2: String?,
+        pValue2: String?,
+        pName3: String?,
+        pValue3: String?,
+    ): String {
+        return firstJsonData(context).apply {
+            put("scoop", name)
+            put(name, JSONObject().apply {
+                if (pName1 != null) {
+                    put(pName1, pValue1)
+                }
+                if (pName2 != null) {
+                    put(pName2, pValue2)
+                }
+                if (pName3 != null) {
+                    put(pName3, pValue3)
+                }
             })
         }.toString()
     }
@@ -303,10 +327,12 @@ object PutDataUtils {
         if (App.vpnLink && !SmileKey.smile_arrow) {
             adInformation.showIp = SmileKey.vpn_ip
             adInformation.showTheCity = SmileKey.vpn_city
+            SmileNetHelp.postPotListData(App.getAppContext(), "oom16", "oo", "${adInformation.name}+${adInformation.id}+${App.top_activity_name}", "oo1", App.vpnLink.toString())
         } else {
             adInformation.showIp = SmileKey.ip_lo_sm
             adInformation.showTheCity = "null"
         }
         return adInformation
     }
+
 }

@@ -12,9 +12,13 @@ import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.databinding.ActivityFirstBinding
 import com.fast.open.ss.dual.agreement.model.FirstViewModel
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
+import com.fast.open.ss.dual.agreement.utils.DaDianUtils
+import com.fast.open.ss.dual.agreement.utils.PutDataUtils
+import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
+import com.fast.open.ss.dual.agreement.utils.UserConter.isItABuyingUser
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
@@ -58,7 +62,9 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
             SmileAdLoad.isLoadOpenFist = false
             SmileAdLoad.init(this)
             waitForTheOpenAdToAppear()
+            DaDianUtils.oom2(this)
         }
+        DaDianUtils.oom3(this)
     }
 
     private fun countDown() {
