@@ -77,6 +77,7 @@ class MainViewModel : ViewModel() {
 
     var mService: IOpenVPNAPIService? = null
     lateinit var requestPermissionForResultVPN: ActivityResultLauncher<Intent?>
+    var oom9State = false
 
     companion object {
         var stateListener: ((BaseService.State) -> Unit)? = null
@@ -326,14 +327,19 @@ class MainViewModel : ViewModel() {
                 binding.serviceState = "2"
                 SmileAdLoad.loadOf(SmileKey.POS_INT3)
                 SmileAdLoad.loadOf(SmileKey.POS_RE)
-                if(SmileAdLoad.resultOf(SmileKey.POS_CONNECT)!=null){
+                if (oom9State) {
+                    return
+                }
+                oom9State = true
+                if (SmileAdLoad.resultOf(SmileKey.POS_CONNECT) != null) {
                     SmileNetHelp.postPotIntData(activity, "oom9", "oo", "true")
-                }else{
+                } else {
                     SmileNetHelp.postPotIntData(activity, "oom9", "oo", "false")
                 }
             }
 
             false -> {
+                oom9State = false
             }
         }
     }

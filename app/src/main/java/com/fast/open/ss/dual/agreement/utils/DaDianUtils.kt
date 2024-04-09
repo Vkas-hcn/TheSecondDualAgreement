@@ -14,7 +14,7 @@ object DaDianUtils {
 
     fun oom2(context: Context) {
         val data = UserConter.isItABuyingUser()
-        if (data && SmileKey.isMlState == "0") {
+        if (data && SmileKey.isMlState != "1") {
             SmileNetHelp.postPotIntData(context, "oom2")
             SmileKey.isMlState = "1"
         }

@@ -66,6 +66,7 @@ import androidx.activity.addCallback
 import com.fast.open.ss.dual.agreement.utils.DaDianUtils
 import com.fast.open.ss.dual.agreement.utils.PutDataUtils
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
+import com.fast.open.ss.dual.agreement.utils.SmileUtils.isVisible
 import com.fast.open.ss.dual.agreement.utils.UserConter
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.TimeoutCancellationException
@@ -191,7 +192,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             })
         }
         binding.tvMain30.setOnClickListener {
-            DaDianUtils.oom21(this@MainActivity,false)
+            DaDianUtils.oom21(this@MainActivity, false)
             SmileUtils.haveMoreTime({
                 Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
 
@@ -200,7 +201,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             })
         }
         binding.tvMain60.setOnClickListener {
-            DaDianUtils.oom22(this@MainActivity,false)
+            DaDianUtils.oom22(this@MainActivity, false)
             SmileUtils.haveMoreTime({
                 Toast.makeText(this, "Usage limit reached today", Toast.LENGTH_SHORT).show()
 
@@ -211,11 +212,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
 
         binding.tvMain30Dialog.setOnClickListener {
-            DaDianUtils.oom21(this@MainActivity,true)
+            DaDianUtils.oom21(this@MainActivity, true)
             clickAddTimeFun(true)
         }
         binding.tvMain60Dialog.setOnClickListener {
-            DaDianUtils.oom22(this@MainActivity,true)
+            DaDianUtils.oom22(this@MainActivity, true)
             clickAddTimeFun(false)
         }
 
@@ -226,9 +227,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             }
         }
         binding.imgAddSuccessX.setOnClickListener {
+            DaDianUtils.oom25(this)
+
             clickNextFun()
         }
         binding.tvMainGo.setOnClickListener {
+            DaDianUtils.oom26(this)
             clickNextFun()
         }
     }
@@ -312,7 +316,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     private fun toConnectVpn() {
         lifecycleScope.launch {
             binding.showGuide = false
-            DaDianUtils.oom5(this@MainActivity)
+            if (!App.vpnLink) {
+                DaDianUtils.oom5(this@MainActivity)
+            }
             if (!SmileKey.isHaveServeData(this@MainActivity)) {
                 binding.pbLoading.visibility = View.VISIBLE
                 delay(2000)
@@ -368,7 +374,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     private fun requestPermissionForResult(result: ActivityResult) {
         if (result.resultCode == RESULT_OK) {
             if (!SmileKey.permiss) {
-                SmileKey.permiss =true
+                SmileKey.permiss = true
                 SmileNetHelp.postPotIntData(this, "oom7")
             }
             viewModel.startTheJudgment(this)
@@ -446,6 +452,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     override fun onStart() {
         super.onStart()
         viewModel.connection.bandwidthTimeout = 500
+        DaDianUtils.oom3(this@MainActivity)
+
     }
 
     override fun onResume() {
@@ -512,7 +520,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                     SmileAdLoad.loadOf(SmileKey.POS_RE)
                     delay(300)
                     binding.showAddTime = true
-                    SmileNetHelp.postPotIntData(this@MainActivity,"oom20","oo",App.top_activity_name)
+                    SmileNetHelp.postPotIntData(
+                        this@MainActivity,
+                        "oom20",
+                        "oo",
+                        App.top_activity_name
+                    )
                 }
             })
         }
@@ -521,7 +534,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
     override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) {
         App.vpnLink = state.canStop
-        viewModel.changeState(state, this,App.vpnLink)
+        viewModel.changeState(state, this, App.vpnLink)
         Log.e(TAG, "stateChanged: ${App.vpnLink}")
     }
 

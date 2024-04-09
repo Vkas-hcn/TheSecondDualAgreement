@@ -294,16 +294,7 @@ object PutDataUtils {
         }
     }
 
-//    fun String.putPointYep(context: Context) {
-//        FlashOkHttpUtils().getTbaList(context, this)
-//    }
-//
-//    fun putPointTimeYep(name: String, time: Any, parameterName: String, context: Context) {
-//        FlashOkHttpUtils().getTbaList(context, name, parameterName, time, 1)
-//    }
-
     fun postAdOnline(adValue: Long) {
-
         if (BuildConfig.DEBUG) {
             return
         }
@@ -324,10 +315,10 @@ object PutDataUtils {
     }
 
     fun afterLoadLink(adInformation: AdInformation): AdInformation {
+        SmileNetHelp.postPotListData(App.getAppContext(), "oom16", "oo", "${adInformation.name}+${adInformation.id}+${App.top_activity_name}", "oo1", App.vpnLink.toString())
         if (App.vpnLink && !SmileKey.smile_arrow) {
             adInformation.showIp = SmileKey.vpn_ip
             adInformation.showTheCity = SmileKey.vpn_city
-            SmileNetHelp.postPotListData(App.getAppContext(), "oom16", "oo", "${adInformation.name}+${adInformation.id}+${App.top_activity_name}", "oo1", App.vpnLink.toString())
         } else {
             adInformation.showIp = SmileKey.ip_lo_sm
             adInformation.showTheCity = "null"

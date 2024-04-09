@@ -19,7 +19,7 @@ object SmileData {
     "blymajor": "1",
     "blyyarium": "1",
     "cont": "10",
-    "adNum":"1"
+    "adNum":"2"
 }    """
 
     val local_smile_ad_data = """
@@ -64,8 +64,8 @@ object SmileData {
             "type": "Interstitial"
         }
     ],
-    "clickNum": 5,
-    "showNum": 20
+    "clickNum": 2,
+    "showNum": 5
 }
 """
 }

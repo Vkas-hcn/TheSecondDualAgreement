@@ -194,7 +194,6 @@ class App : Application(), LifecycleObserver {
             }
             TimeData.sendTimerInformation()
             UserConter.getReferInformation(this)
-            SmileNetHelp.postSessionData(this)
             initAdJust(this)
             getGid(this)
             Core.stopService()

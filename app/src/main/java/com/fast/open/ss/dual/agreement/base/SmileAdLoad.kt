@@ -149,7 +149,7 @@ object SmileAdLoad {
             }
             if ((cache == null || cache == "") && SmileKey.isThresholdReached()) {
                 printLog("The ad reaches the go-live")
-                SmileNetHelp.postPotIntData(context, "oom15", "oo", "show=${SmileKey.getAdJson().showNum}-click=${SmileKey.getAdJson().clickNum}")
+                SmileNetHelp.postPotIntData(context, "oom15", "oo", SmileKey.overrunType())
                 res = ""
                 return
             }

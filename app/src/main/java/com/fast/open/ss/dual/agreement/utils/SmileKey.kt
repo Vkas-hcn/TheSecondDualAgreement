@@ -266,7 +266,7 @@ object SmileKey {
             }
             field = value
         }
-        get() = sharedPreferences.getString("isMlState", "").toString()
+        get() = sharedPreferences.getString("isMlState", "0").toString()
 
     var permiss = false
         set(value) {
@@ -386,6 +386,18 @@ object SmileKey {
 
     fun isThresholdReached(): Boolean {
         return clicks_smile_count >= getAdJson().clickNum || show_smile_count >= getAdJson().showNum
+    }
+    fun overrunType():String{
+        if(clicks_smile_count >= getAdJson().clickNum){
+            return "click"
+        }
+        if(show_smile_count >= getAdJson().showNum){
+            return "show"
+        }
+        if(clicks_smile_count >= getAdJson().clickNum && show_smile_count >= getAdJson().showNum){
+            return "click&show"
+        }
+        return ""
     }
 
     fun recordNumberOfAdDisplaysGreen() {
