@@ -56,6 +56,7 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
             SmileNetHelp.getLoadIp()
             SmileNetHelp.getLoadOthIp()
             SmileNetHelp.getBlackData(this@FirstActivity)
+            SmileNetHelp.postSessionData(this@FirstActivity)
             SmileNetHelp.getOnlyIp()
         }
         viewModel.getFileBaseData(this) {
@@ -64,7 +65,6 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
             waitForTheOpenAdToAppear()
             DaDianUtils.oom2(this)
         }
-        DaDianUtils.oom3(this)
     }
 
     private fun countDown() {
