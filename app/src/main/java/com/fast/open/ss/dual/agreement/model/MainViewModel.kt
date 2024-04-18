@@ -164,22 +164,20 @@ class MainViewModel : ViewModel() {
             loadSmileAdvertisements(activity)
         }
     }
-
     private suspend fun connectVpn(activity: MainActivity) {
         try {
             if (!App.vpnLink) {
                 if (activity.binding.agreement == "1") {
+                    Core.stopService()
                     mService?.let {
                         setOpenData(activity, it)
                     }
-                    Core.stopService()
                     SmileNetHelp.postPotIntData(activity, "oom8", "oo", "open")
                 } else {
                     SmileNetHelp.postPotIntData(activity, "oom8", "oo", "ss")
+                    mService?.disconnect()
                     delay(2000)
                     Core.startService()
-                    mService?.disconnect()
-
                 }
             }
         } catch (e: Exception) {
@@ -496,7 +494,7 @@ class MainViewModel : ViewModel() {
             SmileKey.vpn_ip = data?.ip ?: ""
             runCatching {
                 val config = StringBuilder()
-                activity.assets.open("fast_ippooltest.ovpn").use { inputStream ->
+                activity.assets.open("fast_bloomingvpn_ippool.ovpn").use { inputStream ->
                     inputStream.bufferedReader().use { reader ->
                         reader.forEachLine { line ->
                             config.append(
