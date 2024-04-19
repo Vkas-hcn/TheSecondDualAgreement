@@ -416,6 +416,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             when (state) {
                 "CONNECTED" -> {
                     App.vpnLink = true
+                    Log.e(TAG, "loadSmileAdvertisements: 3")
+
                     viewModel.connectOrDisconnectSmile(this@MainActivity, true)
                     viewModel.changeState(
                         state = BaseService.State.Idle,
@@ -427,11 +429,15 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
                 "RECONNECTING", "EXITING", "CONNECTRETRY" -> {
                     viewModel.mService?.disconnect()
+                    SmileNetHelp.postPotIntData(this@MainActivity, "oom10")
+                    Toast.makeText(this@MainActivity,"The connection failed!",Toast.LENGTH_SHORT).show()
                 }
 
                 "NOPROCESS" -> {
                     viewModel.mService?.disconnect()
                     App.vpnLink = false
+                    Log.e(TAG, "loadSmileAdvertisements: 4")
+
                     viewModel.connectOrDisconnectSmile(this@MainActivity, true)
                     viewModel.changeState(
                         state = BaseService.State.Idle,

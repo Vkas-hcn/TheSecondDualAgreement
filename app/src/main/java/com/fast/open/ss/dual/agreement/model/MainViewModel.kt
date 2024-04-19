@@ -168,14 +168,14 @@ class MainViewModel : ViewModel() {
         try {
             if (!App.vpnLink) {
                 if (activity.binding.agreement == "1") {
-                    Core.stopService()
+//                    Core.stopService()
                     mService?.let {
                         setOpenData(activity, it)
                     }
                     SmileNetHelp.postPotIntData(activity, "oom8", "oo", "open")
                 } else {
                     SmileNetHelp.postPotIntData(activity, "oom8", "oo", "ss")
-                    mService?.disconnect()
+//                    mService?.disconnect()
                     delay(2000)
                     Core.startService()
                 }
@@ -213,6 +213,7 @@ class MainViewModel : ViewModel() {
                 }
             }
         } catch (e: TimeoutCancellationException) {
+            Log.e(TAG, "loadSmileAdvertisements: 1", )
             connectOrDisconnectSmile(activity as MainActivity)
         }
     }
@@ -226,6 +227,7 @@ class MainViewModel : ViewModel() {
             onShowCompleted = {
                 jobStartSmile?.cancel()
                 jobStartSmile = null
+                Log.e(TAG, "loadSmileAdvertisements: 2", )
                 connectOrDisconnectSmile(activity, true)
             }
         )
@@ -290,11 +292,14 @@ class MainViewModel : ViewModel() {
             if (!App.isBackDataSmile && App.vpnLink) {
                 jumpToFinishPage(activity, true)
             }
-            if (App.vpnLink) {
-                changeOfVpnStatus(activity, "2")
-            } else {
-                SmileNetHelp.postPotIntData(activity, "oom10")
-                changeOfVpnStatus(activity, "0")
+            if(activity.binding.agreement != "1"){
+                if (App.vpnLink) {
+                    changeOfVpnStatus(activity, "2")
+                } else {
+                    SmileNetHelp.postPotIntData(activity, "oom10")
+                    Log.e(TAG, "serviceState-0---2: ")
+                    changeOfVpnStatus(activity, "0")
+                }
             }
         }
     }
@@ -494,7 +499,7 @@ class MainViewModel : ViewModel() {
             SmileKey.vpn_ip = data?.ip ?: ""
             runCatching {
                 val config = StringBuilder()
-                activity.assets.open("fast_bloomingvpn_ippool.ovpn").use { inputStream ->
+                activity.assets.open("fast_ippooltest.ovpn").use { inputStream ->
                     inputStream.bufferedReader().use { reader ->
                         reader.forEachLine { line ->
                             config.append(
@@ -568,7 +573,6 @@ class MainViewModel : ViewModel() {
             if (App.vpnLink) {
                 changeOfVpnStatus(activity, "2")
             } else {
-                Log.e(TAG, "changeOfVpnStatus: C")
                 changeOfVpnStatus(activity, "0")
             }
         }
