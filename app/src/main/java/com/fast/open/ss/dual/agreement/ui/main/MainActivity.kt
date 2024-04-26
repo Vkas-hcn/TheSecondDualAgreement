@@ -261,7 +261,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             viewModel.clickDisConnect(this, nextFun = {
                 viewModel.clickChange(this, nextFun = {
                     Log.e(TAG, "clickListener:llSpeed=${binding.serviceState} ")
-                    if(binding.serviceState == "1"){return@clickChange}
+                    if (binding.serviceState == "1") {
+                        return@clickChange
+                    }
                     if (App.vpnLink) {
                         showSpeed()
                     } else {
@@ -575,11 +577,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             }
             App.serviceState = "mo"
         }
-        if ((requestCode == 0x567 || requestCode == 567) && App.vpnLink) {
+
+        if ((requestCode == 0x567) && App.vpnLink) {
             SmileUtils.haveMoreTime({}, {
                 lifecycleScope.launch {
                     SmileAdLoad.loadOf(SmileKey.POS_RE)
                     delay(300)
+                    if (requestCode == 0x567) {
+                    }
                     binding.showAddTime = true
                     SmileNetHelp.postPotNet(
                         this@MainActivity, "oom20", "oo", App.top_activity_name
@@ -587,6 +592,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                 }
             })
         }
+
     }
 
 
