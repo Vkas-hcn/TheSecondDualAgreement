@@ -1,14 +1,12 @@
 package com.fast.open.ss.dual.agreement.model
 
 import android.util.Log
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import com.fast.open.ss.dual.agreement.app.App
 import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
 import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.ui.finish.FinishActivity
-import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.DaDianUtils
 import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
@@ -23,13 +21,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import java.text.DecimalFormat
 
 class FinishViewModel : ViewModel() {
     var jobRewardedSmile: Job? = null
 
     fun returnToHomePage(activity: FinishActivity) {
-        SmileNetHelp.postPotIntData(activity, "oom19")
+        SmileNetHelp.postPotNet(activity, "oom19")
         val res = SmileAdLoad.resultOf(SmileKey.POS_BACK)
         if (res == null) {
             activity.finish()

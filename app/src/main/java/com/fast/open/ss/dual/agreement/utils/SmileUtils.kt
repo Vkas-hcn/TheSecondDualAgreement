@@ -1,27 +1,41 @@
 package com.fast.open.ss.dual.agreement.utils
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
+import android.util.Base64
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import com.fast.open.ss.dual.agreement.R
+import com.fast.open.ss.dual.agreement.app.App
 import com.fast.open.ss.dual.agreement.bean.ScreenMetrics
 import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.github.shadowsocks.database.Profile
-import android.util.Base64
-import com.fast.open.ss.dual.agreement.app.App
+import fr.bmartel.speedtest.SpeedTestReport
+import fr.bmartel.speedtest.SpeedTestSocket
+import fr.bmartel.speedtest.inter.ISpeedTestListener
+import fr.bmartel.speedtest.model.SpeedTestError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.math.BigDecimal
+
 
 object SmileUtils {
     fun String.getSmileImage(): Int {
@@ -59,9 +73,7 @@ object SmileUtils {
 
     fun rotateImageViewInfinite(imageView: ImageView, duration: Long) {
         val rotateAnimation = RotateAnimation(
-            0f, 360f,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f
+            0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
         )
         rotateAnimation.duration = duration
         rotateAnimation.repeatCount = Animation.INFINITE
@@ -83,8 +95,9 @@ object SmileUtils {
         val activeNetwork = connectivityManager.activeNetwork ?: return false
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
         if (networkCapabilities != null) {
-            return (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ||
-                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
+            return (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) || networkCapabilities.hasCapability(
+                NetworkCapabilities.NET_CAPABILITY_INTERNET
+            ))
         }
         return false
     }
@@ -163,6 +176,143 @@ object SmileUtils {
             nextFun1()
         } else {
             nextFun2()
+        }
+    }
+
+    fun CoroutineScope.internetSpeedDetection(block: () -> Unit) {
+        launch(Dispatchers.IO) {
+            var finishStateDow = false
+            var finishStateUP = false
+            var finishStateDowNum = BigDecimal(0)
+            var finishStateUpNum = BigDecimal(0)
+            val speedTestSocket = SpeedTestSocket()
+            SmileKey.dowLoadSpeed = "0"
+            SmileKey.upLoadSpeed = "0"
+            speedTestSocket.addSpeedTestListener(object : ISpeedTestListener {
+                override fun onCompletion(report: SpeedTestReport) {
+                    SmileKey.dowLoadSpeed = unitConversion(report.transferRateBit)
+                    Log.e("TAG", "下载-完成- bit/s   : " + SmileKey.dowLoadSpeed)
+                    finishStateDow = true
+                    if (finishStateUP ) {
+                        block()
+                    }
+                }
+
+                override fun onError(speedTestError: SpeedTestError, errorMessage: String) {
+                    Log.e("TAG", "下载-onError: errorMessage=$errorMessage")
+//                    if(SmileKey.dowLoadSpeed == "0"){
+//                        onErrorAction()
+//                    }
+                }
+
+                @SuppressLint("LogNotTimber")
+                override fun onProgress(percent: Float, report: SpeedTestReport) {
+                    Log.e("TAG", "下载-progress : $percent%")
+                    Log.e(
+                        "TAG",
+                        "下载-rate in bit/s   : " + unitConversion(report.transferRateBit)
+                    )
+                    val num = if (report.transferRateBit > finishStateDowNum) {
+                        finishStateDowNum = report.transferRateBit
+                        finishStateDowNum
+                    } else {
+                        report.transferRateBit
+                    }
+                    SmileKey.dowLoadSpeed = unitConversion(num)
+                }
+            })
+            speedTestSocket.downloadSetupTime = 10000
+            speedTestSocket.startDownload("https://speed.cloudflare.com/__down?during=download&bytes=5000000")
+            withTimeoutOrNull(7000) {
+                while (finishStateDow.not()) delay(400)
+            }
+            val speedTestSocket1 = SpeedTestSocket()
+            speedTestSocket1.addSpeedTestListener(object : ISpeedTestListener {
+                @SuppressLint("LogNotTimber")
+                override fun onCompletion(report: SpeedTestReport) {
+                    Log.e("TAG", "上传-完成-: " + unitConversion(report.transferRateBit))
+                    SmileKey.upLoadSpeed = unitConversion(report.transferRateBit)
+                    finishStateUP = true
+                    if (finishStateDow && SmileKey.upLoadSpeed == "0") {
+                        block()
+                    }
+                }
+
+                @SuppressLint("LogNotTimber")
+                override fun onError(speedTestError: SpeedTestError, errorMessage: String) {
+                    Log.e("TAG", "上传-Error=$errorMessage")
+//                    if(SmileKey.upLoadSpeed == "0"){
+//                        onErrorAction()
+//                    }
+                }
+
+                @SuppressLint("LogNotTimber")
+                override fun onProgress(percent: Float, report: SpeedTestReport) {
+                    Log.e("TAG", "上传-progress : $percent%")
+                    Log.e(
+                        "TAG",
+                        "上传-rate in bit/s   : " + unitConversion(report.transferRateBit)
+                    )
+                    val num = if (report.transferRateBit > finishStateUpNum) {
+                        finishStateUpNum = report.transferRateBit
+                        finishStateUpNum
+                    } else {
+                        report.transferRateBit
+                    }
+                    SmileKey.upLoadSpeed = unitConversion(num)
+                }
+            })
+            speedTestSocket1.startUpload("https://speed.cloudflare.com/__down?during=download&bytes=5000000", 5000000)
+        }
+
+    }
+
+    fun unitConversion(transferRateBit: BigDecimal): String {
+        val transferRateMegaBitPerSecond: BigDecimal = transferRateBit.divide(BigDecimal("1000000"))
+        return transferRateMegaBitPerSecond.setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "m/s"
+    }
+
+    private fun getPingTime(serverAddress: String): Int {
+        val command = "ping -c 4 $serverAddress"
+        val process = Runtime.getRuntime().exec(command)
+        val reader = BufferedReader(InputStreamReader(process.inputStream))
+        var pingTime = -1
+        while (true) {
+            val line = reader.readLine() ?: break
+            if (line.contains("time=")) {
+                // 从输出中提取 ping 值
+                val startIndex = line.indexOf("time=")
+                val endIndex = line.indexOf(" ms", startIndex)
+                if (startIndex != -1 && endIndex != -1) {
+                    pingTime = try {
+                        val pingValue = line.substring(startIndex + 5, endIndex)
+                        pingValue.toInt()
+                    } catch (e: NumberFormatException) {
+                        -1
+                    }
+                    break
+                }
+            }
+        }
+        reader.close()
+        return pingTime
+    }
+
+    fun pingServiceIp() {
+        val serverAddress = SmileKey.vpn_ip
+        Log.e("TAG", "pingServiceIp: $serverAddress")
+        SmileKey.pingSpeed = "timeOut"
+        try {
+            val pingTime = getPingTime(serverAddress)
+            if (pingTime != -1) {
+                Log.e("TAG", "Ping data =：" + pingTime + "ms")
+                SmileKey.pingSpeed = "$pingTime ms"
+            } else {
+                Log.e("TAG", "Unable to get ping.")
+                SmileKey.pingSpeed = "timeOut"
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 }

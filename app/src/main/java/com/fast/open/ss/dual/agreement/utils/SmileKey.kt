@@ -24,7 +24,7 @@ object SmileKey {
     } else {
         "https://solstice.bloomingunlimited.com/newborn/council/goblet"
     }
-    var put_sm_service_data_url = if (BuildConfig.DEBUG) {
+    var put_sm_service_data_url = if (!BuildConfig.DEBUG) {
         "https://test.bloomingunlimited.com/LAfmqEZ/wQDmPyeovD/wXGpV/"
     } else {
         "https://api.bloomingunlimited.com/LAfmqEZ/wQDmPyeovD/wXGpV/"
@@ -278,6 +278,45 @@ object SmileKey {
         }
         get() = sharedPreferences.getBoolean("permiss", false)
 
+    var upLoadSpeed = ""
+        set(value) {
+            sharedPreferences.edit().run {
+                putString("upLoadSpeed", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getString("upLoadSpeed", "").toString()
+
+    var dowLoadSpeed = ""
+        set(value) {
+            sharedPreferences.edit().run {
+                putString("dowLoadSpeed", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getString("dowLoadSpeed", "").toString()
+
+    var pingSpeed = ""
+        set(value) {
+            sharedPreferences.edit().run {
+                putString("pingSpeed", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getString("pingSpeed", "").toString()
+
+    var app_point_error = ""
+        set(value) {
+            sharedPreferences.edit().run {
+                putString("app_point_error", value)
+                commit()
+            }
+            field = value
+        }
+        get() = sharedPreferences.getString("app_point_error", "").toString()
     fun decodeBase64(str: String): String {
         return String(android.util.Base64.decode(str, android.util.Base64.DEFAULT))
     }

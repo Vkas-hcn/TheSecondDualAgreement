@@ -1,17 +1,12 @@
 package com.fast.open.ss.dual.agreement.model
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.net.VpnService
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.animation.RotateAnimation
-import android.widget.ImageView
-import android.view.animation.Animation
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
@@ -27,11 +22,10 @@ import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.fast.open.ss.dual.agreement.databinding.ActivityMainBinding
 import com.fast.open.ss.dual.agreement.ui.finish.FinishActivity
+import com.fast.open.ss.dual.agreement.ui.speed.SpeedActivity
 import com.fast.open.ss.dual.agreement.ui.list.ListActivity
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.DaDianUtils
-import com.fast.open.ss.dual.agreement.utils.PutDataUtils
-import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
@@ -39,7 +33,6 @@ import com.fast.open.ss.dual.agreement.utils.SmileUtils.getSmileImage
 import com.fast.open.ss.dual.agreement.utils.SmileUtils.isVisible
 import com.fast.open.ss.dual.agreement.utils.TimeData
 import com.fast.open.ss.dual.agreement.utils.TimeUtils
-import com.fast.open.ss.dual.agreement.utils.UserConter
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.aidl.ShadowsocksConnection
 import com.github.shadowsocks.bg.BaseService
@@ -57,11 +50,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.text.DecimalFormat
 import java.util.Locale
 import kotlin.system.exitProcess
 
@@ -164,18 +153,22 @@ class MainViewModel : ViewModel() {
             loadSmileAdvertisements(activity)
         }
     }
+
     private suspend fun connectVpn(activity: MainActivity) {
         try {
             if (!App.vpnLink) {
+                val type = if (SmileNetHelp.isVpnConnected(activity)) {
+                    "s"
+                } else {
+                    "f"
+                }
                 if (activity.binding.agreement == "1") {
-//                    Core.stopService()
                     mService?.let {
                         setOpenData(activity, it)
                     }
-                    SmileNetHelp.postPotIntData(activity, "oom8", "oo", "open")
+                    SmileNetHelp.postPotNet(activity, "oom8", "oo", "open","oo1",type)
                 } else {
-                    SmileNetHelp.postPotIntData(activity, "oom8", "oo", "ss")
-//                    mService?.disconnect()
+                    SmileNetHelp.postPotNet(activity, "oom8", "oo", "ss","oo1",type)
                     delay(2000)
                     Core.startService()
                 }
@@ -213,7 +206,7 @@ class MainViewModel : ViewModel() {
                 }
             }
         } catch (e: TimeoutCancellationException) {
-            Log.e(TAG, "loadSmileAdvertisements: 1", )
+            Log.e(TAG, "loadSmileAdvertisements: 1")
             connectOrDisconnectSmile(activity as MainActivity)
         }
     }
@@ -227,7 +220,7 @@ class MainViewModel : ViewModel() {
             onShowCompleted = {
                 jobStartSmile?.cancel()
                 jobStartSmile = null
-                Log.e(TAG, "loadSmileAdvertisements: 2", )
+                Log.e(TAG, "loadSmileAdvertisements: 2")
                 connectOrDisconnectSmile(activity, true)
             }
         )
@@ -277,7 +270,7 @@ class MainViewModel : ViewModel() {
         if (nowClickState == 2) {
             mService?.disconnect()
             disconnectVpn()
-            SmileNetHelp.postPotIntData(activity, "oom12")
+            SmileNetHelp.postPotNet(activity, "oom12")
             if (!App.isBackDataSmile) {
                 jumpToFinishPage(activity, false)
             }
@@ -292,16 +285,17 @@ class MainViewModel : ViewModel() {
             if (!App.isBackDataSmile && App.vpnLink) {
                 jumpToFinishPage(activity, true)
             }
-            if(activity.binding.agreement != "1"){
+            if (activity.binding.agreement != "1") {
                 if (App.vpnLink) {
                     changeOfVpnStatus(activity, "2")
                 } else {
-                    SmileNetHelp.postPotIntData(activity, "oom10")
+                    SmileNetHelp.postPotNet(activity, "oom10")
                     Log.e(TAG, "serviceState-0---2: ")
                     changeOfVpnStatus(activity, "0")
                 }
             }
         }
+        SmileNetHelp.reRequestDotData(activity)
     }
 
     private fun jumpToFinishPage(activity: MainActivity, isConnect: Boolean) {
@@ -327,18 +321,15 @@ class MainViewModel : ViewModel() {
         val binding = (activity as MainActivity).binding
         when (vpnLink) {
             true -> {
-                binding.serviceState = "2"
+//                binding.serviceState = "2"
                 SmileAdLoad.loadOf(SmileKey.POS_INT3)
                 SmileAdLoad.loadOf(SmileKey.POS_RE)
                 if (oom9State) {
                     return
                 }
                 oom9State = true
-                if (SmileAdLoad.resultOf(SmileKey.POS_CONNECT) != null) {
-                    SmileNetHelp.postPotIntData(activity, "oom9", "oo", "true")
-                } else {
-                    SmileNetHelp.postPotIntData(activity, "oom9", "oo", "false")
-                }
+                DaDianUtils.oom9(activity)
+
             }
 
             false -> {
@@ -352,10 +343,6 @@ class MainViewModel : ViewModel() {
         stateInt: String
     ) {
         val binding = activity.binding
-//        if (binding.serviceState == null || stateInt == binding.serviceState!!) {
-//            return
-//        }
-
         binding.serviceState = stateInt
         Log.e(TAG, "changeOfVpnStatus: ${stateInt}")
         when (stateInt) {
@@ -499,7 +486,7 @@ class MainViewModel : ViewModel() {
             SmileKey.vpn_ip = data?.ip ?: ""
             runCatching {
                 val config = StringBuilder()
-                activity.assets.open("fast_ippooltest.ovpn").use { inputStream ->
+                activity.assets.open("fast_bloomingvpn_ippool.ovpn").use { inputStream ->
                     inputStream.bufferedReader().use { reader ->
                         reader.forEachLine { line ->
                             config.append(
@@ -528,7 +515,7 @@ class MainViewModel : ViewModel() {
         if (state) {
             startTheJudgment(activity)
         } else {
-            SmileNetHelp.postPotIntData(activity, "oom6")
+            SmileNetHelp.postPotNet(activity, "oom6")
             VpnService.prepare(activity).let {
                 requestPermissionForResultVPN.launch(it)
             }
@@ -633,4 +620,8 @@ class MainViewModel : ViewModel() {
         }
     }
 
+
+    fun showSpeed() {
+
+    }
 }

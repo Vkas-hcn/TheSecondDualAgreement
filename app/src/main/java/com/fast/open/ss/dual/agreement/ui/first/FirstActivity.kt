@@ -4,6 +4,7 @@ import android.os.CountDownTimer
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import com.fast.open.ss.dual.agreement.R
 import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
@@ -18,6 +19,7 @@ import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
+import com.fast.open.ss.dual.agreement.utils.SmileUtils.internetSpeedDetection
 import com.fast.open.ss.dual.agreement.utils.UserConter.isItABuyingUser
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
@@ -32,6 +34,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import kotlin.system.exitProcess
 
 class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
     R.layout.activity_first, FirstViewModel::class.java
@@ -64,6 +67,8 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
             SmileAdLoad.init(this)
             waitForTheOpenAdToAppear()
             DaDianUtils.oom2(this)
+        }
+        onBackPressedDispatcher.addCallback(this) {
         }
     }
 
@@ -173,10 +178,5 @@ class FirstActivity : BaseActivity<ActivityFirstBinding, FirstViewModel>(
         )
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return true;
-        }
-        return true
-    }
+
 }

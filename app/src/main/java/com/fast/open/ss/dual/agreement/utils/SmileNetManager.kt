@@ -110,7 +110,7 @@ class SmileNetManager {
         val request = Request.Builder()
             .url(url)
             .header("WZN", "ZZ")
-            .header("AWA", context.packageName)
+            .header("AWA", "com.blooming.unlimited.fast")
             .build()
 
         client.newCall(request).enqueue(object : okhttp3.Callback {

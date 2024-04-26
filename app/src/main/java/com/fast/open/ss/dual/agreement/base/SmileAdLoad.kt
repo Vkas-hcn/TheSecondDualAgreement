@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.viewbinding.ViewBinding
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -28,12 +30,18 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.fast.open.ss.dual.agreement.R
 import com.fast.open.ss.dual.agreement.bean.AdInformation
+import com.fast.open.ss.dual.agreement.ui.finish.FinishActivity
+import com.fast.open.ss.dual.agreement.ui.list.ListActivity
+import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.PutDataUtils
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils.isVisible
 import com.fast.open.ss.dual.agreement.utils.UserConter
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 object SmileAdLoad {
     var isLoadOpenFist = false
@@ -66,6 +74,7 @@ object SmileAdLoad {
         preload: Boolean = false,
         onShowCompleted: () -> Unit
     ) {
+
         Show.of(where)
             .showFullScreen(
                 context = context,
@@ -150,11 +159,11 @@ object SmileAdLoad {
             }
             if ((cache == null || cache == "") && SmileKey.isThresholdReached()) {
                 printLog("The ad reaches the go-live")
-                SmileNetHelp.postPotIntData(context, "oom15", "oo", SmileKey.overrunType())
+                SmileNetHelp.postPotNet(context, "oom15", "oo", SmileKey.overrunType())
                 res = ""
                 return
             }
-            if ((where == SmileKey.POS_BACK || where == SmileKey.POS_CONNECT || where == SmileKey.POS_INT3) && !UserConter.showAdCenter()) {
+            if ((where == SmileKey.POS_BACK || where == SmileKey.POS_INT3) && !UserConter.showAdCenter()) {
                 res = ""
                 return
             }
@@ -314,7 +323,7 @@ object SmileAdLoad {
             unit: AdInformation,
             callback: ((result: Any?) -> Unit)
         ) {
-            SmileNetHelp.postPotListData(
+            SmileNetHelp.postPotNet(
                 context,
                 "oom13",
                 "oo",
@@ -343,7 +352,7 @@ object SmileAdLoad {
 
                             override fun onAdLoaded(appOpenAd: AppOpenAd) {
                                 callback(appOpenAd)
-                                SmileNetHelp.postPotIntData(
+                                SmileNetHelp.postPotNet(
                                     context,
                                     "oom14",
                                     "oo",
@@ -400,7 +409,7 @@ object SmileAdLoad {
                             }
 
                             override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                                SmileNetHelp.postPotIntData(
+                                SmileNetHelp.postPotNet(
                                     context,
                                     "oom14",
                                     "oo",
@@ -458,21 +467,11 @@ object SmileAdLoad {
                     RewardedAd.load(context, unit.id, adRequest, object : RewardedAdLoadCallback() {
                         override fun onAdFailedToLoad(adError: LoadAdError) {
                             println(adError?.toString())
-                            Toast.makeText(
-                                context,
-                                "激励广告加载失败:${adError?.toString()}",
-                                Toast.LENGTH_LONG
-                            ).show()
                             callback(null)
                         }
 
                         override fun onAdLoaded(ad: RewardedAd) {
-                            Toast.makeText(
-                                context,
-                                "激励广告加载成功",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            SmileNetHelp.postPotIntData(
+                            SmileNetHelp.postPotNet(
                                 context,
                                 "oom14",
                                 "oo",
@@ -509,7 +508,6 @@ object SmileAdLoad {
             res: Any,
             callback: () -> Unit
         ) {
-
             when (res) {
                 is AppOpenAd -> {
                     res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
@@ -518,7 +516,7 @@ object SmileAdLoad {
                 }
 
                 is InterstitialAd -> {
-                    if (!UserConter.showAdCenter()) {
+                    if (where != SmileKey.POS_CONNECT && !UserConter.showAdCenter()) {
                         callback.invoke()
                         return
                     }
@@ -526,8 +524,36 @@ object SmileAdLoad {
                         callback.invoke()
                         return
                     }
-                    res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
-                    res.show(context)
+                    context.lifecycleScope.launch(Dispatchers.Main) {
+                        if (context is MainActivity) {
+                            context.binding.apply {
+                                tvLoad.text = "Ad coming soon"
+                                showLoading = true
+                                delay(500)
+                                showLoading = false
+                                tvLoad.text = "loading..."
+                            }
+                        }
+                        if (context is FinishActivity) {
+                            context.binding.apply {
+                                tvLoad.text = "Ad coming soon"
+                                showLoading = true
+                                delay(500)
+                                showLoading = false
+                                tvLoad.text = "loading..."
+                            }
+                        }
+                        if (context is ListActivity) {
+                            context.binding.apply {
+                                showLoading = true
+                                delay(500)
+                                showLoading = false
+                            }
+                        }
+                        res.fullScreenContentCallback = GoogleFullScreenCallback(where, callback)
+                        res.show(context)
+                    }
+
                     when (where) {
                         SmileKey.POS_CONNECT -> {
                             connectAdData = PutDataUtils.afterLoadLink(connectAdData)

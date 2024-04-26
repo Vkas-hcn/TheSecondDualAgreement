@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+
     <application
         android:name=".app.App"
         android:allowBackup="true"
@@ -49,6 +51,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.list.ListActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.speed.SpeedActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />

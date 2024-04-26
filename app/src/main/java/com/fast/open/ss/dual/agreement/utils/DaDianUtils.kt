@@ -1,38 +1,70 @@
 package com.fast.open.ss.dual.agreement.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import com.fast.open.ss.dual.agreement.app.App
+import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
 import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.ui.main.MainActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 object DaDianUtils {
     fun oom1(context: Context, response: String) {
         if (response == "chintz") {
-            SmileNetHelp.postPotIntData(context, "oom1")
+            SmileNetHelp.postPotNet(context, "oom1")
         }
     }
 
     fun oom2(context: Context) {
         val data = UserConter.isItABuyingUser()
         if (data && SmileKey.isMlState != "1") {
-            SmileNetHelp.postPotIntData(context, "oom2")
+            SmileNetHelp.postPotNet(context, "oom2")
             SmileKey.isMlState = "1"
         }
     }
 
     fun oom3(context: Context) {
-        SmileNetHelp.postPotIntData(context, "oom3")
+        SmileNetHelp.postPotNet(context, "oom3")
     }
 
     fun oom4(context: Context) {
-        SmileNetHelp.postPotIntData(context, "oom4")
+        SmileNetHelp.postPotNet(context, "oom4")
     }
 
     fun oom5(activity: MainActivity) {
-        if (activity.binding.agreement == "1") {
-            SmileNetHelp.postPotIntData(activity, "oom5", "oo", "open")
+        val type = if (SmileNetHelp.isVpnConnected(activity)) {
+            "s"
         } else {
-            SmileNetHelp.postPotIntData(activity, "oom5", "oo", "ss")
+            "f"
+        }
+        if (activity.binding.agreement == "1") {
+            SmileNetHelp.postPotNet(activity, "oom5", "oo", "open", "oo1", type)
+        } else {
+            SmileNetHelp.postPotNet(activity, "oom5", "oo", "ss", "oo1", type)
+        }
+    }
+
+    @SuppressLint("LogNotTimber")
+    fun oom9(context: Context) {
+        GlobalScope.launch(Dispatchers.IO) {
+            Log.e(TAG, "o12Fun: 开始检测")
+            val isHaveConnectAd = if (SmileAdLoad.resultOf(SmileKey.POS_CONNECT) != null) {
+                "true"
+            } else {
+                "false"
+            }
+            val netState = SmileNetHelp.isNetworkReachable()
+            if (netState) {
+                Log.e(TAG, "o12Fun: 开始检测-1")
+                SmileNetHelp.postPotNet(context, "oom9", "oo", isHaveConnectAd, "oo1", "1")
+            } else {
+                Log.e(TAG, "o12Fun: 开始检测-2")
+                SmileNetHelp.postPotNet(context, "oom9", "oo", isHaveConnectAd, "oo1", "2")
+            }
+
         }
     }
 
@@ -43,7 +75,7 @@ object DaDianUtils {
             "page"
         }
         val isIn3 = SmileAdLoad.resultOf(SmileKey.POS_INT3) != null
-        SmileNetHelp.postPotListData(
+        SmileNetHelp.postPotNet(
             context, "oom21", "oo", pop, "oo1",
             App.top_activity_name, "oo2", isIn3.toString()
         )
@@ -56,7 +88,7 @@ object DaDianUtils {
             "page"
         }
         val re = SmileAdLoad.resultOf(SmileKey.POS_RE) != null
-        SmileNetHelp.postPotListData(
+        SmileNetHelp.postPotNet(
             context, "oom22", "oo", pop, "oo1",
             App.top_activity_name, "oo2", re.toString()
         )
@@ -64,7 +96,7 @@ object DaDianUtils {
 
     fun oom23(context: Context) {
         val isIn3 = SmileAdLoad.resultOf(SmileKey.POS_INT3) != null
-        SmileNetHelp.postPotListData(
+        SmileNetHelp.postPotNet(
             context,
             "oom23",
             "oo",
@@ -75,7 +107,7 @@ object DaDianUtils {
     }
 
     fun oom24(context: Context) {
-        SmileNetHelp.postPotListData(
+        SmileNetHelp.postPotNet(
             context,
             "oom24",
             "oo",
@@ -84,10 +116,10 @@ object DaDianUtils {
     }
 
     fun oom25(context: Context) {
-        SmileNetHelp.postPotIntData(context, "oom25")
+        SmileNetHelp.postPotNet(context, "oom25")
     }
 
     fun oom26(context: Context) {
-        SmileNetHelp.postPotIntData(context, "oom26")
+        SmileNetHelp.postPotNet(context, "oom26")
     }
 }

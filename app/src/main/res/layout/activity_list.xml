@@ -10,6 +10,11 @@
             name="showList"
             type="Boolean"
             android:value="false" />
+
+        <variable
+            name="showLoading"
+            type="Boolean"
+            android:value="false" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -82,6 +87,33 @@
             android:visibility="@{showList ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_back"/>
+        <LinearLayout
+            android:id="@+id/ll_loading"
+            android:layout_width="168dp"
+            android:layout_height="130dp"
+            android:background="@drawable/bg_loading"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{showLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_load"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_connecting" />
+
+            <TextView
+                android:id="@+id/tv_load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ad coming soon"
+                android:textColor="#FF333333"
+                android:textSize="14sp" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

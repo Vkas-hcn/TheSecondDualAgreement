@@ -315,7 +315,7 @@ object PutDataUtils {
     }
 
     fun afterLoadLink(adInformation: AdInformation): AdInformation {
-        SmileNetHelp.postPotListData(App.getAppContext(), "oom16", "oo", "${adInformation.name}+${adInformation.id}+${App.top_activity_name}", "oo1", App.vpnLink.toString())
+        SmileNetHelp.postPotNet(App.getAppContext(), "oom16", "oo", "${adInformation.name}+${adInformation.id}+${App.top_activity_name}", "oo1", App.vpnLink.toString())
         if (App.vpnLink && !SmileKey.smile_arrow) {
             adInformation.showIp = SmileKey.vpn_ip
             adInformation.showTheCity = SmileKey.vpn_city

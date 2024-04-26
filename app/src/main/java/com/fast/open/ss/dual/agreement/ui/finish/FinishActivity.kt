@@ -4,18 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.ContextParams
-import android.content.ContextWrapper
-import android.text.format.Formatter
 import android.util.Log
-import android.view.ContentInfo
-import android.view.KeyEvent
-import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.fast.open.ss.dual.agreement.R
 import com.fast.open.ss.dual.agreement.app.App
@@ -25,26 +17,16 @@ import com.fast.open.ss.dual.agreement.base.SmileAdLoad
 import com.fast.open.ss.dual.agreement.bean.VpnServiceBean
 import com.fast.open.ss.dual.agreement.databinding.ActivityFinishBinding
 import com.fast.open.ss.dual.agreement.model.FinishViewModel
-import com.fast.open.ss.dual.agreement.ui.main.MainActivity
 import com.fast.open.ss.dual.agreement.utils.DaDianUtils
-import com.fast.open.ss.dual.agreement.utils.SmileData
 import com.fast.open.ss.dual.agreement.utils.SmileKey
 import com.fast.open.ss.dual.agreement.utils.SmileNetHelp
 import com.fast.open.ss.dual.agreement.utils.SmileUtils
 import com.fast.open.ss.dual.agreement.utils.TimeData
 import com.fast.open.ss.dual.agreement.utils.TimeUtils
-import com.github.shadowsocks.Core
-import com.github.shadowsocks.aidl.IShadowsocksService
-import com.github.shadowsocks.aidl.ShadowsocksConnection
-import com.github.shadowsocks.aidl.TrafficStats
-import com.github.shadowsocks.bg.BaseService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -86,7 +68,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
         } else {
             "dis"
         }
-        SmileNetHelp.postPotListData(this, "oom11", "oo", connectState.toString(), "oo2", vpnState)
+        SmileNetHelp.postPotNet(this, "oom11", "oo", connectState.toString(), "oo2", vpnState)
     }
 
     @SuppressLint("SetTextI18n")
@@ -100,7 +82,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
                 delay(300)
                 binding.showAddTime = App.vpnLink
                 if(binding.showAddTime == true){
-                    SmileNetHelp.postPotIntData(this@FinishActivity,"oom20","oo",App.top_activity_name)
+                    SmileNetHelp.postPotNet(this@FinishActivity,"oom20","oo",App.top_activity_name)
                 }
             }
         })
@@ -282,6 +264,7 @@ class FinishActivity : BaseActivity<ActivityFinishBinding, FinishViewModel>(
     override fun onTimeChanged() {
         val time = TimeData.getTiming()
         val userTime = TimeData.getUserTime()
+        Log.e(TAG, "onTimeChanged-end: ${App.vpnLink}", )
         if (App.vpnLink) {
             binding.tvTime.text = time
             binding.tvDialogTime.text = time

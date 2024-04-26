@@ -2,6 +2,7 @@ package com.fast.open.ss.dual.agreement.ui.list
 
 import android.util.Log
 import android.view.KeyEvent
+import androidx.activity.addCallback
 import com.fast.open.ss.dual.agreement.R
 import com.fast.open.ss.dual.agreement.app.App.Companion.TAG
 import com.fast.open.ss.dual.agreement.base.BaseActivity
@@ -20,7 +21,10 @@ class ListActivity : BaseActivity<ActivityListBinding, ListViewModel>(
         binding.imgBack.setOnClickListener {
             viewModel.returnToHomePage(this)
         }
-        SmileNetHelp.postPotIntData(this, "oom17")
+        SmileNetHelp.postPotNet(this, "oom17")
+        onBackPressedDispatcher.addCallback(this) {
+            viewModel.returnToHomePage(this@ListActivity)
+        }
     }
 
     override fun initData() {
@@ -42,13 +46,5 @@ class ListActivity : BaseActivity<ActivityListBinding, ListViewModel>(
         } else {
             binding.showList = false
         }
-    }
-
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            viewModel.returnToHomePage(this)
-        }
-        return true
     }
 }

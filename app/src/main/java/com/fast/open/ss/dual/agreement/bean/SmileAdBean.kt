@@ -35,3 +35,15 @@ data class AdInformation(
     var loadIp: String? = null,
     var showIp: String? = null,
 )
+@Keep
+data class PotIntInfo(
+    var name: String? = null,
+    var parameterName: String? = null,
+    var parameterValue: String? = null,
+
+    var parameterName2: String? = null,
+    var parameterValue2: String? = null,
+
+    var parameterName3: String? = null,
+    var parameterValue3: String? = null,
+)

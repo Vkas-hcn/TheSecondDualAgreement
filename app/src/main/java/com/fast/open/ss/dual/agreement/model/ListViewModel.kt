@@ -107,7 +107,7 @@ class ListViewModel:ViewModel() {
 
 
     fun returnToHomePage(activity: ListActivity) {
-        SmileNetHelp.postPotIntData(activity, "oom18")
+        SmileNetHelp.postPotNet(activity, "oom18")
         val res = SmileAdLoad.resultOf(SmileKey.POS_BACK)
         if (res == null) {
             activity.finish()

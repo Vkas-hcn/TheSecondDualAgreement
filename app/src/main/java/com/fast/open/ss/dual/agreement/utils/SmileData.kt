@@ -15,9 +15,9 @@ object SmileData {
 
     const val local_smile_logic = """
 {
-    "blydmit": "2",
+    "blydmit": "1",
     "blymajor": "1",
-    "blyyarium": "1",
+    "blyyarium": "2",
     "cont": "10",
     "adNum":"2"
 }    """
@@ -65,7 +65,7 @@ object SmileData {
         }
     ],
     "clickNum": 2,
-    "showNum": 5
+    "showNum": 50
 }
 """
 }

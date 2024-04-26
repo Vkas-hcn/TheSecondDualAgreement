@@ -74,14 +74,25 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-
+import kotlin.system.exitProcess
+import android.app.ActivityManager
+import android.content.Context
+import android.os.Process
+import androidx.core.view.isVisible
+import com.fast.open.ss.dual.agreement.BuildConfig
+import com.fast.open.ss.dual.agreement.ui.speed.SpeedActivity
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withTimeoutOrNull
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     R.layout.activity_main, MainViewModel::class.java
-),
-    ShadowsocksConnection.Callback,
-    OnPreferenceDataStoreChangeListener, TimeUtils.TimeUtilsListener {
+), ShadowsocksConnection.Callback, OnPreferenceDataStoreChangeListener,
+    TimeUtils.TimeUtilsListener {
     var jobMainInt: Job? = null
+    var jobSpeed: Job? = null
     override fun intiView() {
         clickListener()
         initVpnSetting()
@@ -94,8 +105,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             viewModel.initData(this, this)
         }
         onBackPressedDispatcher.addCallback(this) {
-            if (binding.showGuide == true || binding.ilSetting.root.visibility == View.VISIBLE) {
+            if (binding.showGuide == true || binding.ilSetting.root.visibility == View.VISIBLE || binding.showSpeedConnect == true) {
                 binding.showGuide = false
+                binding.showSpeedConnect = false
                 binding.ilSetting.root.visibility = View.GONE
             } else {
                 if (binding.showAddTime == true || binding.showAddSuccess == true || binding.showLoading == true) {
@@ -123,6 +135,18 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         viewModel.timeUtils = TimeUtils().apply {
             setListener(this@MainActivity)
         }
+        binding.viewGuideSmile.setOnClickListener {
+
+        }
+        binding.viewAddTimeSmile.setOnClickListener {
+
+        }
+        binding.viewConnectSpeed.setOnClickListener {
+
+        }
+        binding.viewLoadingSmile.setOnClickListener {
+
+        }
 
         binding.imgConnect.setOnClickListener {
             toClickConnect()
@@ -137,8 +161,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                 toClickConnect()
             })
         }
-        binding.viewGuideSmile.setOnClickListener {
-        }
+        binding.viewGuideSmile.setOnClickListener {}
         binding.ilSetting.atvPp.setOnClickListener {
             startActivityFirst<AgreementActivity>()
         }
@@ -156,8 +179,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         binding.ilSetting.clSetting.setOnClickListener {
             binding.ilSetting.root.visibility = View.GONE
         }
-        binding.ilSetting.llSetting.setOnClickListener {
-        }
+        binding.ilSetting.llSetting.setOnClickListener {}
         binding.ilSetting.atvPp.setOnClickListener {
             startActivityFirst<AgreementActivity>()
         }
@@ -235,6 +257,64 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             DaDianUtils.oom26(this)
             clickNextFun()
         }
+        binding.llSpeed.setOnClickListener {
+            viewModel.clickDisConnect(this, nextFun = {
+                viewModel.clickChange(this, nextFun = {
+                    Log.e(TAG, "clickListener:llSpeed=${binding.serviceState} ")
+                    if(binding.serviceState == "1"){return@clickChange}
+                    if (App.vpnLink) {
+                        showSpeed()
+                    } else {
+                        binding.showSpeedConnect = true
+                    }
+                })
+            })
+        }
+        binding.tvConnect.setOnClickListener {
+            binding.showSpeedConnect = false
+            toClickConnect()
+        }
+    }
+
+    private fun showSpeed() {
+        jobSpeed?.cancel()
+        jobSpeed = null
+        var isP = false
+        var isError = false
+        jobSpeed = lifecycleScope.launch {
+            binding.llSpeedLottie.isVisible = true
+            withTimeoutOrNull(15000L) {
+                SmileUtils.apply {
+                    internetSpeedDetection { isP = true }
+                }
+                withContext(Dispatchers.IO) {
+                    SmileUtils.pingServiceIp()
+                }
+                while (isP.not()) delay(400)
+            }
+            if (SmileKey.dowLoadSpeed == "0" || SmileKey.upLoadSpeed == "0") {
+                closeSpeedTestPage()
+            } else {
+                jumpToSpeedPaper()
+            }
+        }
+    }
+
+    private fun jumpToSpeedPaper() {
+        if (binding.llSpeedLottie.isVisible) {
+            val intent = Intent(this@MainActivity, SpeedActivity::class.java)
+            startActivity(intent)
+        }
+        binding.llSpeedLottie.isVisible = false
+    }
+
+    private fun closeSpeedTestPage() {
+        binding.llSpeedLottie.isVisible = false
+        Toast.makeText(
+            this@MainActivity,
+            "Speed test timed out. Please try again later.",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun setServiceData() {
@@ -284,16 +364,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
     private fun showSwitching(type: String) {
         val dialogVpn: androidx.appcompat.app.AlertDialog =
-            androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Tips")
+            androidx.appcompat.app.AlertDialog.Builder(this).setTitle("Tips")
                 .setMessage("switching the connection mode will disconnect the current connection whether to continue")
-                .setCancelable(false)
-                .setPositiveButton("OK") { dialog, _ ->
+                .setCancelable(false).setPositiveButton("OK") { dialog, _ ->
                     dialog.dismiss()
                     toConnectVpn()
                     binding.agreement = type
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
+                }.setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
                 }.create()
         dialogVpn.setCancelable(false)
@@ -339,9 +416,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
             } else {
                 Toast.makeText(
-                    this@MainActivity,
-                    "Please check your network connection",
-                    Toast.LENGTH_SHORT
+                    this@MainActivity, "Please check your network connection", Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -351,9 +426,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         val data = UserConter.spoilerOrNot()
         SmileKey.smile_arrow = data
         bindService(
-            Intent(this, ExternalOpenVPNService::class.java),
-            mConnection,
-            BIND_AUTO_CREATE
+            Intent(this, ExternalOpenVPNService::class.java), mConnection, BIND_AUTO_CREATE
         )
         viewModel.requestPermissionForResultVPN =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -361,21 +434,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             }
     }
 
-
-    private val connect = registerForActivityResult(StartService()) {
-        if (it) {
-            Toast.makeText(this, "No permission", Toast.LENGTH_SHORT).show()
-        } else {
-            viewModel.startTheJudgment(this)
-        }
-    }
-
-
     private fun requestPermissionForResult(result: ActivityResult) {
         if (result.resultCode == RESULT_OK) {
             if (!SmileKey.permiss) {
                 SmileKey.permiss = true
-                SmileNetHelp.postPotIntData(this, "oom7")
+                SmileNetHelp.postPotNet(this, "oom7")
             }
             viewModel.startTheJudgment(this)
         } else {
@@ -416,35 +479,26 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             when (state) {
                 "CONNECTED" -> {
                     App.vpnLink = true
-                    Log.e(TAG, "loadSmileAdvertisements: 3")
-
                     viewModel.connectOrDisconnectSmile(this@MainActivity, true)
-                    viewModel.changeState(
-                        state = BaseService.State.Idle,
-                        this@MainActivity,
-                        App.vpnLink
-                    )
                     handleSmileTimerLock()
+                    viewModel.connectionStatusJudgment(App.vpnLink, this@MainActivity)
                 }
 
                 "RECONNECTING", "EXITING", "CONNECTRETRY" -> {
                     viewModel.mService?.disconnect()
-                    SmileNetHelp.postPotIntData(this@MainActivity, "oom10")
-                    Toast.makeText(this@MainActivity,"The connection failed!",Toast.LENGTH_SHORT).show()
+                    SmileNetHelp.postPotNet(this@MainActivity, "oom10")
+                    Toast.makeText(this@MainActivity, "The connection failed!", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 "NOPROCESS" -> {
                     viewModel.mService?.disconnect()
                     App.vpnLink = false
-                    Log.e(TAG, "loadSmileAdvertisements: 4")
-
+                    handleSmileTimerLock()
                     viewModel.connectOrDisconnectSmile(this@MainActivity, true)
                     viewModel.changeState(
-                        state = BaseService.State.Idle,
-                        this@MainActivity,
-                        App.vpnLink
+                        state = BaseService.State.Idle, this@MainActivity, App.vpnLink
                     )
-                    handleSmileTimerLock()
                 }
 
                 else -> {}
@@ -487,6 +541,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         super.onStop()
         viewModel.connection.bandwidthTimeout = 0
         viewModel.stopOperate(this)
+        binding.llSpeedLottie.isVisible = false
     }
 
     override fun onDestroy() {
@@ -494,6 +549,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         DataStore.publicStore.unregisterChangeListener(this)
         viewModel.connection.disconnect(this)
         App.isBoot = false
+        Log.e(TAG, "onDestroy: Main")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -520,17 +576,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             App.serviceState = "mo"
         }
         if ((requestCode == 0x567 || requestCode == 567) && App.vpnLink) {
-            SmileUtils.haveMoreTime({
-            }, {
+            SmileUtils.haveMoreTime({}, {
                 lifecycleScope.launch {
                     SmileAdLoad.loadOf(SmileKey.POS_RE)
                     delay(300)
                     binding.showAddTime = true
-                    SmileNetHelp.postPotIntData(
-                        this@MainActivity,
-                        "oom20",
-                        "oo",
-                        App.top_activity_name
+                    SmileNetHelp.postPotNet(
+                        this@MainActivity, "oom20", "oo", App.top_activity_name
                     )
                 }
             })

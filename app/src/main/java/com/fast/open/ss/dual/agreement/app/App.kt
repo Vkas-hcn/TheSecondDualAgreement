@@ -136,6 +136,8 @@ class App : Application(), LifecycleObserver {
             override fun onActivityDestroyed(activity: Activity) {
                 ad_activity_smart = null
                 top_activity_smart = null
+                Log.e(TAG, "onDestroy: App=${activity.isFinishing}-----${activity.javaClass.simpleName}", )
+
             }
         })
     }
@@ -149,6 +151,7 @@ class App : Application(), LifecycleObserver {
             val intent = Intent(top_activity_smart, FirstActivity::class.java)
             top_activity_smart?.startActivity(intent)
             isAppRunning = true
+            SmileNetHelp.reRequestDotData(this)
         }
     }
 
@@ -179,7 +182,7 @@ class App : Application(), LifecycleObserver {
     }
 
 
-    fun iniApp() {
+    private fun iniApp() {
         if (isMainProcess(this)) {
             instance = this
             MobileAds.initialize(this) {}
@@ -198,6 +201,7 @@ class App : Application(), LifecycleObserver {
             getGid(this)
             Core.stopService()
             SmileKey.local_addNum = 0
+            SmileNetHelp.reRequestDotData(this)
         }
     }
 
@@ -206,6 +210,8 @@ class App : Application(), LifecycleObserver {
         val appToken = "ih2pm2dr3k74"
         val environment: String = AdjustConfig.ENVIRONMENT_PRODUCTION
         val config = AdjustConfig(application, appToken, environment)
+        config.needsCost = true
+
         config.setOnAttributionChangedListener { attribution ->
             Timber.tag(TAG).e("adjust --data= %s", attribution)
             if (SmileKey.adjust_smile.isEmpty() && attribution.network.isNotEmpty() && attribution.network.contains(
